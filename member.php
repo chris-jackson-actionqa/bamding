@@ -59,7 +59,7 @@ echo "Welcome, member.<br />";
 //If not paid, display paypal options
 if( is_paid_member($_SESSION['valid_user']) )
 {
-  echo "You are paid member<br />";
+  echo "You are a paid member<br />";
 }
 //else, display menu
 else

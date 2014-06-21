@@ -5,8 +5,5 @@ function is_paid_member($sEmail)
   $mUserId = get_user_id($sEmail);
   
   // find if user is paid
-  
-  
-  // paid is more than zero paid accounts
-  
+  return is_user_paid($mUserId);
 }
