@@ -6,8 +6,14 @@ session_start();
 //TODO: verify and sanitize.
 //TODO: might not be coming from a form, so these vars might not exist
 //TODO: if they are not defined, don't use them
-$email = $_POST['email'];
-$passwd = $_POST['password'];
+$email = "";
+$passwd = "";
+
+if(array_key_exists('email', $_POST) && array_key_exists('password', $_POST))
+{
+  $email = $_POST['email'];
+  $passwd = $_POST['password'];
+}
 
 if( $email && $passwd )
 {
@@ -30,10 +36,23 @@ if( $email && $passwd )
   }
 }
 
+$userEmail = check_valid_user();
+
+if(NULL == $userEmail)
+{
+  do_html_header("Problem");
+  echo "You are not logged in.<br />";
+  echo "Log in here: ";
+  do_html_url("index.php", "Login");
+  do_html_footer();
+  exit;
+}
+
 do_html_header('Home');
-check_valid_user();
+display_member_menu();
 
 // get user content
+echo "Logged in as " . $userEmail . ".<br />";
 echo "Welcome, member.<br />";
 
 //Paid member?

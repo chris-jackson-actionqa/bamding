@@ -72,3 +72,16 @@ function display_payment_form()
 </form>
 <?php
 }
+
+function display_member_menu()
+{
+  ?>
+<div id='member_menu'>
+  <form method="post" action="index.php">
+    <input type="hidden" name="logout" value="true">
+    <input type="submit" name="Submit" value="Log Out">
+  </form>
+</div>
+  
+  <?php
+}
