@@ -12,12 +12,27 @@ require_once(ABSPATH. '/wp-content/tardis/Venue.php');
 class Venues
 {
   private $oConn;
+  private $sTable;
+  private $sUserID;
+  private $sActID;
 
   // constructor
-  public function __construct()
+  public function __construct($sTable = "", $sUserID = "", $sActID = "")
   {
     $oDB = new Database();
     $this->oConn = $oDB->connect();
+    
+    if(empty($sTable))
+    {
+      $this->sTable = 'venues';
+    }
+    else
+    {
+     $this->sTable = $sTable;
+    }
+    
+    $this->sUserID = $sUserID;
+    $this->sActID = $sActID;
   }
 
   // add a venue
@@ -28,7 +43,7 @@ class Venues
       throw InvalidArgumentException('Venue object is empty');
     }
 
-    $sSQL = "INSERT INTO venues (name) VALUES ('" . 
+    $sSQL = "INSERT INTO $this->sTable (name) VALUES ('" . 
       $oVenue->getName() . "')";
     $mResult = $this->oConn->query($sSQL);
 
