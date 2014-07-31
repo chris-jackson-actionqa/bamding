@@ -1,6 +1,7 @@
 <?php
 require_once(ABSPATH. '/wp-content/tardis/Venues.php');
 require_once(ABSPATH. '/wp-content/tardis/Venue.php');
+require_once(ABSPATH. '/wp-content/tardis/DisplayForms.php');
 get_header();  
 ?>
 
@@ -11,10 +12,10 @@ echo "<h2>$user_email</h2>";
 
 
 // if 'get' data, add to database
-if( array_key_exists('bd_venue_name', $_GET) && !empty($_GET['bd_venue_name']) )
+if( array_key_exists('bd_venue_name', $_POST) && !empty($_POST['bd_venue_name']) )
 {
   $oVenue = new Venue();
-  $oVenue->setName($_GET['bd_venue_name']);
+  $oVenue->setName($_POST['bd_venue_name']);
   
   $oVenues = new Venues();
   $oVenues->addVenue($oVenue);
@@ -23,10 +24,10 @@ if( array_key_exists('bd_venue_name', $_GET) && !empty($_GET['bd_venue_name']) )
 
 ?>
 
-<form name='addVenue' action='http://bamding.com/testvenues/' method='get'>
-Venue: <input type="text" name="bd_venue_name"><br />
-<input type="submit" value="Submit">
-</form>
+<?php
+DisplayForms::addNewVenue('http://bamding.com/testvenues/');
+?>
+
 <br>
 <br>
 <?php 
