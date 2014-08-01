@@ -3,16 +3,23 @@
 
 class DisplayForms
 {
+  /**
+   * addNewVenue displays a add new venue form to the user
+   * 
+   * @param string $sAction The submit action url for this form
+   */
   public static function addNewVenue($sAction)
   {
     ?>
     <form id="bdAddNewVenueForm" name='addNewVenue' action="<?php echo $sAction; ?>" method="post">
+      <input type="hidden" name="bd_user_email" value="<?php echo get_user_field('user_email'); ?>" required>
+      <input type="hidden" name="bd_user_login" value="<?php echo get_user_field('user_login'); ?>" required>
       <label>Venue's Name:</label>
       <br />
       <input type="text" name="bd_venue_name" required>
       <br />
       
-      <label>Email:</label>
+      <label>Venue's Booking Email:</label>
       <br />
       <input type="email" name="bd_venue_email">
       <br />
@@ -59,10 +66,6 @@ class DisplayForms
       <label>Website:</label>
       <br />
       <input type="url" name="bd_venue_website">
-      <br />
-      <label>Additional Info:</label>
-      <br />
-      <textarea name="bd_venue_info"></textarea>
       <br />
       <br />
       <input type="submit" value="Add Venue">

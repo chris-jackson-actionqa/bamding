@@ -1,6 +1,6 @@
 <?php
 /**
- * The Venue object. 
+ * The Venues object. 
  * Abstract the interaction with the database through easy to use
  * calls. 
  * You can get all the databases or filter them down by city.
@@ -42,9 +42,51 @@ class Venues
     {
       throw InvalidArgumentException('Venue object is empty');
     }
+    
+    //TODO: Detect duplicate venues.
 
-    $sSQL = "INSERT INTO $this->sTable (name) VALUES ('" . 
-      $oVenue->getName() . "')";
+    $sSQL = "";
+    
+    if( 'venues' == $this->sTable)
+    {
+      $sSQL = "INSERT INTO $this->sTable (name) VALUES ('" . 
+        $oVenue->getName() . "')";
+    }
+    else if('my_venues' == $this->sTable)
+    {
+      $sSQL = <<<SQL
+INSERT INTO {$this->sTable}  
+  ( 
+  name,
+  email,
+  city,
+  state,
+  booker_fname,
+  booker_lname,
+  subform,
+  address1,
+  address2,
+  country,
+  postalcode,
+  user_login
+  )  
+VALUES (
+  '{$oVenue->getName()}',
+  '{$oVenue->getEmail()}',
+  '{$oVenue->getCity()}',
+  '{$oVenue->getState()}',
+  '{$oVenue->getBookerFirstName()}',
+  '{$oVenue->getBookerLastName()}',
+  '{$oVenue->getContactForm()}',
+  '{$oVenue->getAddress1()}',
+  '{$oVenue->getAddress2()}',
+  '{$oVenue->getCountry()}',
+  '{$oVenue->getZip()}',
+  '{$this->sUserID}'
+  )
+SQL;
+  
+    }
     $mResult = $this->oConn->query($sSQL);
 
     if(TRUE !== $mResult )
