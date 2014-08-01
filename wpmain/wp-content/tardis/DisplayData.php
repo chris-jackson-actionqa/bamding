@@ -1,5 +1,6 @@
 <?php
-
+require_once(ABSPATH. '/wp-content/tardis/Venue.php');
+require_once(ABSPATH. '/wp-content/tardis/DisplayForms.php');
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -14,7 +15,50 @@
  */
 class DisplayData 
 {
-  //put your code here
+  public static function displayMyVenues($sUserID)
+  {
+    $oVenues = new Venues('my_venues', $sUserID);
+    $aAllMyVenues = $oVenues->getAllMyVenues();
+    if(0 == count($aAllMyVenues))
+    {
+      echo '<div>No venues found for you.</div>';
+    }
+    
+    echo '<table>';
+    
+    //display field names
+    ?>
+<tr>
+  <th>Venue</th>
+  <th>City</th>
+  <th>State</th>
+  <th>Country</th>
+  <th>Remove</th>
+</tr>
+    
+  <?php
+    
+    foreach($aAllMyVenues as $aRow)
+    {
+      echo "<tr>";
+      // Venue
+      echo "  <td>" . $aRow['name'] . "</td>";
+      // City
+      echo "  <td>" . $aRow['city'] . "</td>";
+      // State
+      echo "  <td>" . $aRow['state'] . "</td>";
+      // Country
+      echo "  <td>" . $aRow['country'] . "</td>";
+      
+      // Delete
+      echo "  <td>" . 
+              DisplayForms::removeVenueCell($aRow['id'], $aRow['name']) . 
+              "</td>";
+      echo "</tr>";
+    }
+    echo '</table>';
+  }
+  
 }
 
 //XXXXX||||==-------------==||||XXXXX

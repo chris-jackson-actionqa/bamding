@@ -97,6 +97,29 @@ SQL;
   }
 
   // get venues
+  public function getAllMyVenues()
+  {
+    $sSQL = "SELECT * FROM my_venues WHERE user_login='$this->sUserID'";
+    
+    $mResult = $this->oConn->query($sSQL);
+
+    if(FALSE === $mResult )
+    {
+      throw new Exception("Could not get venues: " .
+        $this->oConn->error );
+    }
+    
+    $aVenues = array();
+    
+    while( $row = $mResult->fetch_assoc())
+    {
+      array_push($aVenues, $row);
+    }
+    
+    $mResult->free();
+    
+    return $aVenues;
+  }
 
   // remove a venue
   

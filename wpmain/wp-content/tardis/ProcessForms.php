@@ -150,10 +150,21 @@ class ProcessForms
       $oVenue->setWebsite($hPostData['bd_venue_website']);
     }
     
-    $oVenues = new Venues('my_venues', $sUserLogin);
-    $oVenues->addVenue($oVenue);
-    
-    // Display success message
-    echo '<div class="bdFormSuccess">Venue ' . $oVenue->getName() . ' added.</div>';
+    try
+    {
+      $oVenues = new Venues('my_venues', $sUserLogin);
+      $oVenues->addVenue($oVenue);
+
+      // Display success message
+      echo '<div class="bdFormSuccess">Venue ' . $oVenue->getName() . ' added.</div>';
+    }
+    catch(Exception $oException)
+    {
+      echo '<div class="bdFormError">Error: Could not add venue.'
+      . '<br />'
+      . $oException->getMessage()
+      . '<br /></div>';
+              
+    }
   }
 }

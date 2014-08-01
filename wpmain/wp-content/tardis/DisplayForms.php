@@ -73,4 +73,13 @@ class DisplayForms
 
     <?php
   }
+  
+  public static function removeVenueCell($nVenueID, $sVenue)
+  {
+    echo '<form name="bdRemoveVenueCell" action="http://bamding.com/removevenue">';
+    echo  '<input type="hidden" name="bd_myvenue_id" value="' . $nVenueID . '">';
+    echo  '<input type="hidden" name="bd_myvenue_name" value="' . $sVenue . '">';
+    echo  '<input type="submit" value="Remove">';
+    echo  '</form>';
+  }
 }
