@@ -10,9 +10,7 @@ get_header();
 // don't show to non-members
 if (current_user_can("access_s2member_level1"))
   {
-  echo '<div id="bdRemoveVenue">';
-  echo '  Remove ' . $_GET['bd_myvenue_name'] . '?';
-  echo '</div>';
+  DisplayForms::confirmRemoveVenues();
   } 
 else 
   {

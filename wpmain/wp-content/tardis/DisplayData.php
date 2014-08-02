@@ -22,18 +22,19 @@ class DisplayData
     if(0 == count($aAllMyVenues))
     {
       echo '<div>No venues found for you.</div>';
+      return;
     }
-    
+    echo '<form name="bdVenueList" action="http://bamding.com/removevenue/" method="post">';
     echo '<table>';
     
     //display field names
     ?>
 <tr>
+  <th>Remove</th>
   <th>Venue</th>
   <th>City</th>
   <th>State</th>
   <th>Country</th>
-  <th>Remove</th>
 </tr>
     
   <?php
@@ -41,6 +42,10 @@ class DisplayData
     foreach($aAllMyVenues as $aRow)
     {
       echo "<tr>";
+      // check box with venue id
+      echo "  <td><input type='checkbox' name='" .
+              $aRow['name'] . "' value='" . $aRow['id'] . "'>" .
+              "</td>";
       // Venue
       echo "  <td>" . $aRow['name'] . "</td>";
       // City
@@ -49,14 +54,10 @@ class DisplayData
       echo "  <td>" . $aRow['state'] . "</td>";
       // Country
       echo "  <td>" . $aRow['country'] . "</td>";
-      
-      // Delete
-      echo "  <td>" . 
-              DisplayForms::removeVenueCell($aRow['id'], $aRow['name']) . 
-              "</td>";
-      echo "</tr>";
     }
     echo '</table>';
+    echo "<input type='submit' value='Remove'>";
+    echo '</form>';
   }
   
 }

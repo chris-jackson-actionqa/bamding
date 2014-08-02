@@ -11,10 +11,12 @@ class DisplayForms
   public static function addNewVenue($sAction)
   {
     ?>
+    <b>* indicates a required field</b>
     <form id="bdAddNewVenueForm" name='addNewVenue' action="<?php echo $sAction; ?>" method="post">
       <input type="hidden" name="bd_user_email" value="<?php echo get_user_field('user_email'); ?>" required>
       <input type="hidden" name="bd_user_login" value="<?php echo get_user_field('user_login'); ?>" required>
-      <label>Venue's Name:</label>
+      <input type="hidden" name="bd_venue_method" value="add">
+      <label>Venue's Name:*</label>
       <br />
       <input type="text" name="bd_venue_name" required>
       <br />
@@ -47,19 +49,19 @@ class DisplayForms
       <br />
       <input type="text" name="bd_venue_address2">
       <br />
-      <label>City:</label>
+      <label>City:*</label>
       <br />
       <input type="text" name="bd_venue_city" required>
       <br />
-      <label>State:</label>
+      <label>State:*</label>
       <br />
-      <input type="text" name="bd_venue_state" required>
+      <input type="text" name="bd_venue_state" maxlength="2" required>
       <br />
       <label>Zip/Postal Code:</label>
       <br />
       <input type="text" name="bd_venue_zip">
       <br />
-      <label>Country:</label>
+      <label>Country:*</label>
       <br />
       <input type="text" name="bd_venue_country" value="United States" required>
       <br />
@@ -74,12 +76,37 @@ class DisplayForms
     <?php
   }
   
-  public static function removeVenueCell($nVenueID, $sVenue)
+  public static function confirmRemoveVenues()
   {
-    echo '<form name="bdRemoveVenueCell" action="http://bamding.com/removevenue">';
-    echo  '<input type="hidden" name="bd_myvenue_id" value="' . $nVenueID . '">';
-    echo  '<input type="hidden" name="bd_myvenue_name" value="' . $sVenue . '">';
-    echo  '<input type="submit" value="Remove">';
-    echo  '</form>';
+    // If no venues selected
+    if(0 == count($_POST))
+    {
+      echo 'No venues were selected to remove.';
+      echo '<br />';
+      echo '<a href="http://bamding.com/myvenues/">Back to my venues.</a>';
+      return;
+    }
+    
+    // list the venues with a Yes or No confirm button to remove them
+    echo '<b>Remove the following venue(s)?</b><br />';
+    echo '<form name="bdRemoveMyVenues" action="http://bamding.com/myvenues/" method="post">';
+    
+    echo '<input type="hidden" name="bd_venue_method" value="remove">';
+    
+    // Display the venues to be removed
+    foreach($_POST as $sVenue=>$nID)
+    {
+      echo '<input type="text" name="' . (int)$nID . '" value="' . $sVenue . '" readonly>';
+      echo '<br />';
+    }
+    
+    // No
+    echo '<a href="http://bamding.com/myvenues/"><b>No! Take me back to my venues!</b></a>';
+    
+    // Yes
+    echo '<input type="submit" value="Yes, remove them.">';
+    
+    echo '</form>';
+    
   }
 }

@@ -32,6 +32,11 @@ class ProcessForms
       return;
     }
     
+    if($hPostData['bd_venue_method'] != 'add')
+    {
+      return;
+    }
+    
     $oVenue = new Venue();
     
     //User login
@@ -157,6 +162,7 @@ class ProcessForms
 
       // Display success message
       echo '<div class="bdFormSuccess">Venue ' . $oVenue->getName() . ' added.</div>';
+      ProcessForms::mailOnVenue($sUserLogin, $oVenue->getName());
     }
     catch(Exception $oException)
     {
@@ -166,5 +172,56 @@ class ProcessForms
       . '<br /></div>';
               
     }
+  }
+  
+  public static function removeVenues($hPostData)
+  {
+    // No post data to process. No form submitted.
+    if(empty($hPostData))
+    {
+      return;
+    }
+    
+    if($hPostData['bd_venue_method'] != 'remove')
+    {
+      return;
+    }
+    
+    // for each entry, delete the venue
+    $sResultHTML = "";
+    try 
+    {  
+      $oVenues = new Venues('my_venues', get_user_field('user_login'));
+      foreach($hPostData as $nVenueID=>$sVenue)
+      {
+        if('remove' == $nVenueID || !is_numeric($nVenueID))
+        {
+          continue;
+        }
+        
+        $oVenues->removeVenue($nVenueID);
+        ProcessForms::mailOnVenue(get_user_field('user_login'), $sVenue, 'removed');
+      }
+      $sResultHTML = '<div class="bdFormSuccess">Successfully removed venue(s).</div>';
+      
+    }
+    catch(InvalidArgumentException $oEx)
+    {
+      $sResultHTML = '<div class="bdFormError">Error: ' . $oEx->getMessage() . '</div>';
+    }
+    catch(RuntimeException $oEx)
+    {
+      $sResultHTML = '<div class="bdFormError">Error: ' . $oEx->getMessage() . '</div>';
+    }
+    
+    echo $sResultHTML;
+  }
+  
+  public static function mailOnVenue($sUserID, $sVenue, $sAction = 'added' )
+  {
+    $sTo = "seth@bamding.com";
+    $sSubject = "Venue $sAction for $sUserID";
+    $sMessage = "User: $sUserID, Venue: $sVenue";
+    mail($sTo, $sSubject, $sMessage);
   }
 }
