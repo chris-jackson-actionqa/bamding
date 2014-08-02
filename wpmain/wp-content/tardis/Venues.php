@@ -68,6 +68,7 @@ INSERT INTO {$this->sTable}
   address2,
   country,
   postalcode,
+  website,
   user_login
   )  
 VALUES (
@@ -82,6 +83,7 @@ VALUES (
   '{$oVenue->getAddress2()}',
   '{$oVenue->getCountry()}',
   '{$oVenue->getZip()}',
+  '{$oVenue->getWebsite()}',
   '{$this->sUserID}'
   )
 SQL;
@@ -143,9 +145,35 @@ SQL;
       $sVal = (is_null($hVenue['email'])) ? '' : $hVenue['email'];
       $oVenue->setEmail($sVal);
       
-      $sVal = (is_null($hVenue[''])) ? '' : $hVenue['email'];
-      $oVenue->setEmail($sVal);
+      $sVal = (is_null($hVenue['city'])) ? '' : $hVenue['city'];
+      $oVenue->setCity($sVal);
       
+      $sVal = (is_null($hVenue['state'])) ? '' : $hVenue['state'];
+      $oVenue->setState($sVal);
+      
+      $sVal = (is_null($hVenue['booker_fname'])) ? '' : $hVenue['booker_fname'];
+      $oVenue->setBookerFirstName($sVal);
+      
+      $sVal = (is_null($hVenue['booker_lname'])) ? '' : $hVenue['booker_lname'];
+      $oVenue->setBookerLastName($sVal);
+      
+      $sVal = (is_null($hVenue['subform'])) ? '' : $hVenue['subform'];
+      $oVenue->setContactForm($sVal);
+      
+      $sVal = (is_null($hVenue['address1'])) ? '' : $hVenue['address1'];
+      $oVenue->setAddress1($sVal);
+      
+      $sVal = (is_null($hVenue['address2'])) ? '' : $hVenue['address2'];
+      $oVenue->setAddress2($sVal);
+      
+      $sVal = (is_null($hVenue['country'])) ? '' : $hVenue['country'];
+      $oVenue->setBookerFirstName($sVal);
+      
+      $sVal = (is_null($hVenue['postalcode'])) ? '' : $hVenue['postalcode'];
+      $oVenue->setZip($sVal);
+      
+      $sVal = (is_null($hVenue['website'])) ? '' : $hVenue['website'];
+      $oVenue->setWebsite($sVal);
     }
     
     return $oVenue;
