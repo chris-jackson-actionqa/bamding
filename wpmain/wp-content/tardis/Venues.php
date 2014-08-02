@@ -120,6 +120,35 @@ SQL;
     
     return $aVenues;
   }
+  
+  public function getVenue($nVenueID)
+  {
+    $nVenueID = (int)$nVenueID;
+    $sUserID = get_user_field('user_login');
+    $sSQL = "SELECT * FROM my_venues WHERE user_login='$sUserID' AND id='$nVenueID'";
+    $mResult = $this->oConn->query($sSQL);
+    
+    $oVenue = NULL;
+    
+    if(FALSE !== $mResult)
+    {
+      $hVenue = $mResult->fetch_assoc();
+      
+      $oVenue = new Venue();
+      
+      $sVal = (is_null($hVenue['name'])) ? '' : $hVenue['name'];
+      $oVenue->setName($sVal);
+      
+      $sVal = (is_null($hVenue['email'])) ? '' : $hVenue['email'];
+      $oVenue->setEmail($sVal);
+      
+      $sVal = (is_null($hVenue[''])) ? '' : $hVenue['email'];
+      $oVenue->setEmail($sVal);
+      
+    }
+    
+    return $oVenue;
+  }
 
   // remove a venue
   public function removeVenue($nVenueID)
