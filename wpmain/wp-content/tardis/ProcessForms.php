@@ -155,8 +155,10 @@ class ProcessForms
       $oVenue->setWebsite($hPostData['bd_venue_website']);
     }
     
-    // Error if both email and submission form are empty. 
-    if(empty($oVenue->getContactForm()) && empty($oVenue->getEmail()))
+    // Error if both email and submission form are empty.
+    $sContactForm = $oVenue->getContactForm();
+    $sEmail = $oVenue->getEmail();
+    if(empty($sContactForm) && empty($sEmail))
     {
       // Display error and return
       echo '<div class="bdFormError">ERROR: Must provide either an '
