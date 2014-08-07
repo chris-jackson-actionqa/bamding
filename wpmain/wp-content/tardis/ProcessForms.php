@@ -1,6 +1,5 @@
 <?php
-require_once(ABSPATH. '/wp-content/tardis/Venues.php');
-require_once(ABSPATH. '/wp-content/tardis/Venue.php');
+require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
 
 /*
  * To change this license header, choose License Headers in Project Properties.

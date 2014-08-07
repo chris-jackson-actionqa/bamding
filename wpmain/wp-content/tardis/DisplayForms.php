@@ -1,5 +1,5 @@
 <?php
-
+require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
 
 class DisplayForms
 {
@@ -152,18 +152,20 @@ HTM;
   
   public static function confirmRemoveVenues()
   {
+    $sMyVenuesURI = Site::getBaseURL() . '/myvenues/';
+
     // If no venues selected
     if(0 == count($_POST))
     {
       echo 'No venues were selected to remove.';
       echo '<br />';
-      echo '<a href="http://bamding.com/myvenues/">Back to my venues.</a>';
+      echo '<a href="'. $sMyVenuesURI . '">Back to my venues.</a>';
       return;
     }
     
     // list the venues with a Yes or No confirm button to remove them
     echo '<b>Remove the following venue(s)?</b><br />';
-    echo '<form name="bdRemoveMyVenues" action="http://bamding.com/myvenues/" method="post">';
+    echo '<form name="bdRemoveMyVenues" action="' . $sMyVenuesURI . '" method="post">';
     
     echo '<input type="hidden" name="bd_venue_method" value="remove">';
     
@@ -175,7 +177,7 @@ HTM;
     }
     
     // No
-    echo '<a href="http://bamding.com/myvenues/"><b>No! Take me back to my venues!</b></a>';
+    echo '<a href="' . $sMyVenuesURI . '"><b>No! Take me back to my venues!</b></a>';
     
     // Yes
     echo '<input type="submit" value="Yes, remove them.">';

@@ -6,8 +6,7 @@
  * You can get all the databases or filter them down by city.
  * Get what venues a musician is booking at.
  */
-require_once(ABSPATH. '/wp-content/tardis/Database.php');
-require_once(ABSPATH. '/wp-content/tardis/Venue.php');
+require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
 
 class Venues
 {
