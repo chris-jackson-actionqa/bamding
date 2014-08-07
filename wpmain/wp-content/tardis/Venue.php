@@ -1,4 +1,5 @@
 <?php
+require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
 
 /**
  * @todo Add validation of setters

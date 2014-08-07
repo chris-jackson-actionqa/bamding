@@ -1,6 +1,5 @@
 <?php
-require_once(ABSPATH. '/wp-content/tardis/Venue.php');
-require_once(ABSPATH. '/wp-content/tardis/DisplayForms.php');
+require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -24,7 +23,8 @@ class DisplayData
       echo '<div>No venues found for you.</div>';
       return;
     }
-    echo '<form name="bdVenueList" action="http://bamding.com/removevenue/" method="post">';
+    $sAction = Site::getBaseURL() . '/removevenue/';
+    echo '<form name="bdVenueList" action="' . $sAction . '" method="post">';
     echo '<table>';
     
     //display field names
