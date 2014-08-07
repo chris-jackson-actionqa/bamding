@@ -31,7 +31,7 @@ class ProcessForms
       return;
     }
     
-    if($hPostData['bd_venue_method'] != 'add')
+    if($hPostData['bd_venue_method'] != DisplayForms::ADD_VENUE)
     {
       return;
     }
