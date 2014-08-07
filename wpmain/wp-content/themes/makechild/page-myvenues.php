@@ -7,6 +7,8 @@ require_once(ABSPATH. '/wp-content/tardis/ProcessForms.php');
 
 get_header();  
 
+echo 'SERVER_NAME: ' . $_SERVER['SERVER_NAME'] . '<br />';
+echo 'REQUEST_URI: ' . $_SERVER['REQUEST_URI'] . '<br />';
 // don't show venues to non-members
 if (current_user_can("access_s2member_level1"))
   {
