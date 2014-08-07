@@ -38,21 +38,9 @@ class Venue
   /**
    * 
    * @param string $sVenueName
-   * @throws InvalidArgumentException Invalid venue name (empty, null, etc)
-   * @throws LengthException Venue name is too long
    */
   public function setName( $sVenueName )
   {
-    if(empty($sVenueName) )
-    {
-      throw InvalidArgumentException( "Venue name can't be empty" );
-    }
-
-    if(255 < strlen( $sVenueName ) )
-    {
-      throw LengthException( 'Venue name is too long. 255 characters allowed.' );
-    }
-
     $this->sName = $sVenueName;
   }
   

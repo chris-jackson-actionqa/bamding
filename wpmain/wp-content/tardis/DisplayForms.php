@@ -7,74 +7,86 @@ class DisplayForms
   const VIEW_VENUE = 2;
   const EDIT_VENUE = 3;
   
-  public static function displayVenueForm($sAction, $nBehavior, $nVenueID)
+  public static function displayInput($sLabel, $sType, $sName, $sValue = '', $sAttributes = '')
   {
+    if( $sType != 'hidden')
+    {
+      echo "<label>$sLabel</label>";
+      echo '<br />';
+    }
+    echo '<input type="' . $sType . 
+            '" name="' . $sName . 
+            '" value="' . $sValue . 
+            '" ' . $sAttributes . '>';
     
-    $sHTML = <<<HTM
-    <b>* indicates a required field</b>
-    <form id="bdAddNewVenueForm" name='addNewVenue' action="<?php echo $sAction; ?>" method="post">
-      <input type="hidden" name="bd_user_email" value="<?php echo get_user_field('user_email'); ?>" required>
-      <input type="hidden" name="bd_user_login" value="<?php echo get_user_field('user_login'); ?>" required>
-      <input type="hidden" name="bd_venue_method" value="add">
-      <label>Venue's Name:*</label>
-      <br />
-      <input type="text" name="bd_venue_name" required>
-      <br />
-      
-      <label>Venue's Booking Email:</label>
-      <br />
-      <input type="email" name="bd_venue_email">
-      <br />
-      
-      <label>Contact Form (Requires online submission form plan.):</label>
-      <br />
-      <input type="url" name="bd_venue_contact_url">
-      <br />
-      
-      <label>Booker's First Name:</label>
-      <br />
-      <input type="text" name="bd_venue_booker_fname">
-      <br />
-      
-      <label>Booker's Last Name:</label>
-      <br />
-      <input type="text" name="bd_venue_booker_lname">
-      <br />
-      
-      <label>Address:</label>
-      <br />
-      <input type="text" name="bd_venue_address1">
-      <br />
-      <label>Address2:</label>
-      <br />
-      <input type="text" name="bd_venue_address2">
-      <br />
-      <label>City:*</label>
-      <br />
-      <input type="text" name="bd_venue_city" required>
-      <br />
-      <label>State:*</label>
-      <br />
-      <input type="text" name="bd_venue_state" maxlength="2" required>
-      <br />
-      <label>Zip/Postal Code:</label>
-      <br />
-      <input type="text" name="bd_venue_zip">
-      <br />
-      <label>Country:*</label>
-      <br />
-      <input type="text" name="bd_venue_country" value="United States" required>
-      <br />
-      <label>Website:</label>
-      <br />
-      <input type="url" name="bd_venue_website">
-      <br />
-      <br />
-      <input type="submit" value="Add Venue">
-    </form>
-HTM;
+    if( $sType != 'hidden')
+    {
+      echo '<br />';
+    }
+  }
+  
+  public static function displayVenueForm($sAction, $nBehavior, $nVenueID = -1)
+  {
+    // Can't have an empty action url for the form
+    if(empty($sAction))
+    {
+      throw new InvalidArgumentException('Form requires an action url.');
+    }
     
-    echo $sHTML;
+    // The behavior needs to be a known one
+    if(DisplayForms::ADD_VENUE != $nBehavior && 
+      DisplayForms::VIEW_VENUE != $nBehavior &&
+      DisplayForms::EDIT_VENUE != $nBehavior)
+    {
+      throw new InvalidArgumentException('Not a recognized behavior for venues');
+    }
+    
+    // Get user
+    $sUserLogin = get_user_field('user_login');
+    
+    // Init venue object. 
+    $oVenues = new Venues('my_venues', $sUserLogin);
+    $oVenue = $oVenues->getVenue($nVenueID);
+    
+    // Display the form
+    echo '<b>* indicates a required field</b>';
+    echo '<form id="bdAddNewVenueForm" name="addNewVenue" action="' . $sAction . '" method="post">';
+    DisplayForms::displayInput
+            ('', 'hidden', 'bd_user_login', $sUserLogin, 'required');
+    DisplayForms::displayInput
+            ('', 'hidden', 'bd_venue_method', $nBehavior);
+    DisplayForms::displayInput
+            ("Venue's Name:*", 'text', 'bd_venue_name', $oVenue->getName(), 'required');
+    DisplayForms::displayInput
+            ("Venue's Booking Email:", 'email', 'bd_venue_email', $oVenue->getEmail());
+    DisplayForms::displayInput
+            ('Contact Form (Requires online submission form plan):', 'url', 'bd_venue_contact_url', $oVenue->getContactForm());
+    DisplayForms::displayInput
+            ("Booker's First Name:", 'text', 'bd_venue_booker_fname', $oVenue->getBookerFirstName());
+    DisplayForms::displayInput
+            ("Booker's Last Name:", 'text', 'bd_venue_booker_lname', $oVenue->getBookerLastName());
+    DisplayForms::displayInput
+            ('Address:', 'text', 'bd_venue_address1', $oVenue->getAddress1());
+    DisplayForms::displayInput
+            ('Address 2:', 'text', 'bd_venue_address2', $oVenue->getAddress2());
+    DisplayForms::displayInput
+            ('City:*', 'text', 'bd_venue_city', $oVenue->getCity(), 'required');
+    DisplayForms::displayInput
+            ('State:*', 'text', 'bd_venue_state', $oVenue->getState(), 'maxlength="2" required');
+    DisplayForms::displayInput
+            ('Zip/Postal Code:', 'text', 'bd_venue_zip', $oVenue->getZip());
+    
+    // Default to United States
+    $sCountry = $oVenue->getCountry();
+    $sCountry = empty($sCountry) ? 'United States' : $sCountry;
+    DisplayForms::displayInput
+            ('Country:*', 'text', 'bd_venue_country', $sCountry, 'required');
+    DisplayForms::displayInput
+            ('Website:', 'url', 'bd_venue_website', $oVenue->getWebsite());
+    echo '<br />';
+    echo '<input type="submit" value="Add Venue">';
+    echo '</form>';
+    
   }
   
   /**
@@ -84,70 +96,7 @@ HTM;
    */
   public static function addNewVenue($sAction)
   {
-    ?>
-    <b>* indicates a required field</b>
-    <form id="bdAddNewVenueForm" name='addNewVenue' action="<?php echo $sAction; ?>" method="post">
-      <input type="hidden" name="bd_user_email" value="<?php echo get_user_field('user_email'); ?>" required>
-      <input type="hidden" name="bd_user_login" value="<?php echo get_user_field('user_login'); ?>" required>
-      <input type="hidden" name="bd_venue_method" value="add">
-      <label>Venue's Name:*</label>
-      <br />
-      <input type="text" name="bd_venue_name" required>
-      <br />
-      
-      <label>Venue's Booking Email:</label>
-      <br />
-      <input type="email" name="bd_venue_email">
-      <br />
-      
-      <label>Contact Form (Requires online submission form plan.):</label>
-      <br />
-      <input type="url" name="bd_venue_contact_url">
-      <br />
-      
-      <label>Booker's First Name:</label>
-      <br />
-      <input type="text" name="bd_venue_booker_fname">
-      <br />
-      
-      <label>Booker's Last Name:</label>
-      <br />
-      <input type="text" name="bd_venue_booker_lname">
-      <br />
-      
-      <label>Address:</label>
-      <br />
-      <input type="text" name="bd_venue_address1">
-      <br />
-      <label>Address2:</label>
-      <br />
-      <input type="text" name="bd_venue_address2">
-      <br />
-      <label>City:*</label>
-      <br />
-      <input type="text" name="bd_venue_city" required>
-      <br />
-      <label>State:*</label>
-      <br />
-      <input type="text" name="bd_venue_state" maxlength="2" required>
-      <br />
-      <label>Zip/Postal Code:</label>
-      <br />
-      <input type="text" name="bd_venue_zip">
-      <br />
-      <label>Country:*</label>
-      <br />
-      <input type="text" name="bd_venue_country" value="United States" required>
-      <br />
-      <label>Website:</label>
-      <br />
-      <input type="url" name="bd_venue_website">
-      <br />
-      <br />
-      <input type="submit" value="Add Venue">
-    </form>
-
-    <?php
+    DisplayForms::displayVenueForm($sAction, DisplayForms::ADD_VENUE);
   }
   
   public static function confirmRemoveVenues()
