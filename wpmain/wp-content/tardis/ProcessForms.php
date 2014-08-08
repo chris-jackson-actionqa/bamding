@@ -38,7 +38,7 @@ class ProcessForms
       case DisplayForms::EDIT_VENUE:
         break;
       default:
-        throw new InvalidArgumentException('Not a valid behavior to perform on a venue.');
+        return; //do nothing
     };
     
     $oVenue = new Venue();
