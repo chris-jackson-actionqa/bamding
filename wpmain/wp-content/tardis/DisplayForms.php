@@ -55,6 +55,13 @@ class DisplayForms
             ('', 'hidden', 'bd_user_login', $sUserLogin, 'required');
     DisplayForms::displayInput
             ('', 'hidden', 'bd_venue_method', $nBehavior);
+    
+    // venue id for editing
+    if( DisplayForms::EDIT_VENUE == $nBehavior)
+    {
+      DisplayForms::displayInput('', 'hidden', 'bd_venue_id', $nVenueID);
+    }
+    
     DisplayForms::displayInput
             ("Venue's Name:*", 'text', 'bd_venue_name', $oVenue->getName(), 'required');
     DisplayForms::displayInput
@@ -81,10 +88,15 @@ class DisplayForms
     $sCountry = empty($sCountry) ? 'United States' : $sCountry;
     DisplayForms::displayInput
             ('Country:*', 'text', 'bd_venue_country', $sCountry, 'required');
+    
     DisplayForms::displayInput
             ('Website:', 'url', 'bd_venue_website', $oVenue->getWebsite());
+    
+    // Submit button
+    $sSubmitText = (DisplayForms::EDIT_VENUE == $nBehavior) ? 'Update Venue' : 'Add Venue';
+    
     echo '<br />';
-    echo '<input type="submit" value="Add Venue">';
+    echo '<input type="submit" value="' . $sSubmitText . '">';
     echo '</form>';
     
   }
@@ -97,6 +109,11 @@ class DisplayForms
   public static function addNewVenue($sAction)
   {
     DisplayForms::displayVenueForm($sAction, DisplayForms::ADD_VENUE);
+  }
+  
+  public static function editVenue($sAction, $nVenueID)
+  {
+    DisplayForms::displayVenueForm($sAction, DisplayForms::EDIT_VENUE, $nVenueID);
   }
   
   public static function confirmRemoveVenues()

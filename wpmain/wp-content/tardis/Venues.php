@@ -166,7 +166,7 @@ SQL;
       $oVenue->setAddress2($sVal);
       
       $sVal = (is_null($hVenue['country'])) ? '' : $hVenue['country'];
-      $oVenue->setBookerFirstName($sVal);
+      $oVenue->setCountry($sVal);
       
       $sVal = (is_null($hVenue['postalcode'])) ? '' : $hVenue['postalcode'];
       $oVenue->setZip($sVal);
@@ -222,7 +222,57 @@ SQL;
     {
       throw new RuntimeException("Failed to remove venue.");
     }
+  }
+  
+  /**
+   * Updates an existing venue
+   * 
+   * @param Venue $oVenue valid Venue object
+   * @param int $nVenueID the id number for the venue
+   * @throws InvalidArgumentException if an invalid venue, an invalid id, or if the venue doesn't belong to the user
+   * @throws RuntimeException if the MySQL update failed
+   */
+  public function updateVenue(Venue $oVenue, $nVenueID)
+  {
+    if(empty($oVenue))
+    {
+      throw new InvalidArgumentException('Need to provide a venue to update');
+    }
     
+    if(!$this->doesVenueExist($nVenueID))
+    {
+      throw new InvalidArgumentException('This venue does not exist. Venue id = ' . $nVenueID);
+    }
+    
+    if(!$this->doesVenueBelongToUser($nVenueID))
+    {
+      throw new InvalidArgumentException("This venue does not belong to you, so you cannot edit it. Venue id = $nVenueID");
+    }
+    
+    $sSQL = <<<SQL
+UPDATE my_venues
+SET
+  name='{$oVenue->getName()}',
+  email='{$oVenue->getEmail()}',
+  subform='{$oVenue->getContactForm()}',
+  booker_fname='{$oVenue->getBookerFirstName()}',
+  booker_lname='{$oVenue->getBookerLastName()}',
+  address1='{$oVenue->getAddress1()}',
+  address2='{$oVenue->getAddress2()}',
+  city='{$oVenue->getCity()}',
+  state='{$oVenue->getState()}',
+  postalcode='{$oVenue->getZip()}',
+  country='{$oVenue->getCountry()}',
+  website='{$oVenue->getWebsite()}'
+WHERE id='$nVenueID'
+SQL;
+  
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new RuntimeException("Failed to update venue.");
+    }
   }
   
   public function doesVenueBelongToUser($nVenueID)

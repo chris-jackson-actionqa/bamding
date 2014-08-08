@@ -23,7 +23,7 @@ class ProcessForms
    * @param type $hPostData $_POST variable from submission
    * @todo 
    */
-  public static function addNewVenue($hPostData)
+  public static function doVenue($hPostData)
   {
     // No post data to process. No form submitted.
     if(empty($hPostData))
@@ -31,10 +31,15 @@ class ProcessForms
       return;
     }
     
-    if($hPostData['bd_venue_method'] != DisplayForms::ADD_VENUE)
+    $nBehavior = (int)$hPostData['bd_venue_method'];
+    switch($nBehavior)
     {
-      return;
-    }
+      case DisplayForms::ADD_VENUE:
+      case DisplayForms::EDIT_VENUE:
+        break;
+      default:
+        throw new InvalidArgumentException('Not a valid behavior to perform on a venue.');
+    };
     
     $oVenue = new Venue();
     
@@ -172,19 +177,31 @@ class ProcessForms
     try
     {
       $oVenues = new Venues('my_venues', $sUserLogin);
-      $oVenues->addVenue($oVenue);
+      $sSuccessMessage = '';
+      switch($nBehavior)
+      {
+        case DisplayForms::ADD_VENUE:
+          $oVenues->addVenue($oVenue);
+          $sSuccessMessage = "Venue " . $oVenue->getName() . " added.";
+          break;
+        case DisplayForms::EDIT_VENUE:
+          $nVenueID = (int)$hPostData['bd_venue_id'];
+          $oVenues->updateVenue($oVenue, $nVenueID);
+          $sSuccessMessage = 'Venue ' . $oVenue->getName() . ' updated.';
+          break;
+      }
+      
 
       // Display success message
-      echo '<div class="bdFormSuccess">Venue ' . $oVenue->getName() . ' added.</div>';
+      echo '<div class="bdFormSuccess">' . $sSuccessMessage .'</div>';
       ProcessForms::mailOnVenue($sUserLogin, $oVenue->getName());
     }
     catch(Exception $oException)
     {
-      echo '<div class="bdFormError">Error: Could not add venue.'
+      echo '<div class="bdFormError">Error: Could not add/update venue.'
       . '<br />'
       . $oException->getMessage()
       . '<br /></div>';
-              
     }
   }
   

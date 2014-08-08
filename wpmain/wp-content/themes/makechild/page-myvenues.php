@@ -6,8 +6,8 @@ get_header();
 // don't show venues to non-members
 if (current_user_can("access_s2member_level1"))
   {
-  // Process any new venue submissions
-  ProcessForms::AddNewVenue($_POST);
+  // Process any new venue submissions, edits, or removals
+  ProcessForms::doVenue($_POST);
   ProcessForms::removeVenues($_POST);
   
   // Display the venues

@@ -47,7 +47,11 @@ class DisplayData
               $aRow['name'] . "' value='" . $aRow['id'] . "'>" .
               "</td>";
       // Venue
-      echo "  <td>" . $aRow['name'] . "</td>";
+      echo "  <td><a href='" .
+              Site::getBaseURL() . '/editvenue' .
+              '?venue_id=' . $aRow['id'] .
+              "'>" .
+              $aRow['name'] . "</a></td>";
       // City
       echo "  <td>" . $aRow['city'] . "</td>";
       // State
