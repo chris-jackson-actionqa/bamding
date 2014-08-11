@@ -6,7 +6,6 @@ get_header();
 // don't show venues to non-members
 if (current_user_can("access_s2member_level1"))
   {
-  //TODO: get base url instead of hardcoding
   DisplayForms::addNewVenue(Site::getBaseURL() . '/myvenues/');
   } 
 else 
