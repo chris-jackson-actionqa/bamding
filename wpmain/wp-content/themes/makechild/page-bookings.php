@@ -1,8 +1,18 @@
 <?php
+require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+// don't show venues to non-members
+if (!current_user_can("access_s2member_level1"))
+  {
+  header('Location: ' . Site::getBaseURL() . '/prices/');
+  exit();
+  } 
+
+get_header();  
+
+$oBookings = new Bookings(get_user_field('user_login'));
+$oBookings->getAllBookings();
+
+get_footer();
+
 

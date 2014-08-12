@@ -151,4 +151,10 @@ class DisplayForms
     echo '</form>';
     
   }
+  
+  public static function displayBookings($sUserLogin)
+  {
+    echo '<h1>My Bookings</h1>';
+    
+  }
 }
