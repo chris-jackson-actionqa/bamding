@@ -13,6 +13,8 @@ get_header();
 $oBookings = new Bookings(get_user_field('user_login'));
 $oBookings->getAllBookings();
 
+DisplayForms::displayBookings(get_user_field('user_login'));
+
 get_footer();
 
 

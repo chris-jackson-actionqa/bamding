@@ -154,7 +154,37 @@ class DisplayForms
   
   public static function displayBookings($sUserLogin)
   {
-    echo '<h1>My Bookings</h1>';
+    $oBookings = new Bookings($sUserLogin);
+    $hBookingInfo = $oBookings->getAllBookings();
     
+    echo '<h1>Bookings</h1>';
+    echo '<form id="bookings_form" name="bookings_form">';
+    echo '  <table>';
+    echo '    <tr>';
+    echo '      <th>Venue</th>';
+    echo '      <th>City</th>';
+    echo '      <th>State</th>';
+    echo '      <th>Last Contact</th>';
+    echo '      <th>Next Contact</th>';
+    echo '      <th>Every</th>';
+    echo '      <th>D/W/M</th>';
+    echo '    </tr>';
+    
+    foreach($hBookingInfo as $aRow)
+    {
+      echo '    <tr>';
+      echo '      <td>' . $aRow['name'] . '</td>';
+      echo '      <td>' . $aRow['city'] . '</td>';
+      echo '      <td>' . $aRow['state'] . '</td>';
+      echo '      <td>' . $aRow['last_contacted'] . '</td>';
+      echo '      <td>' . $aRow['next_contact'] . '</td>';
+      echo '      <td>' . $aRow['frequency_num'] . '</td>';
+      echo '      <td>' . $aRow['freq_type'] . '</td>';
+      echo '    </tr>';
+    }
+    
+    echo '  </table>';
+    echo '</form>';
+
   }
 }

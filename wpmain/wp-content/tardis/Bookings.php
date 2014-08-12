@@ -32,8 +32,12 @@ class Bookings
   {
     $sTable = Bookings::BOOKINGS_TABLE;
     $sSQL = <<<SQL
-SELECT * FROM $sTable
-WHERE user_login='{$this->sUserLogin}'
+SELECT $sTable.*, my_venues.name, my_venues.city, my_venues.state, my_venues.country 
+FROM $sTable
+INNER JOIN my_venues
+ON bookings.venue_id=my_venues.id
+WHERE $sTable.user_login='{$this->sUserLogin}' 
+ORDER BY my_venues.country, my_venues.state, my_venues.city, my_venues.name
 SQL;
 
     $mResult = $this->oConn->query($sSQL);
