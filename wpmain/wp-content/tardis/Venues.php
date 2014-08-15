@@ -95,7 +95,26 @@ SQL;
       throw new Exception("Unable to add venue to database: " .
         $this->oConn->error );
     }
-  }
+    
+    // Add venue to bookings
+    $sSQL = <<<SQL
+INSERT INTO bookings
+(
+user_login, venue_id      
+)
+SELECT user_login, id
+FROM my_venues
+WHERE user_login='{$this->sUserID}' 
+SQL;
+
+    $mResult = $this->oConn->query($sSQL);
+
+    if(TRUE !== $mResult )
+    {
+    throw new Exception("Unable to add venue to bookings: " .
+    $this->oConn->error );
+    }
+}
 
   // get venues
   public function getAllMyVenues()
