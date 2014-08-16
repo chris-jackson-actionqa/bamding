@@ -10,9 +10,6 @@ if (!current_user_can("access_s2member_level1"))
 
 get_header();  
 
-$oBookings = new Bookings(get_user_field('user_login'));
-$oBookings->getAllBookings();
-
 DisplayForms::displayBookings(get_user_field('user_login'));
 
 get_footer();

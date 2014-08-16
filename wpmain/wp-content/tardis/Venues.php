@@ -95,25 +95,6 @@ SQL;
       throw new Exception("Unable to add venue to database: " .
         $this->oConn->error );
     }
-    
-    // Add venue to bookings
-    $sSQL = <<<SQL
-INSERT INTO bookings
-(
-user_login, venue_id      
-)
-SELECT user_login, id
-FROM my_venues
-WHERE user_login='{$this->sUserID}' 
-SQL;
-
-    $mResult = $this->oConn->query($sSQL);
-
-    if(TRUE !== $mResult )
-    {
-    throw new Exception("Unable to add venue to bookings: " .
-    $this->oConn->error );
-    }
 }
 
   // get venues
@@ -353,5 +334,31 @@ SQL;
     return TRUE;
   }
   
-  // update venue
+  public function getVenueID(Venue $oVenue)
+  {
+    $sSQL = <<<SQL
+SELECT id FROM my_venues
+WHERE 
+  user_login='{$this->sUserID}' AND 
+  name='{$oVenue->getName()}' AND
+  city='{$oVenue->getCity()}' AND
+  state='{$oVenue->getState()}' AND
+  country='{$oVenue->getCountry()}'
+SQL;
+  
+    $mResult = $this->oConn->query($sSQL);
+    
+    if( FALSE === $mResult)
+    {
+      return -1;
+    }
+    
+    if( 1 != $mResult->num_rows)
+    {
+      return -1;
+    }
+    
+    $aVenue = $mResult->fetch_array();
+    return $aVenue[0];
+  }
 };

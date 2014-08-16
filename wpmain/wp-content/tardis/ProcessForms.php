@@ -181,8 +181,17 @@ class ProcessForms
       switch($nBehavior)
       {
         case DisplayForms::ADD_VENUE:
+        {
           $oVenues->addVenue($oVenue);
+          $nVenueID = $oVenues->getVenueID($oVenue);
+          if(-1 == $nVenueID)
+          {
+            throw new Exception("Can't find the venue's id that was just added.");
+          }
+          $oBookings = new Bookings($sUserLogin );
+          $oBookings->addNewBooking($sUserLogin, $nVenueID);
           $sSuccessMessage = "Venue " . $oVenue->getName() . " added.";
+        }
           break;
         case DisplayForms::EDIT_VENUE:
           $nVenueID = (int)$hPostData['bd_venue_id'];
@@ -223,6 +232,8 @@ class ProcessForms
     try 
     {  
       $oVenues = new Venues('my_venues', get_user_field('user_login'));
+      $oBookings = new Bookings(get_user_field('user_login'));
+      
       foreach($hPostData as $nVenueID=>$sVenue)
       {
         if('remove' == $nVenueID || !is_numeric($nVenueID))
@@ -231,18 +242,16 @@ class ProcessForms
         }
         
         $oVenues->removeVenue($nVenueID);
+        $oBookings->removeBooking($nVenueID);
         ProcessForms::mailOnVenue(get_user_field('user_login'), $sVenue, 'removed');
       }
       $sResultHTML = '<div class="bdFormSuccess">Successfully removed venue(s).</div>';
       
     }
-    catch(InvalidArgumentException $oEx)
+    catch(Exception $oEx)
     {
       $sResultHTML = '<div class="bdFormError">Error: ' . $oEx->getMessage() . '</div>';
-    }
-    catch(RuntimeException $oEx)
-    {
-      $sResultHTML = '<div class="bdFormError">Error: ' . $oEx->getMessage() . '</div>';
+      self::mailOnError(get_user_field('user_login'), 'Error removing venue:' . $nVenueID, $oEx);
     }
     
     echo $sResultHTML;
@@ -253,6 +262,16 @@ class ProcessForms
     $sTo = "seth@bamding.com";
     $sSubject = "Venue $sAction for $sUserID";
     $sMessage = "User: $sUserID, Venue: $sVenue";
+    mail($sTo, $sSubject, $sMessage);
+  }
+  
+  public static function mailOnError($sUserID, $sDescription, $oException)
+  {
+    $sTo = "seth@bamding.com";
+    $sSubject = "Error processing form for $sUserID";
+    $sMessage = "User: $sUserID\r\n" .
+            "Description: $sDescription\r\n" .
+            "Exception:\r\n" . $oException;
     mail($sTo, $sSubject, $sMessage);
   }
 }

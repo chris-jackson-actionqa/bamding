@@ -158,7 +158,21 @@ class DisplayForms
     $hBookingInfo = $oBookings->getAllBookings();
     
     echo '<h1>Bookings</h1>';
-    echo '<form id="bookings_form" name="bookings_form">';
+    self::displayBookingsNotContacted($sUserLogin);
+
+  }
+  
+  public static function displayBookingsNotContacted($sUserLogin)
+  {
+    $oBookings = new Bookings($sUserLogin);
+    $hBookingInfo = $oBookings->getNotContacted();
+    if(is_null($hBookingInfo))
+    {
+      return;
+    }
+    
+    echo '<h2>Not Yet Contacted</h2>';
+    echo '<form id="bookings_not_contacted_form" name="bookings_not_contacted_form">';
     echo '  <table>';
     echo '    <tr>';
     echo '      <th>Venue</th>';
@@ -179,12 +193,42 @@ class DisplayForms
       echo '      <td>' . $aRow['last_contacted'] . '</td>';
       echo '      <td>' . $aRow['next_contact'] . '</td>';
       echo '      <td>' . $aRow['frequency_num'] . '</td>';
-      echo '      <td>' . $aRow['freq_type'] . '</td>';
+      
+      // Display user friendly frequency type
+      $sFriendlyType = self::getFriendlyFrequencyType($aRow['freq_type'], $aRow['frequency_num']);
+      
+      echo '      <td>' . $sFriendlyType . '</td>';
       echo '    </tr>';
     }
     
     echo '  </table>';
     echo '</form>';
-
+  }
+  
+  public static function getFriendlyFrequencyType($sFrequencyType, $sFrequencyNumber)
+  {
+    $sFriendlyType = '';
+    switch($sFrequencyType)
+    {
+      case 'D':
+        $sFriendlyType = 'Day';
+        break;
+      case 'W':
+        $sFriendlyType = 'Week';
+        break;
+      case 'M':
+        $sFriendlyType = 'Month';
+        break;
+      default:
+        $sFriendlyType = '<strong>ERROR</strong>';
+        break;
+    }
+      
+    if( 1 < $sFrequencyNumber)
+    {
+      $sFriendlyType .= 's';
+    }
+    
+    return $sFriendlyType;
   }
 }
