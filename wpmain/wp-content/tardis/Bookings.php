@@ -60,23 +60,51 @@ SQL;
   
   public function getActive()
   {
-    $sWhere = "bookings.pause<>TRUE;
+    $sWhere = "bookings.pause<>TRUE";
     $mResult = $this->getBookingsSQL($sWhere);
     $mResult->fetch_all(MYSQLI_ASSOC);
   }
   
   public function getNotContacted()
   {
-    $sWhere = "bookings.last_contacted IS NULL";
+    $sWhere = "bookings.last_contacted IS NULL AND "
+            . "bookings.pause=TRUE";
+    $mResult = $this->getBookingsSQL($sWhere);
+    return $mResult->fetch_all(MYSQLI_ASSOC);
+  }
+  
+  public function getStarted()
+  {
+    $sWhere = "bookings.last_contacted IS NULL AND "
+            . "bookings.pause=FALSE";
     $mResult = $this->getBookingsSQL($sWhere);
     return $mResult->fetch_all(MYSQLI_ASSOC);
   }
   
   public function getPaused()
   {
-    $sWhere = "bookings.paused='TRUE'";
+    $sWhere = "bookings.pause=TRUE AND "
+            . "bookings.last_contacted <> NULL";
     $mResult = $this->getBookingsSQL($sWhere);
     $mResult->fetch_all(MYSQLI_ASSOC);
+  }
+  
+  public function setPause($nVenueID, $bPause)
+  {
+    $nVenueID = (int)$nVenueID;
+    $bPause = (boolean)$bPause;
+    $sSQL = <<<SQL
+UPDATE bookings
+SET pause=$bPause
+WHERE user_login={$this->sUserLogin} AND venue_id=$nVenueID
+SQL;
+    
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new Exception("Could not pause venue: $sSQL");
+    }
   }
   
   public function updateBooking()
@@ -84,11 +112,11 @@ SQL;
     
   }
   
-  public function addNewBooking($sUserLogin, $nVenueID)
+  public function addNewBooking($nVenueID)
   {
     $sSQL = <<<SQL
-INSERT INTO bookings (user_login, venue_id, frequency_num, freq_type)
-VALUES ('$sUserLogin', '$nVenueID', '2', 'W')
+INSERT INTO bookings (user_login, venue_id, frequency_num, freq_type, paused)
+VALUES ('$sUserLogin', '$nVenueID', '2', 'W', TRUE)
 SQL;
     $mResult = $this->oConn->query($sSQL);
     

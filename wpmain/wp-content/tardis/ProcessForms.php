@@ -189,7 +189,7 @@ class ProcessForms
             throw new Exception("Can't find the venue's id that was just added.");
           }
           $oBookings = new Bookings($sUserLogin );
-          $oBookings->addNewBooking($sUserLogin, $nVenueID);
+          $oBookings->addNewBooking($nVenueID);
           $sSuccessMessage = "Venue " . $oVenue->getName() . " added.";
         }
           break;
@@ -211,6 +211,7 @@ class ProcessForms
       . '<br />'
       . $oException->getMessage()
       . '<br /></div>';
+      self::mailOnError($sUserLogin, "Problem adding/updating venue", $oException);
     }
   }
   
@@ -273,5 +274,12 @@ class ProcessForms
             "Description: $sDescription\r\n" .
             "Exception:\r\n" . $oException;
     mail($sTo, $sSubject, $sMessage);
+  }
+  
+  public static function processBookings($hPostData)
+  {
+    echo '<br />';
+    var_dump($hPostData);
+    echo '<br />';
   }
 }

@@ -154,6 +154,9 @@ class DisplayForms
   
   public static function displayBookings($sUserLogin)
   {
+    echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>';
+    echo '<script src="' . Site::getBaseURL() . '/wp-content/js/bookings.js"></script>';
+    
     $oBookings = new Bookings($sUserLogin);
     $hBookingInfo = $oBookings->getAllBookings();
     
@@ -172,9 +175,9 @@ class DisplayForms
     }
     
     echo '<h2>Not Yet Contacted</h2>';
-    echo '<form id="bookings_not_contacted_form" name="bookings_not_contacted_form">';
     echo '  <table>';
     echo '    <tr>';
+    echo '      <th>Start<br />Booking!</th>';
     echo '      <th>Venue</th>';
     echo '      <th>City</th>';
     echo '      <th>State</th>';
@@ -187,6 +190,7 @@ class DisplayForms
     foreach($hBookingInfo as $aRow)
     {
       echo '    <tr>';
+      echo '      <td><button type="button" onclick="startBookings('. $aRow['venue_id'] .')">Start</button></td>';
       echo '      <td>' . $aRow['name'] . '</td>';
       echo '      <td>' . $aRow['city'] . '</td>';
       echo '      <td>' . $aRow['state'] . '</td>';
@@ -202,6 +206,15 @@ class DisplayForms
     }
     
     echo '  </table>';
+    
+  }
+  
+  public static function startBookingFormField($nVenueID)
+  {
+    echo '<form action="' . Site::getBaseURL() . '/bookings/' . '" method="post">';
+    echo '<input type="hidden" name="venue_id" value="' . $nVenueID . '">';
+    echo '<input type="hidden" name="start" value="TRUE">';
+    echo '<input type="submit" value="Start">';
     echo '</form>';
   }
   

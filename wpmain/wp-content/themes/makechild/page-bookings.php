@@ -10,6 +10,7 @@ if (!current_user_can("access_s2member_level1"))
 
 get_header();  
 
+ProcessForms::processBookings($_POST);
 DisplayForms::displayBookings(get_user_field('user_login'));
 
 get_footer();
