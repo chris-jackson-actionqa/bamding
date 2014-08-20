@@ -278,8 +278,22 @@ class ProcessForms
   
   public static function processBookings($hPostData)
   {
-    echo '<br />';
-    var_dump($hPostData);
-    echo '<br />';
+    if(!key_exists('user_login', $hPostData))
+    {
+      throw new Exception('Cannot process bookings because user is not defined.');
+    }
+    
+    $sUserLogin = $hPostData['user_login'];
+    $oBookings = new Bookings($sUserLogin);
+    
+    switch($hPostData['action'])
+    {
+      case 'startBooking':
+        $oBookings->setPause((int)$hPostData['venue_id'], FALSE);
+        break;
+      case 'setPause':
+        $oBookings->setPause($hPostData['venue_id'], $hPostData['pause']);
+        break;
+    }
   }
 }

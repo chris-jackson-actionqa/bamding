@@ -60,9 +60,10 @@ SQL;
   
   public function getActive()
   {
-    $sWhere = "bookings.pause<>TRUE";
+    $sWhere = "bookings.pause<>TRUE AND "
+            . "(bookings.last_contacted IS NOT NULL AND bookings.last_contacted <> '0000-00-00')";
     $mResult = $this->getBookingsSQL($sWhere);
-    $mResult->fetch_all(MYSQLI_ASSOC);
+    return $mResult->fetch_all(MYSQLI_ASSOC);
   }
   
   public function getNotContacted()
@@ -84,19 +85,37 @@ SQL;
   public function getPaused()
   {
     $sWhere = "bookings.pause=TRUE AND "
-            . "bookings.last_contacted <> NULL";
+            . "(bookings.last_contacted IS NOT NULL AND bookings.last_contacted <> '0000-00-00')";
     $mResult = $this->getBookingsSQL($sWhere);
-    $mResult->fetch_all(MYSQLI_ASSOC);
+    return $mResult->fetch_all(MYSQLI_ASSOC);
   }
   
   public function setPause($nVenueID, $bPause)
   {
     $nVenueID = (int)$nVenueID;
-    $bPause = (boolean)$bPause;
+    
+    // if string 'true' or 'false' passed in, change to boolean
+    if(!is_bool($bPause))
+    {
+      if('true' == $bPause)
+      {
+        $bPause = TRUE;
+      }
+      else if( 'false' == $bPause)
+      {
+        $bPause = FALSE;
+      }
+      else 
+      {
+        throw new InvalidArgumentException("Value should be true or false. bPause = $bPause");
+      }
+    }
+    $sPause = $bPause ? 'TRUE' : 'FALSE';
+    
     $sSQL = <<<SQL
 UPDATE bookings
-SET pause=$bPause
-WHERE user_login={$this->sUserLogin} AND venue_id=$nVenueID
+SET pause=$sPause
+WHERE user_login='{$this->sUserLogin}' AND venue_id=$nVenueID
 SQL;
     
     $mResult = $this->oConn->query($sSQL);
@@ -115,8 +134,8 @@ SQL;
   public function addNewBooking($nVenueID)
   {
     $sSQL = <<<SQL
-INSERT INTO bookings (user_login, venue_id, frequency_num, freq_type, paused)
-VALUES ('$sUserLogin', '$nVenueID', '2', 'W', TRUE)
+INSERT INTO bookings (user_login, venue_id, frequency_num, freq_type, pause)
+VALUES ('{$this->sUserLogin}', '$nVenueID', '2', 'W', TRUE)
 SQL;
     $mResult = $this->oConn->query($sSQL);
     
@@ -137,7 +156,7 @@ SQL;
     
     if(FALSE === $mResult)
     {
-      throw new Exception("Could not delete venue into booking table.");
+      throw new Exception("Could not delete venue from booking table.");
     }
   }
 }

@@ -4,16 +4,110 @@
  * and open the template in the editor.
  */
 
-
-function startBookings(nVenueID)
+function getBaseURL()
+{
+  pathArray = window.location.href.split( '/' );
+  protocol = pathArray[0];
+  host = pathArray[2];
+  url = protocol + '//' + host;
+  if(url == "http://localhost")
+  {
+    url = url + "/wordpress";
+  }
+  return url;
+}
+function startBookings(userLogin, nVenueID)
 {
   $(document).ready(function()
   {
-    $("button").click(function()
+    //$("#not_contacted button").click(function()
     {
-      alert("what the fuck" + nVenueID);
-    })
-  })
+      // Sets venue to start booking
+      $.post(getBaseURL() + "/wp-content/tardis/DoBookings.php", 
+        {
+          action:"startBooking",
+          venue_id: nVenueID,
+          user_login: userLogin
+        }
+      );
+    }
+  });
+  
+  $(document).ready(function()
+  {
+    // update not contacted table
+      $.post(getBaseURL() + "/wp-content/tardis/DoBookings.php", 
+        {
+          action:"getHTMLTableNotContacted",
+          user_login: userLogin
+        },
+        function (data, status)
+        {
+          $('#div_not_contacted').html(data);
+        }
+        );
+  });
+  
+  $(document).ready(function()
+  {
+    // update scheduled table
+      $.post(getBaseURL() + "/wp-content/tardis/DoBookings.php", 
+        {
+          action:"getHTMLTableScheduled",
+          user_login: userLogin
+        },
+        function (data, status)
+        {
+          $('#div_scheduled').html(data);
+        }        
+        );
+  });
+};
+
+function setPaused(userLogin, nVenueID, bPause)
+{
+  $(document).ready(function()
+  {
+    // Sets venue to start booking
+    $.post(getBaseURL() + "/wp-content/tardis/DoBookings.php", 
+      {
+        action:"setPause",
+        pause: bPause,
+        venue_id: nVenueID,
+        user_login: userLogin
+      }
+    );
+  });
+  
+  $(document).ready(function()
+  {
+    // update active table
+    $.post(getBaseURL() + "/wp-content/tardis/DoBookings.php", 
+      {
+        action:"getHTMLTableActive",
+        user_login: userLogin
+      },
+      function (data, status)
+      {
+        $('#div_active').html(data);
+      }
+      );
+  });
+  
+  $(document).ready(function()
+  {
+    // update paused table
+    $.post(getBaseURL() + "/wp-content/tardis/DoBookings.php", 
+      {
+        action:"getHTMLTablePaused",
+        user_login: userLogin
+      },
+      function (data, status)
+      {
+        $('#div_paused').html(data);
+      }        
+      );
+  });
 };
 
 
