@@ -64,21 +64,8 @@ function startBookings(userLogin, nVenueID)
   });
 };
 
-function setPaused(userLogin, nVenueID, bPause)
+function updateActive()
 {
-  $(document).ready(function()
-  {
-    // Sets venue to start booking
-    $.post(getBaseURL() + "/wp-content/tardis/DoBookings.php", 
-      {
-        action:"setPause",
-        pause: bPause,
-        venue_id: nVenueID,
-        user_login: userLogin
-      }
-    );
-  });
-  
   $(document).ready(function()
   {
     // update active table
@@ -93,7 +80,10 @@ function setPaused(userLogin, nVenueID, bPause)
       }
       );
   });
-  
+}
+
+function updatePaused()
+{
   $(document).ready(function()
   {
     // update paused table
@@ -108,6 +98,54 @@ function setPaused(userLogin, nVenueID, bPause)
       }        
       );
   });
+}
+
+function setPaused(userLogin, nVenueID, bPause)
+{
+  
+  $(document).ready(function()
+  {
+    $("#row_" + nVenueID).fadeOut('slow');
+    // Sets venue to start booking
+    $.post(getBaseURL() + "/wp-content/tardis/DoBookings.php", 
+      {
+        action:"setPause",
+        pause: bPause,
+        venue_id: nVenueID,
+        user_login: userLogin
+      },
+      function ()
+      {
+        $.post(getBaseURL() + "/wp-content/tardis/DoBookings.php", 
+        {
+          action:"getHTMLTablePaused",
+          user_login: userLogin
+        },
+        function (data, status)
+        {
+          $('#div_paused').html(data);
+        }        
+        );
+      
+        $.post(getBaseURL() + "/wp-content/tardis/DoBookings.php", 
+        {
+          action:"getHTMLTableActive",
+          user_login: userLogin
+        },
+        function (data, status)
+        {
+          $('#div_active').html(data);
+        }
+        );
+      
+      }
+    );
+  });
+  
+  
+  
+  
 };
+
 
 

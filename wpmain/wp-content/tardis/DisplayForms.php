@@ -299,9 +299,9 @@ class DisplayForms
     
     foreach($hBookingInfo as $aRow)
     {
-      $sTable .= '    <tr>';
+      $sTable .= '    <tr id="row_' . $aRow['venue_id'] . '">';
       $sTable .= '      <td>' . 
-              '<button type="button" onclick="setPaused('. 
+              '<button type="button" id="button_'.  $aRow['venue_id'] .'" onclick="setPaused('. 
               "'$sUserLogin', " .
               $aRow['venue_id'] . ', ' .
               $sOnClickParam
