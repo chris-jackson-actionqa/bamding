@@ -51,11 +51,21 @@ SQL;
     return $mResult;
   }
   
+  private function fetch_all($mResult)
+  {
+    $hAllRows = array();
+    while ($hRow = $mResult->fetch_assoc())
+    {
+      array_push($hAllRows, $hRow);
+    }
+    return $hAllRows;
+  }
+  
   public function getAllBookings()
   {
     $mResult = $this->getBookingsSQL();
     
-    return $mResult->fetch_all(MYSQLI_ASSOC);
+    return $this->fetch_all($mResult);
   }
   
   public function getActive()
@@ -63,23 +73,23 @@ SQL;
     $sWhere = "bookings.pause<>TRUE AND "
             . "(bookings.last_contacted IS NOT NULL AND bookings.last_contacted <> '0000-00-00')";
     $mResult = $this->getBookingsSQL($sWhere);
-    return $mResult->fetch_all(MYSQLI_ASSOC);
+    return $this->fetch_all($mResult);
   }
   
   public function getNotContacted()
   {
-    $sWhere = "bookings.last_contacted IS NULL AND "
+    $sWhere = "(bookings.last_contacted IS NULL OR bookings.last_contacted<>'0000-00-00') AND "
             . "bookings.pause=TRUE";
     $mResult = $this->getBookingsSQL($sWhere);
-    return $mResult->fetch_all(MYSQLI_ASSOC);
+    return $this->fetch_all($mResult);
   }
   
   public function getStarted()
   {
-    $sWhere = "bookings.last_contacted IS NULL AND "
+    $sWhere = "(bookings.last_contacted IS NULL OR bookings.last_contacted<>'0000-00-00') AND "
             . "bookings.pause=FALSE";
     $mResult = $this->getBookingsSQL($sWhere);
-    return $mResult->fetch_all(MYSQLI_ASSOC);
+    return $this->fetch_all($mResult);
   }
   
   public function getPaused()
@@ -87,7 +97,7 @@ SQL;
     $sWhere = "bookings.pause=TRUE AND "
             . "(bookings.last_contacted IS NOT NULL AND bookings.last_contacted <> '0000-00-00')";
     $mResult = $this->getBookingsSQL($sWhere);
-    return $mResult->fetch_all(MYSQLI_ASSOC);
+    return $this->fetch_all($mResult);
   }
   
   public function setPause($nVenueID, $bPause)

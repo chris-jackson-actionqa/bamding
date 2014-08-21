@@ -7,7 +7,12 @@
  */
 if(!defined('ABSPATH'))
 {
-  $sAbsPath = $_SERVER['CONTEXT_DOCUMENT_ROOT'];
+  $sAbsPath = $_SERVER['CONTEXT_DOCUMENT_ROOT']; //for local development
+  if(empty($sAbsPath))
+  {
+    $sAbsPath = $_SERVER['DOCUMENT_ROOT']; // for live site
+  }
+  
   if(preg_match('/\/$/', $sAbsPath))
   {
     $sAbsPath = preg_replace('/\/$/', '', $sAbsPath);

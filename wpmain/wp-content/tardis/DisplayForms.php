@@ -200,7 +200,7 @@ class DisplayForms
     
     foreach($hBookingInfo as $aRow)
     {
-      $sTable .= '    <tr>';
+      $sTable .= '    <tr id="row_'. $aRow['venue_id'] .'">';
       $sTable .= '      <td>'
               . '<button type="button" onclick="startBookings('. 
               "'$sUserLogin', " .
