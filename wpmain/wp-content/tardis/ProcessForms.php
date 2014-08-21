@@ -192,7 +192,7 @@ class ProcessForms
           $oBookings->addNewBooking($nVenueID);
           $sSuccessMessage = "Venue " . $oVenue->getName() . " added.";
         }
-          break;
+        break;
         case DisplayForms::EDIT_VENUE:
           $nVenueID = (int)$hPostData['bd_venue_id'];
           $oVenues->updateVenue($oVenue, $nVenueID);

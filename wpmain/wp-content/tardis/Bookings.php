@@ -151,7 +151,7 @@ SQL;
     
     if(FALSE === $mResult)
     {
-      throw new Exception("Could not insert venue into booking table.");
+      throw new Exception("Could not insert venue into booking table." . $this->oConn->error);
     }
   }
   
