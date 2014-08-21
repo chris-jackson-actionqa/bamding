@@ -295,5 +295,8 @@ class ProcessForms
         $oBookings->setPause($hPostData['venue_id'], $hPostData['pause']);
         break;
     }
+    
+    $oVenues = new Venues('my_venues', $sUserLogin);
+    self::mailOnVenue($sUserLogin, $oVenues->getVenue($hPostData['venue_id']), $hPostData['action']);
   }
 }

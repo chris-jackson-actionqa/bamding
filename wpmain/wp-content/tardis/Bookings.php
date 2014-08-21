@@ -78,7 +78,7 @@ SQL;
   
   public function getNotContacted()
   {
-    $sWhere = "(bookings.last_contacted IS NULL OR bookings.last_contacted<>'0000-00-00') AND "
+    $sWhere = "(bookings.last_contacted IS NULL OR bookings.last_contacted='0000-00-00') AND "
             . "bookings.pause=TRUE";
     $mResult = $this->getBookingsSQL($sWhere);
     return $this->fetch_all($mResult);
@@ -86,7 +86,7 @@ SQL;
   
   public function getStarted()
   {
-    $sWhere = "(bookings.last_contacted IS NULL OR bookings.last_contacted<>'0000-00-00') AND "
+    $sWhere = "(bookings.last_contacted IS NULL OR bookings.last_contacted='0000-00-00') AND "
             . "bookings.pause=FALSE";
     $mResult = $this->getBookingsSQL($sWhere);
     return $this->fetch_all($mResult);

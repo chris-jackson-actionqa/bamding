@@ -166,12 +166,12 @@ class DisplayForms
     self::displayBookingsScheduled($sUserLogin);
     echo '</div>';
     
-    echo '<div id="div_active">';
-    self::displayBookingsActivePaused($sUserLogin, TRUE);
-    echo '</div>';
-    
     echo '<div id="div_paused">';
     self::displayBookingsActivePaused($sUserLogin, FALSE);
+    echo '</div>';
+    
+    echo '<div id="div_active">';
+    self::displayBookingsActivePaused($sUserLogin, TRUE);
     echo '</div>';
   }
   
