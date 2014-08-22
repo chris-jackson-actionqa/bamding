@@ -126,7 +126,7 @@ SQL;
   public function getVenue($nVenueID)
   {
     $nVenueID = (int)$nVenueID;
-    $sUserID = get_user_field('user_login');
+    $sUserID = $this->sUserID;
     $sSQL = "SELECT * FROM my_venues WHERE user_login='$sUserID' AND id='$nVenueID'";
     $mResult = $this->oConn->query($sSQL);
     
