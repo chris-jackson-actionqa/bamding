@@ -301,6 +301,10 @@ class ProcessForms
             $oVenue->getCity() . ", " .
             $oVenue->getState() . ", " .
             $oVenue->getCountry();
+    if(array_key_exists('pause', $hPostData))
+    {
+      $sVenueInfo .= ", PAUSE='" . $hPostData['pause'] . "' ";
+    }
     self::mailOnVenue($sUserLogin, $sVenueInfo , $hPostData['action']);
   }
 }
