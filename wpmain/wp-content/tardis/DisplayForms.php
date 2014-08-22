@@ -151,4 +151,206 @@ class DisplayForms
     echo '</form>';
     
   }
+  
+  public static function displayBookings($sUserLogin)
+  {
+    echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>';
+    echo '<script src="' . Site::getBaseURL() . '/wp-content/js/bookings.js"></script>';
+    
+    echo '<h1>Bookings</h1>';
+    echo '<div id="div_not_contacted">';
+    self::displayBookingsNotContacted($sUserLogin);
+    echo '</div>';
+    
+    echo '<div id="div_scheduled">';
+    self::displayBookingsScheduled($sUserLogin);
+    echo '</div>';
+    
+    echo '<div id="div_paused">';
+    self::displayBookingsActivePaused($sUserLogin, FALSE);
+    echo '</div>';
+    
+    echo '<div id="div_active">';
+    self::displayBookingsActivePaused($sUserLogin, TRUE);
+    echo '</div>';
+  }
+  
+  public static function displayBookingsNotContacted($sUserLogin)
+  {
+    $oBookings = new Bookings($sUserLogin);
+    $hBookingInfo = $oBookings->getNotContacted();
+    if(is_null($hBookingInfo) || 0 == count($hBookingInfo))
+    {
+      return;
+    }
+    
+    $sTable = "";
+    $sTable .= '<h2>Not Yet Contacted</h2>';
+    $sTable .= '  <table id="not_contacted">';
+    $sTable .= '    <tr>';
+    $sTable .= '      <th>Start<br />Booking!</th>';
+    $sTable .= '      <th>Venue</th>';
+    $sTable .= '      <th>City</th>';
+    $sTable .= '      <th>State</th>';
+    $sTable .= '      <th>Last Contact</th>';
+    $sTable .= '      <th>Next Contact</th>';
+    $sTable .= '      <th>Every</th>';
+    $sTable .= '      <th>D/W/M</th>';
+    $sTable .= '    </tr>';
+    
+    foreach($hBookingInfo as $aRow)
+    {
+      $sTable .= '    <tr id="row_'. $aRow['venue_id'] .'">';
+      $sTable .= '      <td>'
+              . '<button type="button" onclick="startBookings('. 
+              "'$sUserLogin', " .
+              $aRow['venue_id'] .')">Start' . 
+              '</button>' . 
+              '</td>';
+      $sTable .= '      <td>' . $aRow['name'] . '</td>';
+      $sTable .= '      <td>' . $aRow['city'] . '</td>';
+      $sTable .= '      <td>' . $aRow['state'] . '</td>';
+      $sTable .= '      <td>' . $aRow['last_contacted'] . '</td>';
+      $sTable .= '      <td>' . $aRow['next_contact'] . '</td>';
+      $sTable .= '      <td>' . $aRow['frequency_num'] . '</td>';
+      
+      // Display user friendly frequency type
+      $sFriendlyType = self::getFriendlyFrequencyType($aRow['freq_type'], $aRow['frequency_num']);
+      
+      $sTable .= '      <td>' . $sFriendlyType . '</td>';
+      $sTable .= '    </tr>';
+    }
+    
+    $sTable .= '  </table>';
+    echo $sTable;
+  }
+  
+  public static function displayBookingsScheduled($sUserLogin)
+  {
+    $oBookings = new Bookings($sUserLogin);
+    $hBookingInfo = $oBookings->getStarted();
+    if(is_null($hBookingInfo) || 0 == count($hBookingInfo))
+    {
+      return;
+    }
+    
+    $sTable = "";
+    $sTable .= '<h2>Scheduled to be contacted</h2>';
+    $sTable .= '  <table id="scheduled">';
+    $sTable .= '    <tr>';
+    $sTable .= '      <th>Venue</th>';
+    $sTable .= '      <th>City</th>';
+    $sTable .= '      <th>State</th>';
+    $sTable .= '      <th>Last Contact</th>';
+    $sTable .= '      <th>Next Contact</th>';
+    $sTable .= '      <th>Every</th>';
+    $sTable .= '      <th>D/W/M</th>';
+    $sTable .= '    </tr>';
+    
+    foreach($hBookingInfo as $aRow)
+    {
+      $sTable .= '    <tr>';
+      $sTable .= '      <td>' . $aRow['name'] . '</td>';
+      $sTable .= '      <td>' . $aRow['city'] . '</td>';
+      $sTable .= '      <td>' . $aRow['state'] . '</td>';
+      $sTable .= '      <td>' . $aRow['last_contacted'] . '</td>';
+      $sTable .= '      <td>' . $aRow['next_contact'] . '</td>';
+      $sTable .= '      <td>' . $aRow['frequency_num'] . '</td>';
+      
+      // Display user friendly frequency type
+      $sFriendlyType = self::getFriendlyFrequencyType($aRow['freq_type'], $aRow['frequency_num']);
+      
+      $sTable .= '      <td>' . $sFriendlyType . '</td>';
+      $sTable .= '    </tr>';
+    }
+    
+    $sTable .= '  </table>';
+    echo $sTable;
+  }
+  
+  public static function displayBookingsActivePaused($sUserLogin, $bActive)
+  {
+    $bActive = (bool)$bActive;
+    
+    $sButtonText = $bActive ? 'Pause' : 'Resume';
+    $sH2 = $bActive ? 'Active Venues' : 'Paused Venues';
+    $sOnClickParam = ($bActive) ? 'true' : 'false';
+    
+    $oBookings = new Bookings($sUserLogin);
+    $hBookingInfo = $bActive ? $oBookings->getActive() : $oBookings->getPaused();
+    if(is_null($hBookingInfo) || 0 == count($hBookingInfo))
+    {
+      return;
+    }
+    
+    $sTable = "";
+    $sTable .= "<h2>$sH2</h2>";
+    $sTable .= '  <table>';
+    $sTable .= '    <tr>';
+    $sTable .= "      <th>$sButtonText<br/>Booking</th>";
+    $sTable .= '      <th>Venue</th>';
+    $sTable .= '      <th>City</th>';
+    $sTable .= '      <th>State</th>';
+    $sTable .= '      <th>Last Contact</th>';
+    $sTable .= '      <th>Next Contact</th>';
+    $sTable .= '      <th>Every</th>';
+    $sTable .= '      <th>D/W/M</th>';
+    $sTable .= '    </tr>';
+    
+    foreach($hBookingInfo as $aRow)
+    {
+      $sTable .= '    <tr id="row_' . $aRow['venue_id'] . '">';
+      $sTable .= '      <td>' . 
+              '<button type="button" id="button_'.  $aRow['venue_id'] .'" onclick="setPaused('. 
+              "'$sUserLogin', " .
+              $aRow['venue_id'] . ', ' .
+              $sOnClickParam
+              . ')">' . $sButtonText .
+              '</button>' . 
+              '</td>';
+      $sTable .= '      <td>' . $aRow['name'] . '</td>';
+      $sTable .= '      <td>' . $aRow['city'] . '</td>';
+      $sTable .= '      <td>' . $aRow['state'] . '</td>';
+      $sTable .= '      <td>' . $aRow['last_contacted'] . '</td>';
+      $sTable .= '      <td>' . $aRow['next_contact'] . '</td>';
+      $sTable .= '      <td>' . $aRow['frequency_num'] . '</td>';
+      
+      // Display user friendly frequency type
+      $sFriendlyType = self::getFriendlyFrequencyType($aRow['freq_type'], $aRow['frequency_num']);
+      
+      $sTable .= '      <td>' . $sFriendlyType . '</td>';
+      $sTable .= '    </tr>';
+    }
+    
+    $sTable .= '  </table>';
+    echo $sTable;
+    
+  }
+  
+  public static function getFriendlyFrequencyType($sFrequencyType, $sFrequencyNumber)
+  {
+    $sFriendlyType = '';
+    switch($sFrequencyType)
+    {
+      case 'D':
+        $sFriendlyType = 'Day';
+        break;
+      case 'W':
+        $sFriendlyType = 'Week';
+        break;
+      case 'M':
+        $sFriendlyType = 'Month';
+        break;
+      default:
+        $sFriendlyType = '<strong>ERROR</strong>';
+        break;
+    }
+      
+    if( 1 < $sFrequencyNumber)
+    {
+      $sFriendlyType .= 's';
+    }
+    
+    return $sFriendlyType;
+  }
 }
