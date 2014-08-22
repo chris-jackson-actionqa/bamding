@@ -124,7 +124,7 @@ SQL;
     
     $sSQL = <<<SQL
 UPDATE bookings
-SET pause=$sPause
+SET pause=$sPause, timestamp=NOW()
 WHERE user_login='{$this->sUserLogin}' AND venue_id=$nVenueID
 SQL;
     
@@ -136,16 +136,11 @@ SQL;
     }
   }
   
-  public function updateBooking()
-  {
-    
-  }
-  
   public function addNewBooking($nVenueID)
   {
     $sSQL = <<<SQL
-INSERT INTO bookings (user_login, venue_id, frequency_num, freq_type, pause)
-VALUES ('{$this->sUserLogin}', '$nVenueID', '2', 'W', TRUE)
+INSERT INTO bookings (user_login, venue_id, frequency_num, freq_type, pause, timestamp)
+VALUES ('{$this->sUserLogin}', '$nVenueID', '2', 'W', TRUE, NOW())
 SQL;
     $mResult = $this->oConn->query($sSQL);
     
