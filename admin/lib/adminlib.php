@@ -6,7 +6,7 @@ if(preg_match('/xampp/i', $_SERVER['DOCUMENT_ROOT']))
 }
  else 
 {
-  define('ABSPATH', $_SERVER['DOCUMENT_ROOT']);
+  define('ABSPATH', $_SERVER['DOCUMENT_ROOT'] . '/..');
 }
 
 require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
