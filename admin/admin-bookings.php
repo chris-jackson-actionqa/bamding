@@ -10,6 +10,6 @@ require_once('./lib/adminlib.php');
 
 AdminDisplay::getHeader();
 AdminDisplay::getMenu();
-AdminDisplay::chooseUserForm('admin-bookings.php', 'bookings', $_POST);
+AdminDisplay::bookingsForm('admin-bookings.php', 'bookings', $_POST);
 AdminDisplay::displayBookingsTable($_POST);
 AdminDisplay::getFooter();

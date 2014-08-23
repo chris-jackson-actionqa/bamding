@@ -81,5 +81,28 @@ SQL;
     
     return $hBookings;
   }
+  
+  public function filterBookings($hBookings, $hPostData)
+  {
+    $sNextContactIs = "";
+    if(array_key_exists('next_contact_is', $hPostData))
+    {
+      $sNextContactIs = trim($hPostData['next_contact_is']);
+    }
+    
+    $hFilteredBookings = array();
+    foreach($hBookings as $hRow)
+    {
+      if(!empty($sNextContactIs))
+      {
+        if($sNextContactIs == $hRow['next_contact'])
+        {
+          array_push($hFilteredBookings, $hRow);
+        }
+      }
+    }
+    
+    return $hFilteredBookings;
+  }
 
 }

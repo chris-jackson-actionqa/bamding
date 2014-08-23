@@ -45,7 +45,7 @@ HTM;
     echo $sHTML;
   }
   
-  public static function chooseUserForm($sAction, $sTable, $hPostData)
+  public static function bookingsForm($sAction, $sTable, $hPostData)
   {
     $aUsers = array();
     if($sTable = 'bookings')
@@ -62,6 +62,9 @@ HTM;
     }
     
     echo '<form action="' . $sAction . '" method="POST">';
+    
+    //---------------Choose User
+    echo '<label>Users</label>';
     echo '<select name="users">';
     foreach($aUsers as $sUser)
     {
@@ -74,6 +77,17 @@ HTM;
     }
     
     echo '</select>';
+    echo '<br />';
+    
+    //--------------Next Contact
+    $sDateValue = "";
+    if(array_key_exists('next_contact_min', $hPostData))
+    {
+      $sDateValue = 'value="' . $hPostData['next_contact_min'] . '"';
+    }
+    echo '<label>Next Contact Min: </label>';
+    echo '<input type="text" name="next_contact_min"'. $sDateValue . '>';
+    echo '<br />';
     echo '<input type="submit">';
     echo '</form>';
   }
@@ -85,7 +99,10 @@ HTM;
     {
       $oAdminBookings = new AdminBookings();
       $hBookings = $oAdminBookings->getBookings($hPostData['users']);
+      $hBookings = $oAdminBookings->filterBookings($hBookings, $hPostData);
     }
+    
+    
     
     echo '<table>';
     echo '<tr>';
