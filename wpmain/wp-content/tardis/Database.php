@@ -29,4 +29,14 @@ class Database
     $this->oConn = $oConnection;
     return $oConnection;
   }
+  
+  public static function fetch_all($mResult)
+  {
+    $hAllRows = array();
+    while ($hRow = $mResult->fetch_assoc())
+    {
+      array_push($hAllRows, $hRow);
+    }
+    return $hAllRows;
+  }
 };
