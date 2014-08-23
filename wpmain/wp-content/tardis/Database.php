@@ -8,7 +8,12 @@ class Database
   public function connect()
   {
     $sSettingsFile = $_SERVER['DOCUMENT_ROOT'] . '/../config.ini';
+    if('/home2/sethalic/public_html/admin' == $_SERVER['DOCUMENT_ROOT'])
+    {
+      $sSettingsFile = $_SERVER['DOCUMENT_ROOT'] . '/../../config.ini';
+    }
     $hDB = parse_ini_file($sSettingsFile);
+    
     if(FALSE === $hDB)
     {
       throw new Exception('Could not get database settings.');
@@ -28,5 +33,15 @@ class Database
     
     $this->oConn = $oConnection;
     return $oConnection;
+  }
+  
+  public static function fetch_all($mResult)
+  {
+    $hAllRows = array();
+    while ($hRow = $mResult->fetch_assoc())
+    {
+      array_push($hAllRows, $hRow);
+    }
+    return $hAllRows;
   }
 };
