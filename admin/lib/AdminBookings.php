@@ -84,16 +84,16 @@ SQL;
   
   public function filterBookings($hBookings, $hPostData)
   {
-    $sNextContactIs = "";
-    if(array_key_exists('next_contact_is', $hPostData))
+    $sNextContactMin = "";
+    if(array_key_exists('next_contact_min', $hPostData))
     {
-      $sNextContactIs = trim($hPostData['next_contact_is']);
+      $sNextContactMin = trim($hPostData['next_contact_min']);
     }
     
     $hFilteredBookings = array();
     foreach($hBookings as $hRow)
     {
-      if(!empty($sNextContactIs))
+      if(!empty($sNextContactMin))
       {
         if($sNextContactIs == $hRow['next_contact'])
         {

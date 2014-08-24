@@ -99,7 +99,7 @@ HTM;
     {
       $oAdminBookings = new AdminBookings();
       $hBookings = $oAdminBookings->getBookings($hPostData['users']);
-      $hBookings = $oAdminBookings->filterBookings($hBookings, $hPostData);
+      //$hBookings = $oAdminBookings->filterBookings($hBookings, $hPostData);
     }
     
     
