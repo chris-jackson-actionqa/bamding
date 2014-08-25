@@ -17,10 +17,10 @@ class AdminDisplay
   {
     $sHTML = <<<HTM
 <!DOCTYPE html>
+<html>
 <head>
   <link rel="stylesheet" type="text/css" href="admin-style.css">
 </head>
-<html>
 <body>
 HTM;
     echo $sHTML;
@@ -43,6 +43,44 @@ HTM;
 </div>
 HTM;
     echo $sHTML;
+  }
+  
+  public static function clearBoth()
+  {
+    echo '<div id="clear"></div>';
+  }
+  
+  public static function getReminders()
+  {
+    $oReminders = new AdminReminders();
+    $hReminders = $oReminders->getTodaysReminders();
+    echo '<div id="reminders">';
+    echo '<h2>Reminders</h2>';
+    foreach($hReminders as $hRow)
+    {
+      echo $hRow['user_login'] . 
+           ', Next Contact: ' . 
+           $hRow['next_contact'] . 
+           '<a href="admin-user-reminder.php?user_login=' . 
+           $hRow['user_login'] .
+           '">Go!</a>' .
+            '<br />';
+    }
+    echo '</div>';
+  }
+  
+  public static function getTodaysBookings()
+  {
+    $oAdminBookings = new AdminBookings();
+    $hTodayBookings = $oAdminBookings->getTodaysBookings();
+    
+    echo '<div id="today_bookings">';
+    echo '<h2>Today Bookings</h2>';
+    foreach($hTodayBookings as $hRow)
+    {
+      echo $hRow['user_login'] . ', Next Contact: ' . $hRow['next_contact'] . '<br />';
+    }
+    echo '</div>';
   }
   
   public static function bookingsForm($sAction, $sTable, $hPostData)
@@ -139,5 +177,69 @@ HTM;
     }
     
     echo '</table>';
+  }
+  
+  public static function getUserReminderData($hGet, $hPost)
+  {
+    $sUser = '';
+    if(array_key_exists('user_login', $hGet))
+    {
+      $sUser = $hGet['user_login'];
+    }
+    
+    if(empty($sUser))
+    {
+      throw new InvalidArgumentException('Could not get user info');
+    }
+    
+    $oAdminReminders = new AdminReminders();
+    $hReminderVenues = $oAdminReminders->getUserReminderVenues($sUser);
+    $hTableHeaders = array_keys($hReminderVenues[0]);
+    
+    echo '<div id="user_reminder">';
+    echo "<h2>$sUser's Reminder</h2>";
+    
+    echo '<h3>Subject:</h3>';
+    echo "Reminder: Venues will be contacted on<br />";
+    echo '<h3>Body:</h3>';
+    echo 'The following venues will be contacted:</br>';
+    echo '<table>';
+    
+    // table header row
+    echo '<tr>';
+    foreach($hTableHeaders as $sHeader)
+    {
+      echo "<th>$sHeader</th>";
+    }
+    echo '</tr>';
+    
+    // table rows
+    foreach($hReminderVenues as $hRow)
+    {
+      echo '<tr>';
+      foreach($hTableHeaders as $sKey)
+      {
+        echo '<td>'. $hRow[$sKey] . '</td>';
+      }
+      echo '</tr>';
+    }
+    echo '</table>';
+    
+    // dates and time frames
+    echo '<br />';
+    echo 'Dates/Time-Frames:<br />';
+    echo '<br />';
+    echo "If you'd like to submit more venues:<br/>";
+    echo '<a href="http://BamDing.com/myvenues/">My Venues</a><br />';
+    echo '<br />';
+    echo "If you'd like to view, pause, or resume your bookings:<br />";
+    echo '<a href="http://BamDing.com/bookings">Bookings</a><br />';
+    echo '<br />';
+    echo 'If you have any questions, feel free to reply here.<br />';
+    echo '<br />';
+    echo 'Thanks,</br />';
+
+    echo '<div>';
+    
   }
 }
