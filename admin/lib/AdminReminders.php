@@ -26,6 +26,7 @@ class AdminReminders
 SELECT DISTINCT user_login, next_contact
 FROM bookings
 WHERE next_contact<=CURDATE()+3 AND
+      bookings.next_contact<>'0000-00-00' AND
       reminder_sent<>next_contact-3 AND
       pause=0
 SQL;
@@ -60,7 +61,10 @@ FROM `bookings`
 INNER JOIN my_venues ON my_venues.id = bookings.venue_id
 WHERE 
   bookings.pause =0 AND
-  bookings.user_login = '$sUser'
+  bookings.user_login = '$sUser' AND
+  bookings.next_contact<>'0000-00-00' AND
+  bookings.next_contact<=CURDATE()+3 AND
+  bookings.reminder_sent<>bookings.next_contact-3
 ORDER BY my_venues.state, my_venues.city;
 SQL;
     
