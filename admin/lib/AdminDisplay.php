@@ -55,7 +55,7 @@ HTM;
     $oReminders = new AdminReminders();
     $hReminders = $oReminders->getTodaysReminders();
     echo '<div id="reminders">';
-    echo '<h2>Reminders</h2>';
+    echo '<h2>Today Reminders</h2>';
     foreach($hReminders as $hRow)
     {
       echo $hRow['user_login'] . 
@@ -189,27 +189,33 @@ HTM;
     
     if(empty($sUser))
     {
-      throw new InvalidArgumentException('Could not get user info');
+      return;
     }
     
     $oAdminReminders = new AdminReminders();
     $hReminderVenues = $oAdminReminders->getUserReminderVenues($sUser);
     $hTableHeaders = array_keys($hReminderVenues[0]);
     
+    // Need inline styles for copy/paste to Gmail
+    $sTable = '<table style="border: 1px solid black;border-collapse: collapse;">';
+    $sTD = '<td style="border: 1px solid black;">';
+    $sTH = '<th style="border: 1px solid black;">';
+    
     echo '<div id="user_reminder">';
     echo "<h2>$sUser's Reminder</h2>";
     
     echo '<h3>Subject:</h3>';
-    echo "Reminder: Venues will be contacted on<br />";
+    echo "Reminder: Venues will be contacted on ". $hReminderVenues[0]['Next Contact']."<br />";
     echo '<h3>Body:</h3>';
     echo 'The following venues will be contacted:</br>';
-    echo '<table>';
+    //echo '<style>table {border-collapse: collapse;}table, td, th {border: 1px solid black;}</style>';
+    echo $sTable;
     
     // table header row
     echo '<tr>';
     foreach($hTableHeaders as $sHeader)
     {
-      echo "<th>$sHeader</th>";
+      echo "$sTH$sHeader</th>";
     }
     echo '</tr>';
     
@@ -219,7 +225,7 @@ HTM;
       echo '<tr>';
       foreach($hTableHeaders as $sKey)
       {
-        echo '<td>'. $hRow[$sKey] . '</td>';
+        echo $sTD . $hRow[$sKey] . '</td>';
       }
       echo '</tr>';
     }

@@ -110,7 +110,7 @@ SQL;
     $sSQL = <<<SQL
 SELECT DISTINCT user_login, next_contact
 FROM bookings
-WHERE next_contact<=CURDATE()+3 AND
+WHERE next_contact<=CURDATE() AND
       pause=0
 SQL;
     
