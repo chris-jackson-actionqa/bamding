@@ -27,7 +27,7 @@ SELECT DISTINCT user_login, next_contact
 FROM bookings
 WHERE next_contact<=CURDATE()+3 AND
       bookings.next_contact<>'0000-00-00' AND
-      reminder_sent<>next_contact-3 AND
+      reminder_sent < next_contact-3 AND
       pause=0
 SQL;
     
