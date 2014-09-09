@@ -81,5 +81,49 @@ SQL;
     
     return $hBookings;
   }
+  
+  public function filterBookings($hBookings, $hPostData)
+  {
+    $sNextContactMin = "";
+    if(array_key_exists('next_contact_min', $hPostData))
+    {
+      $sNextContactMin = trim($hPostData['next_contact_min']);
+    }
+    
+    $hFilteredBookings = array();
+    foreach($hBookings as $hRow)
+    {
+      if(!empty($sNextContactMin))
+      {
+        if($sNextContactIs == $hRow['next_contact'])
+        {
+          array_push($hFilteredBookings, $hRow);
+        }
+      }
+    }
+    
+    return $hFilteredBookings;
+  }
+  
+  public function getTodaysBookings()
+  {
+    $sSQL = <<<SQL
+SELECT DISTINCT user_login, next_contact
+FROM bookings
+WHERE next_contact<=CURDATE() AND
+      pause=0
+SQL;
+    
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new InvalidArgumentException("Could not get today's bookings from the database.");
+      error_log($sSQL);
+      error_log($this->oConn->error);
+    }
+    
+    return Database::fetch_all($mResult);
+  }
 
 }

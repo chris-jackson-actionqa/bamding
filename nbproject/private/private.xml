@@ -3,17 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/tardis/Venues.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/tardis/Site.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/themes/makechild/page-bookings.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/tardis/Bookings.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/tardis/ProcessForms.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/tardis/DisplayForms.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/themes/makechild/page-addvenue.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/tardis/bamding_lib.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/themes/makechild/page-editvenue.php</file>
+            <file>file:/C:/xampp/htdocs/bamding/admin/js/admin.js</file>
+            <file>file:/C:/xampp/htdocs/bamding/admin/lib/AdminDisplay.php</file>
+            <file>file:/C:/xampp/htdocs/bamding/admin/lib/adminlib.php</file>
+            <file>file:/C:/xampp/htdocs/bamding/admin/admin-user-reminder.php</file>
+            <file>file:/C:/xampp/htdocs/bamding/admin/lib/AdminReminders.php</file>
             <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/tardis/Database.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/themes/makechild/page-myvenues.php</file>
         </group>
     </open-files>
 </project-private>
