@@ -252,8 +252,19 @@ HTM;
     echo '</table>';
     
     // dates and time frames
+    $oAdminDates = new AdminDates();
+    $hDates = $oAdminDates->getDatesTimeframes($sUser);
     echo '<br />';
     echo 'Dates/Time-Frames:<br />';
+    foreach($hDates as $hRow)
+    {
+      echo $hRow['country'] .
+           ',' . $hRow['state'] .
+           ',' . $hRow['city'] .
+           ': ' . $hRow['month_from'] .
+           ' through ' . $hRow['month_to'] .
+           '<br />';
+    }
     echo '<br />';
     echo "If you'd like to submit more venues:<br/>";
     echo '<a href="http://BamDing.com/myvenues/">My Venues</a><br />';
