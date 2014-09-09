@@ -1,7 +1,7 @@
 <?php
 require_once('./lib/adminlib.php');
 
-AdminDisplay::getHeader();
+AdminDisplay::getHeader("Reminders", "initReminderDatePickers()");
 AdminDisplay::getMenu();
 AdminDisplay::getReminders();
 AdminDisplay::clearBoth();

@@ -13,15 +13,20 @@
  */
 class AdminDisplay 
 {
-  public static function getHeader()
+  public static function getHeader($sTitle = '', $sOnLoadFunc = '')
   {
     $sHTML = <<<HTM
 <!DOCTYPE html>
 <html>
 <head>
+  <title>$sTitle</title>
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
   <link rel="stylesheet" type="text/css" href="admin-style.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+  <script src="js/admin.js"></script>
 </head>
-<body>
+<body onload="$sOnLoadFunc">
 HTM;
     echo $sHTML;
   }
@@ -40,6 +45,8 @@ HTM;
     $sHTML = <<<HTM
 <div id="admin-menu">
   <a href="admin-bookings.php">Bookings</a>
+  &nbsp; &nbsp;
+  <a href="admin-user-reminder.php">Reminders</a>
 </div>
 HTM;
     echo $sHTML;
@@ -186,6 +193,10 @@ HTM;
     {
       $sUser = $hGet['user_login'];
     }
+    else if (array_key_exists('user_login', $hPost))
+    {
+      $sUser = $hPost['user_login'];
+    }
     
     if(empty($sUser))
     {
@@ -193,8 +204,27 @@ HTM;
     }
     
     $oAdminReminders = new AdminReminders();
+    
+    //update reminder sents
+    if(array_key_exists('ACTION', $hPost))
+    {
+      if($hPost['ACTION'] == 'UPDATE_REMINDER')
+      {
+        $reminderSent = AdminReminders::convertDateToSQL($hPost['reminder_sent']);
+        $nextContact = AdminReminders::convertDateToSQL($hPost['next_contact']);
+        //echo $reminderSent . '   ' . $nextContact . '<br/>';
+        $oAdminReminders->updateReminders($sUser, $reminderSent, $nextContact);
+      }
+    }
+    
     $hReminderVenues = $oAdminReminders->getUserReminderVenues($sUser);
+    if(empty($hReminderVenues))
+    {
+      return;
+    }
+    
     $hTableHeaders = array_keys($hReminderVenues[0]);
+    
     
     // Need inline styles for copy/paste to Gmail
     $sTable = '<table style="border: 1px solid black;border-collapse: collapse;">';
@@ -203,10 +233,25 @@ HTM;
     
     echo '<div id="user_reminder">';
     echo "<h2>$sUser's Reminder</h2>";
+    // update reminder
+    echo '<h3>Update reminder sent</h3>';
+    echo '<form method="post" action="admin-user-reminder.php">';
+    echo '<input type="hidden" name="ACTION" value="UPDATE_REMINDER">';
+    echo '<input type="hidden" name="user_login" value="' . $sUser . '">';
+    echo '<label>Update Reminder Sent</label>';
+    echo '<input type="text" name="reminder_sent" id="reminderSent">';
+    echo '<br />';
+    echo '<label>for Next Contact=</label>';
+    echo '<input type="text" name="next_contact" id="nextContact">';
+    echo '<br />';
+    echo '<input type="submit">';
+    echo '</form>';
     
-    echo '<h3>Subject:</h3>';
+    
+    echo '<h3>Reminder email</h3>';
+    echo '<h4>Subject:</h4>';
     echo "Reminder: Venues will be contacted on ". $hReminderVenues[0]['Next Contact']."<br />";
-    echo '<h3>Body:</h3>';
+    echo '<h4>Body:</h4>';
     echo 'The following venues will be contacted:</br>';
     //echo '<style>table {border-collapse: collapse;}table, td, th {border: 1px solid black;}</style>';
     echo $sTable;

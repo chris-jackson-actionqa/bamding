@@ -79,4 +79,48 @@ SQL;
     
     return Database::fetch_all($mResult);
   }
+  
+  function updateReminders($sUser, $reminderSent, $nextContact)
+  {
+    if(empty($sUser))
+    {
+      throw new InvalidArgumentException('User is empty');
+    }
+    
+    if(empty($reminderSent))
+    {
+      throw new InvalidArgumentException('Reminder is empty');
+    }
+    
+    if(empty($nextContact))
+    {
+      throw new InvalidArgumentException('Next contact is empty');
+    }
+    
+    // update reminder sent dates for given next contacts
+    $sSQL = <<<SQL
+UPDATE bookings
+SET reminder_sent='$reminderSent'
+WHERE 
+  user_login='$sUser' AND
+  next_contact='$nextContact' AND
+  pause=0
+SQL;
+    echo $sSQL . '<br/>';
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      error_log($sSQL);
+      error_log($this->oConn->error);
+      throw new InvalidArgumentException('Could not update reminder dates.');
+    }
+  }
+  
+  public static function convertDateToSQL($sDatePicker)
+  {
+    $aDate = split('/', $sDatePicker);
+    $sSQLDate = $aDate[2] . '-' . $aDate[0] . '-' . $aDate[1];
+    return $sSQLDate;
+  }
 }
