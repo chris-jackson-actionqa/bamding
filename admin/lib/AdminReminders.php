@@ -66,11 +66,18 @@ SQL;
     return Database::fetch_all($mResult);
   }
   
-  public function getUserReminderVenues($sUser)
+  public function getUserReminderVenues($sUser, $sNextContact = '')
   {
+    // should never get here without user
     if(empty($sUser))
     {
       throw new InvalidArgumentException('Need to specify a user to get reminder info.');
+    }
+    
+    // by default, use today's date + 3 for the next contact. 
+    if(empty($sNextContact))
+    {
+      $sNextContact = date('Y-m-d', strtotime("+3 days"));
     }
     
     $oSQL = <<<SQL
@@ -86,7 +93,7 @@ WHERE
   bookings.pause =0 AND
   bookings.user_login = '$sUser' AND
   bookings.next_contact<>'0000-00-00' AND
-  bookings.next_contact<=CURDATE()+3 AND
+  bookings.next_contact<='$sNextContact' AND
   bookings.reminder_sent<>bookings.next_contact-3
 ORDER BY my_venues.state, my_venues.city;
 SQL;
