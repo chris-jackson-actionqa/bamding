@@ -186,16 +186,12 @@ HTM;
     echo '</table>';
   }
   
-  public static function getUserReminderData($hGet, $hPost)
+  public static function getUserReminderData($hGet)
   {
     $sUser = '';
     if(array_key_exists('user_login', $hGet))
     {
       $sUser = $hGet['user_login'];
-    }
-    else if (array_key_exists('user_login', $hPost))
-    {
-      $sUser = $hPost['user_login'];
     }
     
     if(empty($sUser))
@@ -204,19 +200,6 @@ HTM;
     }
     
     $oAdminReminders = new AdminReminders();
-    
-    //update reminder sents
-    if(array_key_exists('ACTION', $hPost))
-    {
-      if($hPost['ACTION'] == 'UPDATE_REMINDER')
-      {
-        $reminderSent = AdminReminders::convertDateToSQL($hPost['reminder_sent']);
-        $nextContact = AdminReminders::convertDateToSQL($hPost['next_contact']);
-        //echo $reminderSent . '   ' . $nextContact . '<br/>';
-        $oAdminReminders->updateReminders($sUser, $reminderSent, $nextContact);
-      }
-    }
-    
     $hReminderVenues = $oAdminReminders->getUserReminderVenues($sUser);
     if(empty($hReminderVenues))
     {
@@ -225,7 +208,6 @@ HTM;
     
     $hTableHeaders = array_keys($hReminderVenues[0]);
     
-    
     // Need inline styles for copy/paste to Gmail
     $sTable = '<table style="border: 1px solid black;border-collapse: collapse;">';
     $sTD = '<td style="border: 1px solid black;">';
@@ -233,20 +215,6 @@ HTM;
     
     echo '<div id="user_reminder">';
     echo "<h2>$sUser's Reminder</h2>";
-    // update reminder
-    echo '<h3>Update reminder sent</h3>';
-    echo '<form method="post" action="admin-user-reminder.php">';
-    echo '<input type="hidden" name="ACTION" value="UPDATE_REMINDER">';
-    echo '<input type="hidden" name="user_login" value="' . $sUser . '">';
-    echo '<label>Update Reminder Sent</label>';
-    echo '<input type="text" name="reminder_sent" id="reminderSent">';
-    echo '<br />';
-    echo '<label>for Next Contact=</label>';
-    echo '<input type="text" name="next_contact" id="nextContact">';
-    echo '<br />';
-    echo '<input type="submit">';
-    echo '</form>';
-    
     
     echo '<h3>Reminder email</h3>';
     echo '<h4>Subject:</h4>';
@@ -292,5 +260,45 @@ HTM;
 
     echo '<div>';
     
+  }
+  
+  public static function getUpdateReminderSentForm($hGet)
+  {
+    $sUser = '';
+    if(array_key_exists('user_login', $hGet))
+    {
+      $sUser = $hGet['user_login'];
+    }
+    
+    if(empty($sUser))
+    {
+      return;
+    }
+    
+    // update reminder
+    echo '<h3>Update reminder sent</h3>';
+    echo '<form method="post" action="admin-user-reminder.php">';
+    echo '<input type="hidden" name="ACTION" value="UPDATE_REMINDER">';
+    echo '<input type="hidden" name="user_login" value="' . $sUser . '">';
+    echo '<label>Update Reminder Sent</label>';
+    echo '<input type="text" name="reminder_sent" id="reminderSent">';
+    echo '<br />';
+    echo '<label>for Next Contact=</label>';
+    echo '<input type="text" name="next_contact" id="nextContact">';
+    echo '<br />';
+    echo '<input type="submit">';
+    echo '</form>';
+  }
+  
+  public static function showMessage($sMessage)
+  {
+    if(empty($sMessage))
+    {
+      return;
+    }
+    
+    echo '<div id="message">';
+    echo $sMessage;
+    echo '</div>';
   }
 }

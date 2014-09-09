@@ -106,7 +106,6 @@ WHERE
   next_contact='$nextContact' AND
   pause=0
 SQL;
-    echo $sSQL . '<br/>';
     $mResult = $this->oConn->query($sSQL);
     
     if(FALSE === $mResult)
@@ -122,5 +121,27 @@ SQL;
     $aDate = split('/', $sDatePicker);
     $sSQLDate = $aDate[2] . '-' . $aDate[0] . '-' . $aDate[1];
     return $sSQLDate;
+  }
+  
+  public static function updateReminderData($hPost)
+  {
+    $sMessage = '';
+    
+    //update reminder sents
+    if(array_key_exists('ACTION', $hPost))
+    {
+      if($hPost['ACTION'] == 'UPDATE_REMINDER')
+      {
+        $oAdminReminders = new AdminReminders();
+        $sUser = $hPost['user_login'];
+        $reminderSent = AdminReminders::convertDateToSQL($hPost['reminder_sent']);
+        $nextContact = AdminReminders::convertDateToSQL($hPost['next_contact']);
+        //echo $reminderSent . '   ' . $nextContact . '<br/>';
+        $oAdminReminders->updateReminders($sUser, $reminderSent, $nextContact);
+        $sMessage = "Updated reminder sent dates for $sUser. Reminder: $reminderSent, Next Contact: $nextContact";
+      }
+    }
+    
+    return $sMessage;
   }
 }
