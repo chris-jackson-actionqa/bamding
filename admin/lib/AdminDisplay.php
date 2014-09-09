@@ -68,8 +68,9 @@ HTM;
       echo $hRow['user_login'] . 
            ', Next Contact: ' . 
            $hRow['next_contact'] . 
-           '<a href="admin-user-reminder.php?user_login=' . 
-           $hRow['user_login'] .
+           '<a href="admin-user-reminder.php?' . 
+              'user_login=' . $hRow['user_login'] .
+              '&next_contact=' . $hRow['next_contact'] .
            '">Go!</a>' .
             '<br />';
     }
@@ -199,8 +200,14 @@ HTM;
       return;
     }
     
+    $sNextContact = '';
+    if(array_key_exists('next_contact', $hGet))
+    {
+      $sNextContact = $hGet['next_contact'];
+    }
+    
     $oAdminReminders = new AdminReminders();
-    $hReminderVenues = $oAdminReminders->getUserReminderVenues($sUser);
+    $hReminderVenues = $oAdminReminders->getUserReminderVenues($sUser, $sNextContact);
     if(empty($hReminderVenues))
     {
       return;
@@ -281,10 +288,10 @@ HTM;
     echo '<input type="hidden" name="ACTION" value="UPDATE_REMINDER">';
     echo '<input type="hidden" name="user_login" value="' . $sUser . '">';
     echo '<label>Update Reminder Sent</label>';
-    echo '<input type="text" name="reminder_sent" id="reminderSent">';
+    echo '<input type="text" name="reminder_sent" id="reminderSent" value="'. date('m/d/Y') .'">';
     echo '<br />';
     echo '<label>for Next Contact=</label>';
-    echo '<input type="text" name="next_contact" id="nextContact">';
+    echo '<input type="text" name="next_contact" id="nextContact" value="'. date('m/d/y', strtotime($hGet['next_contact'])) .'">';
     echo '<br />';
     echo '<input type="submit">';
     echo '</form>';
