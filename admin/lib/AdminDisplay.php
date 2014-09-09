@@ -60,9 +60,9 @@ HTM;
   public static function getReminders()
   {
     $oReminders = new AdminReminders();
-    $hReminders = $oReminders->getTodaysReminders();
+    $hReminders = $oReminders->getUpcomingReminders();
     echo '<div id="reminders">';
-    echo '<h2>Today Reminders</h2>';
+    echo '<h2>Upcoming Reminders</h2>';
     foreach($hReminders as $hRow)
     {
       echo $hRow['user_login'] . 
