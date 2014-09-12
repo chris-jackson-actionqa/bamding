@@ -252,20 +252,8 @@ HTM;
     echo '</table>';
     
     // dates and time frames
-    $oAdminDates = new AdminDates();
-    $hDates = $oAdminDates->getDatesTimeframes($sUser);
-    echo '<br />';
-    echo 'Dates/Time-Frames:<br />';
-    foreach($hDates as $hRow)
-    {
-      echo $hRow['country'] .
-           ',' . $hRow['state'] .
-           ',' . $hRow['city'] .
-           ': ' . $hRow['month_from'] .
-           ' through ' . $hRow['month_to'] .
-           '<br />';
-    }
-    echo '<br />';
+    AdminDisplay::displayDatesTimeFrames($sUser);
+    
     echo "If you'd like to submit more venues:<br/>";
     echo '<a href="http://BamDing.com/myvenues/">My Venues</a><br />';
     echo '<br />';
@@ -278,6 +266,36 @@ HTM;
 
     echo '<div>';
     
+  }
+  
+  public static function displayDatesTimeFrames($sUser)
+  {
+    // dates and time frames
+    $oAdminDates = new AdminDates();
+    $hDates = $oAdminDates->getDatesTimeframes($sUser);
+    $hTimeframeGroups = $oAdminDates->getTimeframeGroups($hDates);
+    
+    echo '<br />';
+    echo 'Dates/Time-Frames:<br />';
+    /*foreach($hDates as $hRow)
+    {
+      echo $hRow['country'] .
+           ',' . $hRow['state'] .
+           ',' . $hRow['city'] .
+           ': ' . $hRow['month_from'] .
+           ' through ' . $hRow['month_to'] .
+           '<br />';
+    }*/
+    
+    $hTimeFrames = array_keys($hTimeframeGroups);
+    foreach($hTimeFrames as $sTimeFrame )
+    {
+      $aMonths = split(' ', $sTimeFrame);
+      echo 'From: ' . $aMonths[0];
+      echo ', To: ' . $aMonths[1];
+      echo '<br />';
+    }
+    echo '<br />';
   }
   
   public static function getUpdateReminderSentForm($hGet)
