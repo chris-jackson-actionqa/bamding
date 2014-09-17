@@ -47,6 +47,8 @@ HTM;
   <a href="admin-bookings.php">Bookings</a>
   &nbsp; &nbsp;
   <a href="admin-user-reminder.php">Reminders</a>
+  &nbsp; &nbsp;
+  <a href="admin-dates.php">Dates</a>
 </div>
 HTM;
     echo $sHTML;
@@ -277,23 +279,15 @@ HTM;
     
     echo '<br />';
     echo 'Dates/Time-Frames:<br />';
-    /*foreach($hDates as $hRow)
-    {
-      echo $hRow['country'] .
-           ',' . $hRow['state'] .
-           ',' . $hRow['city'] .
-           ': ' . $hRow['month_from'] .
-           ' through ' . $hRow['month_to'] .
-           '<br />';
-    }*/
-    
     $hTimeFrames = array_keys($hTimeframeGroups);
-    foreach($hTimeFrames as $sTimeFrame )
+    if( 1 == count($hTimeFrames))
     {
-      $aMonths = split(' ', $sTimeFrame);
-      echo 'From: ' . $aMonths[0];
-      echo ', To: ' . $aMonths[1];
-      echo '<br />';
+      $aDatesKeys = array_keys($hDates);
+      echo $oAdminDates->dateToMonth($hDates[$aDatesKeys[0]]['month_from']);
+      if( !empty($hDates[$aDatesKeys[0]]['month_to']))
+      {
+        echo ' to ' . $oAdminDates->dateToMonth($hDates[$aDatesKeys[0]]['month_to']) . '<br />';
+      }
     }
     echo '<br />';
   }
@@ -336,5 +330,109 @@ HTM;
     echo '<div id="message">';
     echo $sMessage;
     echo '</div>';
+  }
+  
+  public static function showDatesForm($hGet, $hPost)
+  {
+    echo '<form method="get" action="admin-dates.php">';
+    $aUsers = AdminUsers::getAllUsers();
+    echo '<select name="user_login">';
+    foreach($aUsers as $sUser)
+    {
+      echo '<option value="' . $sUser . '">' . $sUser . '</option>';
+    }
+    echo '</select>';
+    echo '<input type="submit">';
+    echo '</form>';
+    
+    if(!key_exists('user_login', $hGet))
+    {
+      return;
+    }
+    echo '<h2>' . $hGet['user_login'] . '</h2>';
+    
+    // form for applying dates
+    echo '<form method="post" action="admin-dates.php">';
+    echo '<label>Update dates/timeframes for </label>';
+    echo '<select name="venues_to_update">';
+    echo '<option value="all">All</option>';
+    echo '<option value="country">Country</option>';
+    echo '<option value="state">State</option>';
+    echo '<option value="city">City</option>';
+    echo '<option value="venue">Venue</option>';
+    echo '</select>';
+    echo '<br />';
+    
+    echo '<input type="radio" name="update_type" value="timeframe">Time-Frame';
+    echo '<br />';
+    echo '<label>Month From: </label>';
+    echo '<select name="month_from">';
+    echo '<option value="January">January</option>';
+    echo '<option value="February">February</option>';
+    echo '<option value="March">March</option>';
+    echo '<option value="April">April</option>';
+    echo '<option value="May">May</option>';
+    echo '<option value="June">June</option>';
+    echo '<option value="July">July</option>';
+    echo '<option value="August">August</option>';
+    echo '<option value="September">September</option>';
+    echo '<option value="October">October</option>';
+    echo '<option value="November">November</option>';
+    echo '<option value="December">December</option>';
+    echo '</select>';
+    
+    echo '<label>Month To: </label>';
+    echo '<select name="month_to">';
+    echo '<option value=""></option>';
+    echo '<option value="January">January</option>';
+    echo '<option value="February">February</option>';
+    echo '<option value="March">March</option>';
+    echo '<option value="April">April</option>';
+    echo '<option value="May">May</option>';
+    echo '<option value="June">June</option>';
+    echo '<option value="July">July</option>';
+    echo '<option value="August">August</option>';
+    echo '<option value="September">September</option>';
+    echo '<option value="October">October</option>';
+    echo '<option value="November">November</option>';
+    echo '<option value="December">December</option>';
+    echo '</select>';
+    
+    echo '<br />---------   OR   ----------<br />';
+    echo '<label>Date from: </label>';
+    echo '<input type="text" name="date_from">';
+    echo '<label>Date to: </label>';
+    echo '<input type="text" name="date_to">';
+    echo '<br />';
+    
+    echo '<input type="radio" name="update_type" value="dates">Dates';
+    echo '<br />';
+    echo '<label>Add date:</label>';
+    echo '<input type="text">';
+    echo '<button>Add date</button>';
+    echo '<br />';
+    echo '<div id="dates"></div>';
+    echo '<br />';
+    
+    echo '<input type="radio" name="update_type" value="college">Quarter/Semester';
+    echo '<br />';
+    echo '<label>From: </label>';
+    echo '<select name="quarter_from">';
+    echo '<option value="fall">Fall</option>';
+    echo '<option value="winter">Winter</option>';
+    echo '<option value="spring">Spring</option>';
+    echo '<option value="summer">Summer</option>';
+    echo '</select>';
+    echo '<label>To (Optional): </label>';
+    echo '<select name="quarter_from">';
+    echo '<option value=""></option>';
+    echo '<option value="fall">Fall</option>';
+    echo '<option value="winter">Winter</option>';
+    echo '<option value="spring">Spring</option>';
+    echo '<option value="summer">Summer</option>';
+    echo '</select>';
+    echo '<br />';
+    echo '<input type="submit" value="Update">';
+    echo '</form>';
   }
 }

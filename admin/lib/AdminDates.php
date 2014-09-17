@@ -59,7 +59,7 @@ SQL;
       throw new Exception("Could not create view of dates and timeframes");
     }
     
-    //get distinct country, state, city's dates and timeframes
+    //get country, state, city's dates and timeframes
     $sSQL = <<<SQL
 SELECT country,state,city,id,name, month_from,month_to,date
 FROM DatesAndTimeframes
@@ -81,25 +81,127 @@ SQL;
     //drop the view
     $this->oConn->query('DROP VIEW IF EXISTS DatesAndTimeframes');
     
-    return $hResults;
+    return $this->mergeDifferentDates($hResults);
+  }
+  
+  /**
+   * The database has only one date per venue. Merge that together into a
+   * new array keyed on the venue and the dates stored in an array.
+   * 
+   * @param map $hDatesAndTimeFrames results returned from database
+   * @return map results keyed on venue id and dates stored in array
+   *   result[venue_id#](dates, country, city, name, month_from, month_to)
+   */
+  private function mergeDifferentDates($hDatesAndTimeFrames)
+  {
+    $hMergedDatesTimes = array();
+    $aKeys = array_keys($hDatesAndTimeFrames[0]);
+    
+    // for each venue, push all the dates into an array
+    foreach($hDatesAndTimeFrames as $hRow)
+    {
+      $sVenueID = $hRow['id'];
+      
+      // create an array for dates if doesn't exist already
+      if(!array_key_exists("$sVenueID", $hMergedDatesTimes))
+      {
+        $hMergedDatesTimes["$sVenueID"]['dates'] = array();
+      }
+      
+      // if date is not empty, push the date
+      if( !empty($hRow['date']))
+      {
+        array_push($hMergedDatesTimes["$sVenueID"]['dates'], $hRow['date']);
+      }
+      
+      // copy over keys except for id and date
+      foreach($aKeys as $sKey)
+      {
+        if('id' == $sKey || 'date' == $sKey)
+        {
+          continue;
+        }
+        $hMergedDatesTimes["$sVenueID"][$sKey] = $hRow[$sKey]; 
+      }
+    }
+    
+    return $hMergedDatesTimes;
   }
   
   public function getTimeframeGroups($hDatesTimeFrames)
   {
     $hTimeFrameGroups = array();
     
-    foreach($hDatesTimeFrames as $hRow)
+    foreach($hDatesTimeFrames as $sVenueID=>$hRow)
     {
       $sKey = $hRow['month_from'] . ' ' . $hRow['month_to'];
+      
+      foreach($hRow['dates'] as $sDate)
+      {
+        $sKey .= " $sDate";
+      }
+      
       if( !array_key_exists($sKey, $hTimeFrameGroups))
       {
         $hTimeFrameGroups[$sKey] = array();
       }
       array_push(
         $hTimeFrameGroups[$sKey],
-        $hRow['id']);
+        $sVenueID);
     }
     
     return $hTimeFrameGroups;
+  }
+  
+  /**
+   * Winter string representation
+   */
+  const WINTER = '0001-01-01';
+  /**
+   * Spring string representation
+   */
+  const SPRING = '0002-01-01';
+  /**
+   * Summer string representation
+   */
+  const SUMMER = '0003-01-01';
+  /**
+   * Fall string representation
+   */
+  const FALL = '0004-01-01';
+  
+  /**
+   * Returns the month string (January, February,etc)
+   * for the provided date.
+   * Checks for Winter, Spring, Summer, and Fall, as well.
+   * @param type $sDate date string like 2004-11-30
+   * For Winter, '0001-01-01'
+   * For Spring, '0002-01-01'
+   * For Summer, '0003-01-01'
+   * For Fall, '0004-01-01'
+   * @return string the month or the college quarter
+   */
+  public function dateToMonth($sDate)
+  {
+    if(self::WINTER == $sDate)
+    {
+      return 'Winter';
+    }
+    
+    if(self::SPRING == $sDate)
+    {
+      return 'Spring';
+    }
+    
+    if(self::SUMMER == $sDate)
+    {
+      return 'Summer';
+    }
+    
+    if(self::FALL == $sDate)
+    {
+      return 'Fall';
+    }
+    return date('F', strtotime($sDate));
   }
 }

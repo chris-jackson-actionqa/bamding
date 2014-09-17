@@ -14,3 +14,4 @@ require_once('lib/AdminDates.php');
 require_once('lib/AdminDisplay.php');
 require_once('lib/AdminBookings.php');
 require_once('lib/AdminReminders.php');
+require_once('lib/AdminUsers.php');
