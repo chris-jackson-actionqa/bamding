@@ -361,4 +361,42 @@ SQL;
     $aVenue = $mResult->fetch_array();
     return $aVenue[0];
   }
+  
+  const ALL = 'all';
+  
+  /**
+   * Get venues for a user by its type (all, country, state, city, or venue)
+   * 
+   * @param string $sType (all, country, state, etc)
+   * @return array results of SQL query
+   * @throws InvalidArgumentException (if invalid sType)
+   * @throws Exception (if bad SQL query)
+   */
+  public function getVenuesBy($sType)
+  {
+    $sSQL = '';
+    
+    switch($sType)
+    {
+      case self::ALL:
+        $sSQL = <<<SQL
+SELECT id FROM my_venues
+WHERE user_login='{$this->sUserID}'
+SQL;
+        break;
+      default:
+        throw new InvalidArgumentException(
+                'Invalid request type for venues: ' . $sType);
+        break;
+    }
+    
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new Exception('SQL query failed.');
+    }
+    
+    return Database::fetch_all($mResult);
+  }
 };

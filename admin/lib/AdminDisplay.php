@@ -332,38 +332,57 @@ HTM;
     echo '</div>';
   }
   
-  public static function showDatesForm($hGet, $hPost)
+  /**
+   * Select user form. 
+   * Creates a dropdown form with all users.
+   * Customize the method and the action of the form.
+   * Allows setting the selected user.
+   * 
+   * @param string $sMethod get or post
+   * @param string $sAction the action/page to go to
+   * @param string $sDefaultUser (optional) selected user
+   */
+  public static function selectUserForm($sMethod, $sAction, $sDefaultUser = '')
   {
-    echo '<form method="get" action="admin-dates.php">';
+    // select user
+    echo '<form method="'.$sMethod.'" action="'.$sAction.'">';
     $aUsers = AdminUsers::getAllUsers();
     echo '<select name="user_login">';
     foreach($aUsers as $sUser)
     {
-      echo '<option value="' . $sUser . '">' . $sUser . '</option>';
+      $sSelected = '';
+      if($sUser == $sDefaultUser)
+      {
+        $sSelected = 'selected';
+      }
+      echo '<option value="' . $sUser . '"' . $sSelected .'>' . $sUser . '</option>';
     }
     echo '</select>';
     echo '<input type="submit">';
     echo '</form>';
-    
-    if(!key_exists('user_login', $hGet))
-    {
-      return;
-    }
-    echo '<h2>' . $hGet['user_login'] . '</h2>';
-    
-    // form for applying dates
-    echo '<form method="post" action="admin-dates.php">';
+  }
+  
+  public static function datesVenueRangeSelect($sDefaultRange='')
+  {
     echo '<label>Update dates/timeframes for </label>';
-    echo '<select name="venues_to_update">';
-    echo '<option value="all">All</option>';
+    echo '<select name="venue_range">';
+    echo '<option value="ALL" checked>All</option>';
     echo '<option value="country">Country</option>';
     echo '<option value="state">State</option>';
     echo '<option value="city">City</option>';
     echo '<option value="venue">Venue</option>';
     echo '</select>';
-    echo '<br />';
+  }
+  
+  public static function datesInputTimeFrame($sDefaultRange='', $sFrom = '', $sTo = '')
+  {
+    if('' == $sDefaultRange)
+    {
+      return;
+    }
     
-    echo '<input type="radio" name="update_type" value="timeframe">Time-Frame';
+    echo '<br />';
+    echo '<input type="radio" name="update_type" value="timeframe" checked>Time-Frame';
     echo '<br />';
     echo '<label>Month From: </label>';
     echo '<select name="month_from">';
@@ -383,7 +402,7 @@ HTM;
     
     echo '<label>Month To: </label>';
     echo '<select name="month_to">';
-    echo '<option value=""></option>';
+    echo '<option value="" checked></option>';
     echo '<option value="January">January</option>';
     echo '<option value="February">February</option>';
     echo '<option value="March">March</option>';
@@ -398,6 +417,38 @@ HTM;
     echo '<option value="December">December</option>';
     echo '</select>';
     
+  }
+  
+  public static function showDatesForm($hGet, $hPost)
+  {
+    $sUserLogin = '';
+    if(key_exists('user_login', $hGet))
+    {
+      $sUserLogin = $hGet['user_login'];
+      self::selectUserForm('get', 'admin-dates.php', $sUserLogin);
+    }
+    else
+    {
+      self::selectUserForm('get', 'admin-dates.php');
+      return;
+    }
+    
+    echo '<h2>' . $sUserLogin . '</h2>';
+    
+    // form for applying dates
+    echo '<form method="post" action="admin-dates.php?user_login='. $hGet['user_login'] . '">';
+    
+    $sVenueRange = '';
+    if(key_exists('venue_range', $hPost))
+    {
+      $sVenueRange = $hPost['venue_range'];
+    }
+    
+    self::datesVenueRangeSelect($sVenueRange);
+    self::datesInputTimeFrame($sVenueRange);
+    
+    
+    /*
     echo '<br />---------   OR   ----------<br />';
     echo '<label>Date from: </label>';
     echo '<input type="text" name="date_from">';
@@ -431,8 +482,32 @@ HTM;
     echo '<option value="spring">Spring</option>';
     echo '<option value="summer">Summer</option>';
     echo '</select>';
+     * 
+     */
     echo '<br />';
     echo '<input type="submit" value="Update">';
     echo '</form>';
+  }
+  
+  const ALL = 'all';
+  
+  /**
+   * Process the request data sent from the admin-dates form
+   * 
+   * @param map $hGet $_GET
+   * @param map $hPost $_POST
+   * @return no type. just returns early if no data to process
+   * @throws InvalidArgumentException
+   */
+  public static function processDatesForm($hGet, $hPost)
+  {
+    // user_login needs to exist
+    if(!key_exists('user_login', $hGet))
+    {
+      return;
+    }
+    
+    //$oAdminDates = new AdminDates();
+    //$oAdminDates->updateDatesTimeFrames($sUser, $updateType, $updateChoice, $aDates);
   }
 }

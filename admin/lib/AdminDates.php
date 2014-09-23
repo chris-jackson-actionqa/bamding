@@ -204,4 +204,40 @@ SQL;
     }
     return date('F', strtotime($sDate));
   }
+  
+  const ALL = 'all';
+  
+  public function updateDatesTimeFrames(
+          $sUser, $sVenueRange, $sDateType, $aDates )
+  {
+    if(empty($sUser))
+    {
+      return;
+    }
+    
+    // save the current listings for the venues
+    // ..this is to restore them if a problem occurs
+    
+    switch($sVenueRange)
+    {
+      case self::ALL:
+        //delete all current listings for the user
+        //
+        break;
+      default:
+        break;
+    }
+    // delete the current listings for these venues from the database
+    
+    // insert the new values
+    // get the type of update (timeframe, dates, or quarters)
+    // get the appropriate values for 
+    // timeframe
+    // ..verify timeframe 'from' field
+    // ..is 'to' field set?
+    // ....verify 'to' field
+    
+    // on failure, restore the original values
+    
+  }
 }
