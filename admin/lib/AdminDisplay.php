@@ -399,8 +399,8 @@ HTM;
     }
     
     $aMonths = array(
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
+        1=>'January', 2=>'February', 3=>'March', 4=>'April', 5=>'May', 6=>'June',
+        7=>'July', 8=>'August', 9=>'September', 10=>'October', 11=>'November', 12=>'December'
     );
     
     echo '<br />';
@@ -408,29 +408,33 @@ HTM;
     echo '<br />';
     echo '<label>Month From: </label>';
     echo '<select name="month_from">';
-    foreach($aMonths as $sMonth)
+    $aKeys = array_keys($aMonths);
+    foreach($aKeys as $sKey)
     {
       $sChecked = '';
-      if($sMonth == $sFrom)
+      $sMonth = $aMonths[$sKey];
+      if($sMonth == $aMonths[$sFrom])
       {
         $sChecked = 'selected';
       }
-      echo '<option value="'.$sMonth.'" '.$sChecked.'>'.$sMonth.'</option>';
+      echo '<option value="'.$sKey.'" '.$sChecked.'>'.$sMonth.'</option>';
     }
     echo '</select>';
     
     echo '<label>Month To: </label>';
     echo '<select name="month_to">';
     // insert the empty option to this array
-    array_unshift($aMonths, "");
-    foreach($aMonths as $sMonth)
+    array_unshift($aKeys, 0);
+    $aMonths[0] = '';
+    foreach($aKeys as $sKey)
     {
       $sChecked = '';
-      if($sMonth == $sTo)
+      $sMonth = $aMonths[$sKey];
+      if($sMonth == $aMonths[$sTo])
       {
         $sChecked = 'selected';
       }
-      echo '<option value="'.$sMonth.'" '.$sChecked.'>'.$sMonth.'</option>';
+      echo '<option value="'.$sKey.'" '.$sChecked.'>'.$sMonth.'</option>';
     }
     echo '</select>';
   }
@@ -546,6 +550,45 @@ HTM;
     $sDateType = key_exists('date_type',$hPost) ? $hPost['date_type'] : '';
     
     $aDates = array();
+    
+    switch($sDateType)
+    {
+      case AdminDates::TIMEFRAME:
+        if(!key_exists('month_from', $hPost))
+        {
+          return 'ERROR: "Month From" is missing.';
+        }
+        
+        // get month_from,
+        $nMonthFrom = (int)$hPost['month_from'];
+        
+        // get today's month and year
+        $aToday = date_parse_from_format('Y-m-d', date('Y-m-d'));
+        $nYearFrom = $aToday['year'];
+        // if less than this month, bump up to next year
+        if($nMonthFrom < $aToday['month'])
+        {
+          $nYearFrom++;
+        }
+        $sMonth = ($nMonthFrom<10) ? "0$nMonthFrom" : "$nMonthFrom";
+        array_push($aDates, "$nYearFrom-$sMonth-01");
+        
+        // check month to
+        $nMonthTo = (key_exists('month_to', $hPost)) ? (int)$hPost['month_to'] : 0;
+        $nYearTo = $nYearFrom;
+        if(0 != $nMonthTo)
+        {
+          // month_to is set
+          if($nMonthTo <= $nMonthFrom)
+          {
+            $nYearTo++;
+          }
+          
+          $sMonth = ($nMonthTo<10) ? "0$nMonthTo" : "$nMonthTo";
+          array_push($aDates, "$nYearTo-$sMonth-01");
+        }
+        break;
+    }
     
     try
     {

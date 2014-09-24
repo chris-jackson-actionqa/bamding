@@ -183,7 +183,7 @@ SQL;
     
     $nDateTypeID = $this->getDateTypeID($sDateType);
     $sDateFrom = $this->getDateFrom($sDateType, $aDates);
-    $sDateTo = ''; //TODO
+    $sDateTo = $this->getDateTo($sDateType, $aDates);
     $sDates = ''; //TODO
     
     switch($sVenueRange)
@@ -346,6 +346,51 @@ SQL;
     return $sFrom;
   }
   
+  private function getDateTo($sDateType, $aDates)
+  {
+    $this->throwOnEmpty($sDateType, "Date Type can't be empty");
+    $this->throwOnEmpty($aDates, "Dates array can't be empty.");
+    
+    $sTo = '';
+    
+    if(1 == count($aDates))
+    {
+      return $sTo;
+    }
+    
+    switch($sDateType)
+    {
+      case self::TIMEFRAME:
+        // verify month isn't less than month 'from'
+        // floor date to beginning of month
+        $sFlooredDateTo = $this->floorDateToMonth($aDates[1]);
+        
+        // get month 'from'
+        $sFromMonth = $this->getDateFrom($sDateType, $aDates);
+        
+        $oDateTo = new DateTime($sFlooredDateTo);
+        $oDateFrom = new DateTime($sFromMonth);
+        if( $oDateTo < $oDateFrom)
+        {
+          throw new InvalidArgumentException("'To' Month is before the 'From' Month: " . $sFlooredDateTo);
+        }
+        $sTo = $sFlooredDateTo;
+        break;
+      case self::CUSTOMRANGE:
+      case self::QUARTERRANGE:
+        throw new RuntimeException("Not yet implemented: $sDateType");
+        break;
+      case self::DATES:
+        $sTo = '';
+        break;
+      default:
+        throw new InvalidArgumentException("Not valid date type: $sDateType");
+        break;
+    }
+    
+    return $sTo;
+  }
+  
   /**
    * Floors a date to the beginning of the month.
    * For example, 2014-09-30 would be floored to 2014-09-01.
@@ -357,12 +402,12 @@ SQL;
   private function floorDateToMonth($sDate)
   {
     $this->throwOnEmpty($sDate, "Need date to floor.");
-    if(!preg_match('/\d\d\d\d-\d\d-\d\d', $sDate))
+    if(!preg_match('/\d\d\d\d-\d\d-\d\d/', $sDate))
     {
       throw new InvalidArgumentException("Invalid date format: " . $sDate);
     }
     
-    $aFormat = date_parse_from_format($sDate, "Y-m-d");
+    $aFormat = date_parse_from_format( "Y-m-d", $sDate);
     return $aFormat['year'] . '-' . $aFormat['month'] . '-01';
   }
   
