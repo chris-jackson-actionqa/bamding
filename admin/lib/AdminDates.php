@@ -182,7 +182,7 @@ SQL;
     $nVenueID = '-1'; //TODO get venue id
     
     $nDateTypeID = $this->getDateTypeID($sDateType);
-    $sDateFrom = ''; //TODO
+    $sDateFrom = $this->getDateFrom($sDateType, $aDates);
     $sDateTo = ''; //TODO
     $sDates = ''; //TODO
     
@@ -191,7 +191,6 @@ SQL;
       case self::ALL:
         //delete all current listings for the user
         $this->deleteBookingDates($sVenueRange);
-        
         break;
       default:
         throw new InvalidArgumentException('Invalid venue range: ' . $sVenueRange);
@@ -297,5 +296,81 @@ SQL;
     
     $aRow = $mResult->fetch_row();
     return $aRow[0];
+  }
+  
+  const TIMEFRAME='TIMEFRAME';
+  const CUSTOMRANGE='CUSTOMRANGE';
+  const QUARTERRANGE='QUARTERRANGE';
+  const DATES='DATES';
+  
+  private function getDateFrom($sDateType, $aDates)
+  {
+    $this->throwOnEmpty($sDateType, "Date Type can't be empty");
+    $this->throwOnEmpty($aDates, "Dates array can't be empty.");
+    
+    $sFrom = '';
+    
+    switch($sDateType)
+    {
+      case self::TIMEFRAME:
+        // verify month isn't in the past
+        // floor date to beginning of month
+        $sFlooredDate = $this->floorDateToMonth($aDates[0]);
+        
+        // floor today's date to beginning of the month
+        $sThisMonth = $this->floorDateToMonth(date('Y-m-d'));
+        
+        // if the passed in date is less than this month,
+        // throw invalid argument exception
+        // else, set the from value with the date
+        $oDateFloored = new DateTime($sFlooredDate);
+        $oThisMonth = new DateTime($sThisMonth);
+        if( $oDateFloored < $oThisMonth)
+        {
+          throw new InvalidArgumentException("'From' Month is in the past: " . $sFlooredDate);
+        }
+        $sFrom = $sFlooredDate;
+        break;
+      case self::CUSTOMRANGE:
+      case self::QUARTERRANGE:
+        throw new RuntimeException("Not yet implemented: $sDateType");
+        break;
+      case self::DATES:
+        $sFrom = '';
+        break;
+      default:
+        throw new InvalidArgumentException("Not valid date type: $sDateType");
+        break;
+    }
+    
+    return $sFrom;
+  }
+  
+  /**
+   * Floors a date to the beginning of the month.
+   * For example, 2014-09-30 would be floored to 2014-09-01.
+   * 
+   * @param string $sDate Date to floor. Needs to be in format YYYY-MM-DD
+   * @return string Date floored to beginning of month in format YYYY-MM-DD
+   * @throws InvalidArgumentException Date paramater needs to be valid.
+   */
+  private function floorDateToMonth($sDate)
+  {
+    $this->throwOnEmpty($sDate, "Need date to floor.");
+    if(!preg_match('/\d\d\d\d-\d\d-\d\d', $sDate))
+    {
+      throw new InvalidArgumentException("Invalid date format: " . $sDate);
+    }
+    
+    $aFormat = date_parse_from_format($sDate, "Y-m-d");
+    return $aFormat['year'] . '-' . $aFormat['month'] . '-01';
+  }
+  
+  private function throwOnEmpty($mParam, $sErrorMessage, $sExceptionType = 'InvalidArgumentException')
+  {
+    if(empty($mParam))
+    {
+      throw new $sExceptionType($sErrorMessage);
+    }
   }
 }

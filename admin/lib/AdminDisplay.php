@@ -404,7 +404,7 @@ HTM;
     );
     
     echo '<br />';
-    echo '<input type="radio" name="date_type" value="timeframe" checked>Time-Frame';
+    echo '<input type="radio" name="date_type" value="TIMEFRAME" checked>Time-Frame';
     echo '<br />';
     echo '<label>Month From: </label>';
     echo '<select name="month_from">';
@@ -437,8 +437,6 @@ HTM;
   
   public static function showDatesForm($hGet, $hPost)
   {
-    
-    
     $sUserLogin = '';
     if(key_exists('user_login', $hGet))
     {
@@ -543,9 +541,12 @@ HTM;
         break;
     }
     */
+    $sVenueRange = $hPost['venue_range'];
     $sRangeValue = ''; //TODO
     $sDateType = key_exists('date_type',$hPost) ? $hPost['date_type'] : '';
-    $aDates = array(); //TODO
+    
+    $aDates = array();
+    
     try
     {
     $oAdminDates = new AdminDates($hGet['user_login']);
