@@ -273,22 +273,39 @@ HTM;
   public static function displayDatesTimeFrames($sUser)
   {
     // dates and time frames
-    $oAdminDates = new AdminDates();
-    $hDates = $oAdminDates->getDatesTimeframes($sUser);
-    $hTimeframeGroups = $oAdminDates->getTimeframeGroups($hDates);
+    echo '<strong>Dates and TimeFrames:</strong><br />';
     
-    echo '<br />';
-    echo 'Dates/Time-Frames:<br />';
-    $hTimeFrames = array_keys($hTimeframeGroups);
-    if( 1 == count($hTimeFrames))
+    $oAdminDates = new AdminDates($sUser);
+    $hDates = $oAdminDates->getDatesTimeframes($sUser);
+    if(0 == count($hDates))
     {
-      $aDatesKeys = array_keys($hDates);
-      echo $oAdminDates->dateToMonth($hDates[$aDatesKeys[0]]['month_from']);
-      if( !empty($hDates[$aDatesKeys[0]]['month_to']))
-      {
-        echo ' to ' . $oAdminDates->dateToMonth($hDates[$aDatesKeys[0]]['month_to']) . '<br />';
-      }
+      echo 'No dates or time frames.<br />';
+      return;
     }
+    $aKeys = array_keys($hDates[0]);
+    
+    // display info in a table
+    echo '<table>';
+    
+    // table header
+    echo '<tr>';
+    foreach($aKeys as $sKey)
+    {
+      echo '<th>'.$sKey.'</th>';
+    }
+    echo '</tr>';
+    
+    // display rows
+    foreach($hDates as $hRow)
+    {
+      echo '<tr>';
+      foreach($aKeys as $sKey)
+      {
+        echo '<td>'.$hRow[$sKey].'</td>';
+      }
+      echo '</tr>';
+    }
+    echo '</table>';
     echo '<br />';
   }
   
@@ -367,60 +384,61 @@ HTM;
     echo '<label>Update dates/timeframes for </label>';
     echo '<select name="venue_range">';
     echo '<option value="ALL" checked>All</option>';
-    echo '<option value="country">Country</option>';
-    echo '<option value="state">State</option>';
-    echo '<option value="city">City</option>';
-    echo '<option value="venue">Venue</option>';
+    echo '<option value="COUNTRY">Country</option>';
+    echo '<option value="STATE">State</option>';
+    echo '<option value="CITY">City</option>';
+    echo '<option value="VENUE">Venue</option>';
     echo '</select>';
   }
   
   public static function datesInputTimeFrame($sDefaultRange='', $sFrom = '', $sTo = '')
   {
-    if('' == $sDefaultRange)
+    if(empty($sDefaultRange))
     {
       return;
     }
     
+    $aMonths = array(
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    );
+    
     echo '<br />';
-    echo '<input type="radio" name="update_type" value="timeframe" checked>Time-Frame';
+    echo '<input type="radio" name="date_type" value="timeframe" checked>Time-Frame';
     echo '<br />';
     echo '<label>Month From: </label>';
     echo '<select name="month_from">';
-    echo '<option value="January">January</option>';
-    echo '<option value="February">February</option>';
-    echo '<option value="March">March</option>';
-    echo '<option value="April">April</option>';
-    echo '<option value="May">May</option>';
-    echo '<option value="June">June</option>';
-    echo '<option value="July">July</option>';
-    echo '<option value="August">August</option>';
-    echo '<option value="September">September</option>';
-    echo '<option value="October">October</option>';
-    echo '<option value="November">November</option>';
-    echo '<option value="December">December</option>';
+    foreach($aMonths as $sMonth)
+    {
+      $sChecked = '';
+      if($sMonth == $sFrom)
+      {
+        $sChecked = 'selected';
+      }
+      echo '<option value="'.$sMonth.'" '.$sChecked.'>'.$sMonth.'</option>';
+    }
     echo '</select>';
     
     echo '<label>Month To: </label>';
     echo '<select name="month_to">';
-    echo '<option value="" checked></option>';
-    echo '<option value="January">January</option>';
-    echo '<option value="February">February</option>';
-    echo '<option value="March">March</option>';
-    echo '<option value="April">April</option>';
-    echo '<option value="May">May</option>';
-    echo '<option value="June">June</option>';
-    echo '<option value="July">July</option>';
-    echo '<option value="August">August</option>';
-    echo '<option value="September">September</option>';
-    echo '<option value="October">October</option>';
-    echo '<option value="November">November</option>';
-    echo '<option value="December">December</option>';
+    // insert the empty option to this array
+    array_unshift($aMonths, "");
+    foreach($aMonths as $sMonth)
+    {
+      $sChecked = '';
+      if($sMonth == $sTo)
+      {
+        $sChecked = 'selected';
+      }
+      echo '<option value="'.$sMonth.'" '.$sChecked.'>'.$sMonth.'</option>';
+    }
     echo '</select>';
-    
   }
   
   public static function showDatesForm($hGet, $hPost)
   {
+    
+    
     $sUserLogin = '';
     if(key_exists('user_login', $hGet))
     {
@@ -433,20 +451,29 @@ HTM;
       return;
     }
     
+    $sVenueRange = (key_exists('venue_range', $hPost))
+      ? $hPost['venue_range'] : '';
+    $sTimeFrameFrom = (key_exists('month_from', $hPost))
+      ? $hPost['month_from'] : '';
+    $sTimeFrameTo = (key_exists('month_to', $hPost))
+      ? $hPost['month_to'] : '';
+    
     echo '<h2>' . $sUserLogin . '</h2>';
     
-    // form for applying dates
-    echo '<form method="post" action="admin-dates.php?user_login='. $hGet['user_login'] . '">';
-    
-    $sVenueRange = '';
-    if(key_exists('venue_range', $hPost))
+    $sMessage = self::processDatesForm($hGet,$hPost);
+    if(!empty($sMessage))
     {
-      $sVenueRange = $hPost['venue_range'];
+      echo "<h3>Message:</h3>" . $sMessage . '<br /><br />';
     }
     
-    self::datesVenueRangeSelect($sVenueRange);
-    self::datesInputTimeFrame($sVenueRange);
+    self::displayDatesTimeFrames($sUserLogin);
     
+    // form for applying dates
+    echo '<h3>Update:</h3>';
+    echo '<form method="post" action="admin-dates.php?user_login='. $hGet['user_login'] . '">';
+    
+    self::datesVenueRangeSelect($sVenueRange);
+    self::datesInputTimeFrame($sVenueRange, $sTimeFrameFrom, $sTimeFrameTo);
     
     /*
     echo '<br />---------   OR   ----------<br />';
@@ -502,12 +529,33 @@ HTM;
   public static function processDatesForm($hGet, $hPost)
   {
     // user_login needs to exist
-    if(!key_exists('user_login', $hGet))
+    if( !key_exists('user_login', $hGet) || 
+        !key_exists('venue_range', $hPost) ||
+        !key_exists('date_type', $hPost))
     {
-      return;
+      return '';
     }
     
-    //$oAdminDates = new AdminDates();
-    //$oAdminDates->updateDatesTimeFrames($sUser, $updateType, $updateChoice, $aDates);
+    /*
+    switch($hPost['venue_range'])
+    {
+      default:
+        break;
+    }
+    */
+    $sRangeValue = ''; //TODO
+    $sDateType = key_exists('date_type',$hPost) ? $hPost['date_type'] : '';
+    $aDates = array(); //TODO
+    try
+    {
+    $oAdminDates = new AdminDates($hGet['user_login']);
+    $oAdminDates->updateDatesTimeFrames($hPost['venue_range'], $sRangeValue, $sDateType, $aDates);
+    }
+    catch(Exception $ex)
+    {
+      return $ex->getMessage();
+    }
+    
+    return 'Successfully updated.';
   }
 }

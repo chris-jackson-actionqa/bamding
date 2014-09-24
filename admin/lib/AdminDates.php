@@ -14,74 +14,37 @@
 class AdminDates
 {
   private $oConn = null;
+  private $sUserLogin = '';
   
-  public function __construct()
+  public function __construct($sUserLogin)
   {
+    if(empty($sUserLogin))
+    {
+      throw new InvalidArgumentException('AdminDates requires valid user login');
+    }
+    
+    $this->sUserLogin = $sUserLogin;
     $oDB = new Database();
     $this->oConn = $oDB->connect();
   }
   
-  public function getDatesTimeframes($sUser)
+  public function getDatesTimeframes()
   {
-    //verify user
-    if(empty($sUser))
-    {
-      throw new InvalidArgumentException('Need a valid user');
-    }
     
-    //drop the view if not previously dropped
-    $this->oConn->query('DROP VIEW IF EXISTS DatesAndTimeframes');
-    
-    //create a view of a join on the venues and the dates/timeframes tables
     $sSQL = <<<SQL
-CREATE VIEW DatesAndTimeframes AS
-SELECT 
-  my_venues.user_login, 
-  my_venues.id, 
-  my_venues.country,
-  my_venues.state,
-  my_venues.city, 
-  my_venues.name,
-  booking_dates.month_from,
-  booking_dates.month_to, 
-  booking_dates.date
-FROM my_venues
-INNER JOIN booking_dates
-ON booking_dates.venue_id=my_venues.id
-WHERE my_venues.user_login='$sUser'
-ORDER BY my_venues.country,my_venues.state,my_venues.city,my_venues.name;
+SELECT * FROM booking_dates
+WHERE user_login='{$this->sUserLogin}'
 SQL;
     
     $mResult = $this->oConn->query($sSQL);
     
     if(FALSE === $mResult)
     {
-      throw new Exception("Could not create view of dates and timeframes");
-    }
-    
-    //get country, state, city's dates and timeframes
-    $sSQL = <<<SQL
-SELECT country,state,city,id,name, month_from,month_to,date
-FROM DatesAndTimeframes
-INNER JOIN bookings ON bookings.venue_id=DatesAndTimeframes.id
-WHERE bookings.pause=0
-ORDER BY country, state, city, name;
-SQL;
-    
-    $mResult = $this->oConn->query($sSQL);
-    
-    if(FALSE === $mResult)
-    {
-      throw new Exception("Could not get dates and timeframes");
+      throw new Exception("Could not get dates and timeframes: " . $this->oConn->error);
     }
     
     //results for above query
-    $hResults = Database::fetch_all($mResult);
-    
-    //drop the view
-    $this->oConn->query('DROP VIEW IF EXISTS DatesAndTimeframes');
-    
-    return $this->mergeDifferentDates($hResults);
+    return Database::fetch_all($mResult);
   }
   
   /**
@@ -205,28 +168,67 @@ SQL;
     return date('F', strtotime($sDate));
   }
   
-  const ALL = 'all';
+  const ALL = 'ALL';
   
   public function updateDatesTimeFrames(
-          $sUser, $sVenueRange, $sDateType, $aDates )
+          $sVenueRange, $aRangeValue, $sDateType, $aDates )
   {
-    if(empty($sUser))
-    {
-      return;
-    }
-    
     // save the current listings for the venues
     // ..this is to restore them if a problem occurs
+    $nVenueRangeID = $this->getVenueRangeID($sVenueRange);
+    $sCountry = '';//TODO getCountry
+    $sState = ''; //TODO getState
+    $sCity = ''; //TODO getCity
+    $nVenueID = '-1'; //TODO get venue id
+    
+    $nDateTypeID = $this->getDateTypeID($sDateType);
+    $sDateFrom = ''; //TODO
+    $sDateTo = ''; //TODO
+    $sDates = ''; //TODO
     
     switch($sVenueRange)
     {
       case self::ALL:
         //delete all current listings for the user
-        //
+        $this->deleteBookingDates($sVenueRange);
+        
         break;
       default:
-        break;
+        throw new InvalidArgumentException('Invalid venue range: ' . $sVenueRange);
     }
+    
+    $sSQL =<<<SQL
+INSERT INTO booking_dates (
+  user_login,
+  venue_range,
+  date_type,
+  country,
+  state,
+  city,
+  venue_id,
+  date_from,
+  date_to,
+  dates
+) VALUES (
+  '{$this->sUserLogin}',
+  '$nVenueRangeID',
+  '$nDateTypeID',
+  '$sCountry',
+  '$sState',
+  '$sCity',
+  '$nVenueID',
+  '$sDateFrom',
+  '$sDateTo',
+  '$sDates'
+)
+SQL;
+
+    $mResult = $this->oConn->query($sSQL);
+    if(FALSE === $mResult)
+    {
+      throw new RuntimeException('Invalid SQL query: ' . $this->oConn->error);
+    }
+    
     // delete the current listings for these venues from the database
     
     // insert the new values
@@ -239,5 +241,61 @@ SQL;
     
     // on failure, restore the original values
     
+  }
+  
+  private function deleteBookingDates($sVenueRange)
+  {
+    $mResult = null;
+    switch($sVenueRange)
+    {
+      case self::ALL:
+        $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin'";
+        $mResult = $this->oConn->query($sSQL);
+        break;
+      default:
+        throw new InvalidArgumentException("Invalid venue range: $sVenueRange");
+        break;
+    }
+    
+    if(FALSE === $mResult)
+    {
+      throw new RuntimeException('Unexpected SQL error: ' . $this->oConn->error);
+    }
+  }
+  
+  private function getVenueRangeID($sVenueRange)
+  {
+    $sSQL = "SELECT id FROM venue_range WHERE value='$sVenueRange'";
+    $mResult = $this->oConn->query($sSQL);
+    if(FALSE === $mResult)
+    {
+      throw new RuntimeException('Unknown SQL error: ' . $this->oConn->error);
+    }
+    
+    if( 1 != $mResult->num_rows)
+    {
+      throw new InvalidArgumentException('Invalid venue range: ' . $sVenueRange);
+    }
+    
+    $aRow = $mResult->fetch_row();
+    return $aRow[0];
+  }
+  
+  private function getDateTypeID($sDateType)
+  {
+    $sSQL = "SELECT id FROM date_type WHERE type='$sDateType'";
+    $mResult = $this->oConn->query($sSQL);
+    if(FALSE === $mResult)
+    {
+      throw new RuntimeException('Unknown SQL error: ' . $this->oConn->error);
+    }
+    
+    if( 1 != $mResult->num_rows)
+    {
+      throw new InvalidArgumentException('Invalid date type: ' . $sVenueRange);
+    }
+    
+    $aRow = $mResult->fetch_row();
+    return $aRow[0];
   }
 }
