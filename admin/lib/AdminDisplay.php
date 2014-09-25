@@ -26,7 +26,7 @@ class AdminDisplay
   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
   <script src="js/admin.js"></script>
 </head>
-<body onload="$sOnLoadFunc">
+<body onload="$sOnLoadFunc;">
 HTM;
     echo $sHTML;
   }
@@ -383,7 +383,7 @@ HTM;
   {
     echo '<label>Update dates/timeframes for </label>';
     echo '<select name="venue_range">';
-    echo '<option value="ALL" checked>All</option>';
+    echo '<option value="ALL" checked>All venues</option>';
     echo '<option value="COUNTRY">Country</option>';
     echo '<option value="STATE">State</option>';
     echo '<option value="CITY">City</option>';
@@ -399,8 +399,9 @@ HTM;
     }
     
     $aMonths = array(
-        1=>'January', 2=>'February', 3=>'March', 4=>'April', 5=>'May', 6=>'June',
-        7=>'July', 8=>'August', 9=>'September', 10=>'October', 11=>'November', 12=>'December'
+        1=>'January', 2=>'February', 3=>'March', 4=>'April', 
+        5=>'May', 6=>'June', 7=>'July', 8=>'August', 
+        9=>'September', 10=>'October', 11=>'November', 12=>'December'
     );
     
     echo '<br />';
@@ -459,6 +460,10 @@ HTM;
       ? $hPost['month_from'] : '';
     $sTimeFrameTo = (key_exists('month_to', $hPost))
       ? $hPost['month_to'] : '';
+    $sCustomFrom = (key_exists('custom_from', $hPost))
+      ? $hPost['custom_from'] : '';
+    $sCustomTo = (key_exists('custom_to', $hPost))
+      ? $hPost['custom_to'] : '';
     
     echo '<h2>' . $sUserLogin . '</h2>';
     
@@ -476,6 +481,7 @@ HTM;
     
     self::datesVenueRangeSelect($sVenueRange);
     self::datesInputTimeFrame($sVenueRange, $sTimeFrameFrom, $sTimeFrameTo);
+    self::datesInputCustomRange($sVenueRange, $sCustomFrom, $sCustomTo);
     
     /*
     echo '<br />---------   OR   ----------<br />';
@@ -588,6 +594,40 @@ HTM;
           array_push($aDates, "$nYearTo-$sMonth-01");
         }
         break;
+        
+      case AdminDates::CUSTOMRANGE:
+        if(!key_exists('custom_from', $hPost) || !key_exists('custom_to', $hPost))
+        {
+          return 'ERROR: Need both custom range dates.';
+        }
+        
+        $sDateFrom = $hPost['custom_from'];
+        $sDateTo = $hPost['custom_to'];
+        if(empty($sDateFrom) || empty($sDateTo))
+        {
+          return 'ERROR: Need both custom range dates.';
+        }
+        
+        // make sure the 'from' date is in the future
+        $oDateToday = new DateTime();
+        $oDateFrom = new DateTime($sDateFrom);
+        if($oDateFrom <= $oDateToday)
+        {
+          return 'ERROR: Date "from" needs to be in the future.';
+        }
+        
+        // make sure the to date comes after the from date
+        $oDateTo = new DateTime($sDateTo);
+        if($oDateFrom >= $oDateTo)
+        {
+          return 'ERROR: The "to" date needs to be later than the "from" date.';
+        }
+        
+        // convert dates to mysql friendly format
+        // add to dates array
+        array_push($aDates, $oDateFrom->format('Y-m-d'));
+        array_push($aDates, $oDateTo->format('Y-m-d'));
+        break;
     }
     
     try
@@ -601,5 +641,23 @@ HTM;
     }
     
     return 'Successfully updated.';
+  }
+  
+  public static function datesInputCustomRange($sDefaultRange, $sFrom, $sTo)
+  {
+    if(empty($sDefaultRange))
+    {
+      return;
+    }
+    
+    echo '<br />';
+    echo '<input type="radio" name="date_type" value="CUSTOMRANGE">Custom Range';
+    echo '<br />';
+    echo '<label>Date From:</label>';
+    echo '<input type="text" name="custom_from" id="customFrom">';
+    echo '<br />';
+    echo '<label>Date To:</label>';
+    echo '<input type="text" name="custom_to" id="customTo">';
+    echo '<br />';
   }
 }

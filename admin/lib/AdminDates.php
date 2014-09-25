@@ -332,6 +332,19 @@ SQL;
         $sFrom = $sFlooredDate;
         break;
       case self::CUSTOMRANGE:
+        if(2 != count($aDates))
+        {
+          throw new InvalidArgumentException('Need both from and to dates');
+        }
+        $oToday = new DateTime();
+        $oFrom = new DateTime($aDates[0]);
+        if($oToday >= $oFrom)
+        {
+          throw new InvalidArgumentException('from date is in the past');
+        }
+        
+        $sFrom = $oFrom->format('Y-m-d');
+        break;
       case self::QUARTERRANGE:
         throw new RuntimeException("Not yet implemented: $sDateType");
         break;
@@ -377,6 +390,20 @@ SQL;
         $sTo = $sFlooredDateTo;
         break;
       case self::CUSTOMRANGE:
+        if(2 != count($aDates))
+        {
+          throw new InvalidArgumentException('Need both from and to dates');
+        }
+        
+        $oFrom = new DateTime($aDates[0]);
+        $oTo = new DateTime($aDates[1]);
+        if($oTo <= $oFrom)
+        {
+          throw new InvalidArgumentException('The to date needs to be later than the from date');
+        }
+        
+        $sTo = $oTo->format('Y-m-d');
+        break;
       case self::QUARTERRANGE:
         throw new RuntimeException("Not yet implemented: $sDateType");
         break;

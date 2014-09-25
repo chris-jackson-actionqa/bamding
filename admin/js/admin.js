@@ -15,4 +15,15 @@ function initReminderDatePickers()
     });
 }
 
+function initDatesDatePickers()
+{
+  $(function() {
+    $( "#customFrom" ).datepicker();
+    });
+    
+  $(function() {
+    $( "#customTo" ).datepicker();
+    });
+}
+
 
