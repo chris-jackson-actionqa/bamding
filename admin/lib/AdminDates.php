@@ -346,7 +346,15 @@ SQL;
         $sFrom = $oFrom->format('Y-m-d');
         break;
       case self::QUARTERRANGE:
-        throw new RuntimeException("Not yet implemented: $sDateType");
+        // array of dates must be one or two dates exactly
+        if(1 != count($aDates) && 2 != count($aDates))
+        {
+          throw new InvalidArgumentException("Need only one or two dates for the Quarter range.");
+        }
+        
+        // TODO: verify dates in proper "QUARTER" format
+        // return from quarter range
+        $sFrom = $aDates[0];
         break;
       case self::DATES:
         $sFrom = '';
@@ -405,7 +413,12 @@ SQL;
         $sTo = $oTo->format('Y-m-d');
         break;
       case self::QUARTERRANGE:
-        throw new RuntimeException("Not yet implemented: $sDateType");
+        if(2 != count($aDates))
+        {
+          break;
+        }
+        //TODO: verify date is in proper "quarter" format
+        $sTo = $aDates[1];
         break;
       case self::DATES:
         $sTo = '';

@@ -464,6 +464,10 @@ HTM;
       ? $hPost['custom_from'] : '';
     $sCustomTo = (key_exists('custom_to', $hPost))
       ? $hPost['custom_to'] : '';
+    $sQuarterFrom = (key_exists('quarter_from', $hPost))
+      ? $hPost['quarter_from'] : '';
+    $sQuarterTo = (key_exists('quarter_to', $hPost))
+      ? $hPost['quarter_to'] : '';
     
     echo '<h2>' . $sUserLogin . '</h2>';
     
@@ -482,7 +486,7 @@ HTM;
     self::datesVenueRangeSelect($sVenueRange);
     self::datesInputTimeFrame($sVenueRange, $sTimeFrameFrom, $sTimeFrameTo);
     self::datesInputCustomRange($sVenueRange, $sCustomFrom, $sCustomTo);
-    
+    self::datesInputQuarterRange($sVenueRange, $sQuarterFrom, $sQuarterTo);
     /*
     echo '<br />---------   OR   ----------<br />';
     echo '<label>Date from: </label>';
@@ -628,6 +632,32 @@ HTM;
         array_push($aDates, $oDateFrom->format('Y-m-d'));
         array_push($aDates, $oDateTo->format('Y-m-d'));
         break;
+      case AdminDates::QUARTERRANGE:
+        if(!key_exists('quarter_from', $hPost))
+        {
+          return 'ERROR: "Quarter From" is required.';
+        }
+        
+        // "Quarter From" is required and can't be empty
+        // if not empty, push on to dates array
+        $sQuarterFrom = $hPost['quarter_from'];
+        if(empty($sQuarterFrom))
+        {
+          return 'ERROR: "Quarter From" cannot be empty';
+        }
+        else
+        {
+          array_push($aDates, $sQuarterFrom);
+        }
+        
+        // "Quarter To" is optional
+        $sQuarterTo = (key_exists('quarter_to', $hPost))
+                ?$hPost['quarter_to'] : "";
+        if(!empty($sQuarterTo))
+        {
+          array_push($aDates, $sQuarterTo);
+        }
+        break;
     }
     
     try
@@ -658,6 +688,42 @@ HTM;
     echo '<br />';
     echo '<label>Date To:</label>';
     echo '<input type="text" name="custom_to" id="customTo">';
+    echo '<br />';
+  }
+  
+  public static function datesInputQuarterRange($sVenueRange, $sFrom, $sTo)
+  {
+    if(empty($sVenueRange))
+    {
+      return;
+    }
+    
+    $aQuarters = array(
+        AdminDates::FALL=>'Fall',
+        AdminDates::WINTER=>'Winter',
+        AdminDates::SPRING=>'Spring',
+        AdminDates::SUMMER=>'Summer'
+    );
+    
+    echo '<br />';
+    echo '<input type="radio" name="date_type" value="QUARTERRANGE">College Quarter/Semester Range';
+    echo '<br />';
+    echo '<label>Quarter From:</label>';
+    echo '<select name="quarter_from">';
+    $aKeys = array_keys($aQuarters);
+    foreach($aKeys as $sKey)
+    {
+      echo "<option value='$sKey'>$aQuarters[$sKey]</option>";
+    }
+    echo '</select>';
+    echo '<label>Quarter To:</label>';
+    echo '<select name="quarter_to">';
+    echo '<option value="0000-00-00"></option>';
+    foreach($aKeys as $sKey)
+    {
+      echo "<option value='$sKey'>$aQuarters[$sKey]</option>";
+    }
+    echo '</select>';
     echo '<br />';
   }
 }
