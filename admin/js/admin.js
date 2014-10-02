@@ -24,6 +24,10 @@ function initDatesDatePickers()
   $(function() {
     $( "#customTo" ).datepicker();
     });
+  
+  $(function() {
+    $( "#addDate" ).datepicker();
+    });
 }
 
 

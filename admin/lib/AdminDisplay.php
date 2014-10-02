@@ -740,6 +740,7 @@ HTM;
     echo '<br />';
     echo '<label>Add Date</label><br />';
     echo '<input type="text" name="add_date">';
+    echo '<button>Add Date</button>';
     echo '<br />';
     echo '<label>Dates</label>';
     echo '<input type="hidden" name="dates_list">';
