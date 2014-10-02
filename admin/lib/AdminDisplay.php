@@ -487,6 +487,7 @@ HTM;
     self::datesInputTimeFrame($sVenueRange, $sTimeFrameFrom, $sTimeFrameTo);
     self::datesInputCustomRange($sVenueRange, $sCustomFrom, $sCustomTo);
     self::datesInputQuarterRange($sVenueRange, $sQuarterFrom, $sQuarterTo);
+    self::datesInputDates($sVenueRange);
     /*
     echo '<br />---------   OR   ----------<br />';
     echo '<label>Date from: </label>';
@@ -725,5 +726,23 @@ HTM;
     }
     echo '</select>';
     echo '<br />';
+  }
+  
+  public static function datesInputDates($sVenueRange)
+  {
+    if(empty($sVenueRange))
+    {
+      return;
+    }
+    
+    echo '<br />';
+    echo '<input type="radio" name="date_type" value="QUARTERRANGE">College Quarter/Semester Range';
+    echo '<br />';
+    echo '<label>Add Date</label><br />';
+    echo '<input type="text" name="add_date">';
+    echo '<br />';
+    echo '<label>Dates</label>';
+    echo '<input type="hidden" name="dates_list">';
+    echo '<div id="listOfDates"></div>';
   }
 }
