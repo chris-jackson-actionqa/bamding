@@ -736,7 +736,7 @@ HTM;
     }
     
     echo '<br />';
-    echo '<input type="radio" name="date_type" value="QUARTERRANGE">College Quarter/Semester Range';
+    echo '<input type="radio" name="date_type" value="DATES">Date(s)';
     echo '<br />';
     echo '<label>Add Date</label><br />';
     echo '<input type="text" name="add_date">';
