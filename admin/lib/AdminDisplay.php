@@ -422,6 +422,8 @@ HTM;
     }
     echo '</select>';
     
+    echo '<br />';
+    
     echo '<label>Month To: </label>';
     echo '<select name="month_to">';
     // insert the empty option to this array
@@ -438,6 +440,7 @@ HTM;
       echo '<option value="'.$sKey.'" '.$sChecked.'>'.$sMonth.'</option>';
     }
     echo '</select>';
+    echo '<br />';
   }
   
   public static function showDatesForm($hGet, $hPost)
@@ -717,6 +720,9 @@ HTM;
       echo "<option value='$sKey'>$aQuarters[$sKey]</option>";
     }
     echo '</select>';
+    
+    echo '<br />';
+    
     echo '<label>Quarter To:</label>';
     echo '<select name="quarter_to">';
     echo '<option value="0000-00-00"></option>';
@@ -739,8 +745,8 @@ HTM;
     echo '<input type="radio" name="date_type" value="DATES">Date(s)';
     echo '<br />';
     echo '<label>Add Date</label><br />';
-    echo '<input type="text" name="add_date">';
-    echo '<button>Add Date</button>';
+    echo '<input type="text" name="add_date" id="addDate">';
+    echo '<button type="button" onclick="addDateToList();">Add Date</button>';
     echo '<br />';
     echo '<label>Dates</label>';
     echo '<input type="hidden" name="dates_list">';
