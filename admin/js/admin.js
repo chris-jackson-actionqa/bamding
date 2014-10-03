@@ -95,15 +95,16 @@ function displayDatesInDiv(sDiv)
     nMonth = aDates[i].getMonth()+1;
     nDay = aDates[i].getDate();
     
-    if(0 != i)
+    if(0 !== i)
     {
-      sDivText += ", ";
+      sDivText += "&nbsp;";
     }
     
-    sDivText += nMonth + "/" + nDay;
+    sDivText += nMonth + "/" + nDay + 
+            "<button type='button' onclick='removeDate(" + i + ");'>X</button>";
   }
   
-  $(sDiv).text(sDivText);
+  $(sDiv).html(sDivText);
 }
 
 function isDateValid(oDate)
@@ -135,4 +136,10 @@ function isDateInFuture(oDate)
   }
   
   return false;
+}
+
+function removeDate(iDateIndex)
+{
+  aDates.splice(iDateIndex,1);
+  displayDatesInDiv("listOfDates");
 }

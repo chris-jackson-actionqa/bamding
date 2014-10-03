@@ -749,7 +749,7 @@ HTM;
     echo '<button type="button" onclick="addDateToList();">Add Date</button>';
     echo '<br />';
     echo '<label>Dates</label>';
-    echo '<input type="hidden" name="dates_list">';
+    echo '<input type="hidden" name="dates_list" id="hiddenDatesList">';
     echo '<div id="listOfDates"></div>';
   }
 }
