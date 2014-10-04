@@ -66,6 +66,9 @@ function addDateToList()
   aDates.push(oDate);
   aDates.sort(function(a,b){return a-b;});
   
+  //update the hidden field list
+  updateHiddenField();
+  
   // display dates on screen
   displayDatesInDiv("listOfDates");
 }
@@ -141,5 +144,27 @@ function isDateInFuture(oDate)
 function removeDate(iDateIndex)
 {
   aDates.splice(iDateIndex,1);
+  updateHiddenField();
   displayDatesInDiv("listOfDates");
+}
+
+function updateHiddenField()
+{
+  // convert dates in array to sql format
+  var aSQLDates = new Array();
+  for(var i=0; i < aDates.length; ++i)
+  {
+    var oDate = new Date(aDates[i]);
+    var nYear = oDate.getFullYear();
+    var nMonth = oDate.getMonth()+1;
+    var nDay = oDate.getDate();
+    var sMonth = (nMonth < 10)? "0"+nMonth : nMonth;
+    var sDay = (nDay < 10) ? "0" + nDay : nDay;
+    
+    var sSQLDate = nYear + "-" + sMonth + "-" + sDay;
+    aSQLDates.push(sSQLDate);
+  }
+  
+  // replace contents of hidden field
+  $("#hiddenDatesList").val(aSQLDates.toString());
 }

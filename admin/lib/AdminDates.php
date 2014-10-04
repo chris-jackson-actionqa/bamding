@@ -184,7 +184,7 @@ SQL;
     $nDateTypeID = $this->getDateTypeID($sDateType);
     $sDateFrom = $this->getDateFrom($sDateType, $aDates);
     $sDateTo = $this->getDateTo($sDateType, $aDates);
-    $sDates = ''; //TODO
+    $sDates = $this->getDates($sDateType, $aDates);
     
     switch($sVenueRange)
     {
@@ -457,5 +457,31 @@ SQL;
     {
       throw new $sExceptionType($sErrorMessage);
     }
+  }
+  
+  private function getDates($sDateType, $aDates)
+  {
+    $this->throwOnEmpty($sDateType, "Date type can't be empty");
+    $this->throwOnEmpty($aDates, "Dates array can't be empty");
+    
+    if( $sDateType != self::DATES)
+    {
+      return '';
+    }
+    
+    $sDates = "";
+    foreach($aDates as $sDate)
+    {
+      if(empty($sDates))
+      {
+        $sDates = $sDate;
+      }
+      else
+      {
+        $sDates .= ",$sDate";
+      }
+    }
+    
+    return $sDates;
   }
 }

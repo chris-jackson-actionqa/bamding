@@ -662,6 +662,20 @@ HTM;
           array_push($aDates, $sQuarterTo);
         }
         break;
+        
+      case AdminDates::DATES:
+        if(!key_exists('dates_list', $hPost) || empty($hPost['dates_list']))
+        {
+          return "ERROR: The list of dates is missing or empty.";
+        }
+        
+        // convert the string of dates into a dates array
+        $aDates = split(",",$hPost['dates_list']);
+        break;
+      
+      default:
+        throw new InvalidArgumentException("Unrecognized venue range: " + sDateType);
+        break;
     }
     
     try
