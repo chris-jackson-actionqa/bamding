@@ -49,7 +49,7 @@ SQL;
 SELECT DISTINCT user_login, next_contact
 FROM bookings
 WHERE bookings.next_contact<>'0000-00-00' AND
-      DATEDIFF(next_contact,reminder_sent)>3 AND
+      (DATEDIFF(next_contact,reminder_sent)>3 OR reminder_sent='0000-00-00') AND
       pause=0
 ORDER BY bookings.next_contact
 SQL;
