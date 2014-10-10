@@ -459,6 +459,13 @@ SQL;
     }
   }
   
+  /**
+   * Converts the date array into a single, comma-delimited string
+   * 
+   * @param string $sDateType Date type. If not AdminDates::DATES, just returns.
+   * @param array $aDates array of dates
+   * @return string of dates
+   */
   private function getDates($sDateType, $aDates)
   {
     $this->throwOnEmpty($sDateType, "Date type can't be empty");
@@ -483,5 +490,46 @@ SQL;
     }
     
     return $sDates;
+  }
+  
+  public function getExistingDates($sVenueRange, $aRangeValue, $sDateType)
+  {
+    $this->throwOnEmpty($sVenueRange, "Venue range can't be empty");
+    $this->throwOnEmpty($sDateType, "Date type can't be empty");
+    
+    if(self::DATES == $sDateType)
+    {
+      throw new InvalidArgumentException("Date type not implemented.");
+    }
+    
+    switch($sVenueRange)
+    {
+      case self::ALL:
+        break;
+      default:
+        throw new InvalidArgumentException("Venue range not implemented.");
+        break;
+    }
+    
+    $nVenueRangeID = $this->getVenueRangeID($sVenueRange);
+    $nDateType = $this->getDateTypeID($sDateType);
+    
+    $sSQL=<<<SQL
+SELECT dates 
+FROM booking_dates
+WHERE 
+  user_login='{$this->sUserLogin}' AND
+  venue_range=$nVenueRangeID AND
+  date_type=$nDateType
+SQL;
+  
+    $mResult = $this->oConn->query($sSQL);
+    if(FALSE === $mResult)
+    {
+      throw new RuntimeException("Bad sql query.");
+    }
+    
+    $aRow = $mResult->fetch_assoc();
+    return split(",", $aRow['dates']);
   }
 }
