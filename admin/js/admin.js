@@ -193,6 +193,43 @@ function initUserVenues(sUserLogin)
 $(document).ready(function(){
   $("#selectVenueRange").change(function(){
     $("#fieldsetChooseVenueRangeValues").show();
-    $("#selectCountry").html("<option>Blah</option>");
+    
+    $("#selectCountry").html("");
+    
+    var nCount = gaUserVenues.length;
+    for(var i = 0; i < nCount; ++i)
+    {
+      sOptions = $("#selectCountry").html();
+      sOption = "<option value='" + 
+              gaUserVenues[i].country + 
+              "'>" + 
+              gaUserVenues[i].country +
+              "</option>";
+      $("#selectCountry").html(sOptions + sOption);
+    }
   });
-}); 
+});
+
+function uniqueArray(aDataRows, sKey)
+{
+  
+}
+
+/**
+ * If the value is already in the array, returns true.
+ * @param {string} sValue the value to search for
+ * @param {array} aArray array of the values that will be searched
+ * @returns {Boolean} true if value in array. False otherwise.
+ */
+function isInArray(sValue, aArray)
+{
+  for(sArrayValue in aArray)
+  {
+    if(sArrayValue == sValue)
+    {
+      return true;
+    }
+  }
+  
+  return false;
+}
