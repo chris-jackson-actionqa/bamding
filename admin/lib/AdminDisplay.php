@@ -379,15 +379,38 @@ HTM;
     echo '</form>';
   }
   
-  public static function datesVenueRangeSelect($sDefaultRange='')
+  public static function datesVenueRangeSelect($sVenueRange='')
   {
+    // hash map of option's values and text
+    $hOptions = array(
+        'ALL'=>'All venues',
+        'COUNTRY'=>'Country',
+        'STATE'=>'City',
+        'VENUE'=>'Venue'
+    );
+    
+    // if POST contains venue_range, get the value to check against
+    // in the for loop
+    $sRangeSelected = (!empty($sVenueRange)) ? $sVenueRange : 'ALL';
+    
+    // Begin the venue range selection
     echo '<label>Update dates/timeframes for </label>';
-    echo '<select name="venue_range">';
-    echo '<option value="ALL" checked>All venues</option>';
-    echo '<option value="COUNTRY">Country</option>';
-    echo '<option value="STATE">State</option>';
-    echo '<option value="CITY">City</option>';
-    echo '<option value="VENUE">Venue</option>';
+    echo '<select id="selectVenueRange" name="venue_range">';
+    
+    // echo out the options
+    // default checked the appropriate option
+    foreach($hOptions as $sRange=>$sText)
+    {
+      $sSelected = '';
+      if($sRange == $sRangeSelected)
+      {
+        $sSelected = 'selected';
+      }
+      
+      echo "<option value='$sRange' $sSelected>$sText</option>";
+    }
+    
+    // end the selection
     echo '</select>';
   }
   
@@ -487,6 +510,7 @@ HTM;
     echo '<form method="post" action="admin-dates.php?user_login='. $hGet['user_login'] . '">';
     
     self::datesVenueRangeSelect($sVenueRange);
+    self::datesValueRangeValues($sVenueRange);
     self::datesInputTimeFrame($sVenueRange, $sTimeFrameFrom, $sTimeFrameTo);
     self::datesInputCustomRange($sVenueRange, $sCustomFrom, $sCustomTo);
     self::datesInputQuarterRange($sVenueRange, $sQuarterFrom, $sQuarterTo);
@@ -765,5 +789,54 @@ HTM;
     echo '<label>Dates</label>';
     echo '<input type="hidden" name="dates_list" id="hiddenDatesList">';
     echo '<div id="listOfDates"></div>';
+  }
+  
+  public static function datesValueRangeValues($sVenueRange='', $aValues=array())
+  {
+    $sStyle = '';
+    // if venue range is empty or 'ALL', return
+    if(empty($sVenueRange) || AdminDates::ALL === $sVenueRange)
+    {
+      $sStyle = 'style="display: none;"';
+    }
+    
+    // create dropdowns for country, state, city, and venues
+    // hide the ones that aren't applicable
+    // example, if 'country' is the range value, no need to show state, city, or
+    // venues
+    // if venues is selected, display all the dropboxes
+
+    // if 'COUNTRY'
+    // get all the venues' countries
+    // display them in a drop-down box
+    
+    echo '<fieldset id="fieldsetChooseVenueRangeValues" '. $sStyle . '>';
+    echo '<legend>Choose country, state, city, or venue.</legend>';
+    
+    // Country
+    echo '<label id="labelCountry">Country</label>';
+    echo '<select id="selectCountry" name="value_range_country">';
+    echo '</select>';
+    echo '<br />';
+    
+    // State
+    echo '<label>State</label>';
+    echo '<select name="value_range_state">';
+    echo '</select>';
+    echo '<br />';
+    
+    // City
+    echo '<label>City</label>';
+    echo '<select name="value_range_city">';
+    echo '</select>';
+    echo '<br />';
+    
+    // Venue
+    echo '<label>Venue</label>';
+    echo '<select name="value_range_venue">';
+    echo '</select>';
+    echo '<br />';
+    
+    echo '</fieldset>';
   }
 }

@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 
+// initialized by PHP when user selected on AdminDates
+var gaVenues;
+
 function initReminderDatePickers()
 {
   $(function() {
@@ -168,3 +171,28 @@ function updateHiddenField()
   // replace contents of hidden field
   $("#hiddenDatesList").val(aSQLDates.toString());
 }
+
+function initUserVenues(sUserLogin)
+{
+  $.ajax({
+      url: 'ajax/GetUserVenues.php',
+      type: 'post',
+      data: {'user_login': sUserLogin},
+      success: function(data, status) {
+        gaUserVenues = JSON.parse(data);
+      },
+      error: function(xhr, desc, err) {
+        console.log(xhr);
+        console.log("Details: " + desc + "\nError:" + err);
+        alert(xhr.toString());
+        alert("Details: " + desc + "\nError:" + err);
+      }
+    }); // end ajax call
+}
+
+$(document).ready(function(){
+  $("#selectVenueRange").change(function(){
+    $("#fieldsetChooseVenueRangeValues").show();
+    $("#selectCountry").html("<option>Blah</option>");
+  });
+}); 
