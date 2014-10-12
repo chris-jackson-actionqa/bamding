@@ -192,27 +192,109 @@ function initUserVenues(sUserLogin)
 
 $(document).ready(function(){
   $("#selectVenueRange").change(function(){
-    $("#fieldsetChooseVenueRangeValues").show();
-    
+    // clear previous entries
     $("#selectCountry").html("");
     
-    var nCount = gaUserVenues.length;
+    // if the selection is ALL venues, hide the venue range selector area
+    // return, no need to fill in countries
+    if($("#selectVenueRange").val() == 'ALL')
+    {
+      $("#fieldsetChooseVenueRangeValues").fadeOut();
+      return;
+    }
+    
+    $("#fieldsetChooseVenueRangeValues").fadeIn();
+    
+    var aCountries = uniqueArray(gaUserVenues, 'country');
+    var nCount = aCountries.length;
+    var sOption = '';
+    var sOptions = '';
     for(var i = 0; i < nCount; ++i)
     {
       sOptions = $("#selectCountry").html();
-      sOption = "<option value='" + 
-              gaUserVenues[i].country + 
+      sOption += "<option value='" + 
+              aCountries[i] + 
               "'>" + 
-              gaUserVenues[i].country +
+              aCountries[i] +
               "</option>";
       $("#selectCountry").html(sOptions + sOption);
+    }
+    
+    if($("#selectVenueRange").val() != 'STATE' &&
+       $("#selectVenueRange").val() != 'CITY'  &&
+       $("#selectVenueRange").val() != 'VENUE')
+    {
+      $(".state").fadeOut();
+      $(".city").fadeOut();
+      $(".venue").fadeOut();
+      return;
+    }
+    
+    // STATES
+    // get states and populate the state select field
+    $(".state").fadeIn();
+    // get states from country
+    var aStates = getStatesFromCountry($("#selectCountry").val());
+    aStates = uniqueArray(aStates, '');
+    var nCount = aStates.length;
+    sOption = '';
+    for(var i = 0; i < nCount; ++i)
+    {
+      sOption += "<option value='" + 
+              aStates[i] + 
+              "'>" + 
+              aStates[i] +
+              "</option>";
+      $("#selectState").html(sOption);
     }
   });
 });
 
+/**
+ * Returns all the states matching the country in the array. 
+ * This will also return duplicates.
+ * @param {string} sCountry
+ * @returns {getStatesFromCountry.aStates|Array} array of states
+ */
+function getStatesFromCountry(sCountry)
+{
+  var aStates = new Array();
+  var nCount = gaUserVenues.length;
+  for(var i = 0; i < nCount; ++i)
+  {
+    if(sCountry == gaUserVenues[i]['country'])
+    {
+      aStates.push(gaUserVenues[i]['state']);
+    }
+  }
+  
+  return aStates;
+}
+
 function uniqueArray(aDataRows, sKey)
 {
+  var aUnique = new Array();
   
+  var nLength = aDataRows.length;
+  for(var i = 0; i < nLength; ++i)
+  {
+    var sValueToAdd = '';
+    if('' != sKey)
+    {
+      sValueToAdd = aDataRows[i][sKey];
+    }
+    else
+    {
+      sValueToAdd = aDataRows[i];
+    }
+    
+    if( !isInArray(sValueToAdd, aUnique) )
+    {
+      aUnique.push(sValueToAdd);
+    }
+  }
+  
+  return aUnique;
 }
 
 /**
@@ -225,7 +307,8 @@ function isInArray(sValue, aArray)
 {
   for(sArrayValue in aArray)
   {
-    if(sArrayValue == sValue)
+    //alert( sArrayValue + " == " + sValue);
+    if(aArray[sArrayValue] == sValue)
     {
       return true;
     }

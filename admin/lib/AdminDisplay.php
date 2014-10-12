@@ -385,7 +385,8 @@ HTM;
     $hOptions = array(
         'ALL'=>'All venues',
         'COUNTRY'=>'Country',
-        'STATE'=>'City',
+        'STATE'=>'State',
+        'CITY'=>'City',
         'VENUE'=>'Venue'
     );
     
@@ -482,6 +483,13 @@ HTM;
     
     $sVenueRange = (key_exists('venue_range', $hPost))
       ? $hPost['venue_range'] : '';
+    
+    $aVenueRangeValues = array();
+    if(key_exists('value_range_country', $hPost))
+    {
+      $aVenueRangeValues['country'] = $hPost['value_range_country'];
+    }
+    
     $sTimeFrameFrom = (key_exists('month_from', $hPost))
       ? $hPost['month_from'] : '';
     $sTimeFrameTo = (key_exists('month_to', $hPost))
@@ -510,7 +518,7 @@ HTM;
     echo '<form method="post" action="admin-dates.php?user_login='. $hGet['user_login'] . '">';
     
     self::datesVenueRangeSelect($sVenueRange);
-    self::datesValueRangeValues($sVenueRange);
+    self::datesValueRangeValues($sVenueRange, $aVenueRangeValues);
     self::datesInputTimeFrame($sVenueRange, $sTimeFrameFrom, $sTimeFrameTo);
     self::datesInputCustomRange($sVenueRange, $sCustomFrom, $sCustomTo);
     self::datesInputQuarterRange($sVenueRange, $sQuarterFrom, $sQuarterTo);
@@ -556,8 +564,6 @@ HTM;
     echo '</form>';
   }
   
-  const ALL = 'all';
-  
   /**
    * Process the request data sent from the admin-dates form
    * 
@@ -576,15 +582,34 @@ HTM;
       return '';
     }
     
-    /*
-    switch($hPost['venue_range'])
-    {
-      default:
-        break;
-    }
-    */
     $sVenueRange = $hPost['venue_range'];
-    $sRangeValue = ''; //TODO
+    
+    var_dump($hPost);
+    // if venue range isn't all, but country doesn't exist, throw exception
+    if(AdminDates::ALL != $sVenueRange && !key_exists('venue_range_country', $hPost))
+    {
+      return 'ERROR: Country not selected.';
+    }
+    
+    // if venue range is state, state range needs to exist
+    if(AdminDates::STATE === $sVenueRange && !key_exists('venue_range_state', $hPost))
+    {
+      return 'ERROR: State not selected';
+    }
+    
+    // add range values to the array
+    $aRangeValue = array();
+    if(key_exists('venue_range_country', $hPost))
+    {
+      $aRangeValue['country'] = $hPost['venue_range_country'];
+    }
+    
+    if(key_exists('venue_range_state', $hPost))
+    {
+      $aRangeValue['state'] = $hPost['venue_range_state'];
+    }
+    
+    // get date type
     $sDateType = key_exists('date_type',$hPost) ? $hPost['date_type'] : '';
     
     $aDates = array();
@@ -705,7 +730,7 @@ HTM;
     try
     {
     $oAdminDates = new AdminDates($hGet['user_login']);
-    $oAdminDates->updateDatesTimeFrames($hPost['venue_range'], $sRangeValue, $sDateType, $aDates);
+    $oAdminDates->updateDatesTimeFrames($hPost['venue_range'], $aRangeValue, $sDateType, $aDates);
     }
     catch(Exception $ex)
     {
@@ -815,25 +840,33 @@ HTM;
     
     // Country
     echo '<label id="labelCountry">Country</label>';
-    echo '<select id="selectCountry" name="value_range_country">';
+    echo '<select id="selectCountry" name="venue_range_country">';
+    if(key_exists('country', $aValues))
+    {
+      echo '<option value="' . 
+              $aValues['country'] . 
+              '" selected>' . 
+              $aValues['country'] . 
+              "</option>";
+    }
     echo '</select>';
     echo '<br />';
     
     // State
-    echo '<label>State</label>';
-    echo '<select name="value_range_state">';
+    echo '<label class="state">State</label>';
+    echo '<select class="state" id="selectState" name="venue_range_state">';
     echo '</select>';
     echo '<br />';
     
     // City
-    echo '<label>City</label>';
-    echo '<select name="value_range_city">';
+    echo '<label class="city">City</label>';
+    echo '<select class="city" id="selectCity" name="venue_range_city">';
     echo '</select>';
     echo '<br />';
     
     // Venue
-    echo '<label>Venue</label>';
-    echo '<select name="value_range_venue">';
+    echo '<label class="venue">Venue</label>';
+    echo '<select class="venue" id="selectVenue" name="venue_range_venue">';
     echo '</select>';
     echo '<br />';
     

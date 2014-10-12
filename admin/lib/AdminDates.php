@@ -169,15 +169,19 @@ SQL;
   }
   
   const ALL = 'ALL';
+  const COUNTRY = 'COUNTRY';
+  const STATE = 'STATE';
   
   public function updateDatesTimeFrames(
           $sVenueRange, $aRangeValue, $sDateType, $aDates )
   {
-    // save the current listings for the venues
+    //TODO: save the current listings for the venues
     // ..this is to restore them if a problem occurs
     $nVenueRangeID = $this->getVenueRangeID($sVenueRange);
-    $sCountry = '';//TODO getCountry
-    $sState = ''; //TODO getState
+    $sCountry = (key_exists('country', $aRangeValue) && $sVenueRange != self::ALL) ? 
+            $aRangeValue['country'] : '';
+    $sState = (key_exists('state', $aRangeValue) && $sVenueRange === self::STATE) ?
+            $aRangeValue['state'] : '';
     $sCity = ''; //TODO getCity
     $nVenueID = '-1'; //TODO get venue id
     
@@ -186,15 +190,8 @@ SQL;
     $sDateTo = $this->getDateTo($sDateType, $aDates);
     $sDates = $this->getDates($sDateType, $aDates);
     
-    switch($sVenueRange)
-    {
-      case self::ALL:
-        //delete all current listings for the user
-        $this->deleteBookingDates($sVenueRange);
-        break;
-      default:
-        throw new InvalidArgumentException('Invalid venue range: ' . $sVenueRange);
-    }
+    // delete conflicting bookings
+    $this->deleteBookingDates($sVenueRange, $sCountry, $sState, $sCity, $nVenueID);
     
     $sSQL =<<<SQL
 INSERT INTO booking_dates (
@@ -225,6 +222,7 @@ SQL;
     $mResult = $this->oConn->query($sSQL);
     if(FALSE === $mResult)
     {
+      //TODO: restore old bookings
       throw new RuntimeException('Invalid SQL query: ' . $this->oConn->error);
     }
     
@@ -242,20 +240,43 @@ SQL;
     
   }
   
-  private function deleteBookingDates($sVenueRange)
+  private function deleteBookingDates(
+          $sVenueRange, 
+          $sCountry = '', 
+          $sState = '', 
+          $sCity = '', 
+          $nVenueID = -1)
   {
     $mResult = null;
+    //$nVenueRangeID = $this->getVenueRangeID($sVenueRange);
     switch($sVenueRange)
     {
       case self::ALL:
         $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin'";
-        $mResult = $this->oConn->query($sSQL);
+        break;
+      case self::COUNTRY:
+        if(empty($sCountry))
+        {
+          throw new InvalidArgumentException("Country can't be an empty string.");
+        }
+        $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin' AND " .
+                "country='$sCountry'";
+        break;
+      case self::STATE:
+        if(empty($sCountry) || empty($sState))
+        {
+          throw new InvalidArgumentException("Country or state can't be empty.");
+        }
+        $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin' AND " .
+              "country='$sCountry' AND " .
+              "state='$sState'";
         break;
       default:
         throw new InvalidArgumentException("Invalid venue range: $sVenueRange");
         break;
     }
     
+    $mResult = $this->oConn->query($sSQL);
     if(FALSE === $mResult)
     {
       throw new RuntimeException('Unexpected SQL error: ' . $this->oConn->error);
