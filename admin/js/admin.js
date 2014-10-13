@@ -277,7 +277,7 @@ function getStatesFromCountry(sCountry)
   var nCount = gaUserVenues.length;
   for(var i = 0; i < nCount; ++i)
   {
-    if(sCountry.toUpperCase() === gaUserVenues[i]['country'].toUpperCase())
+    if(sCountry.trim().toUpperCase() === gaUserVenues[i]['country'].trim().toUpperCase())
     {
       aStates.push(gaUserVenues[i]['state']);
     }
@@ -304,8 +304,8 @@ function getCitiesFromCountryState(sCountry, sState)
   var nCount = gaUserVenues.length;
   for(var i = 0; i < nCount; ++i)
   {
-    if(sCountry.toUpperCase() === gaUserVenues[i]['country'].toUpperCase() && 
-       sState.toUpperCase() === gaUserVenues[i]['state'].toUpperCase())
+    if(sCountry.trim().toUpperCase() === gaUserVenues[i]['country'].trim().toUpperCase() && 
+       sState.trim().toUpperCase() === gaUserVenues[i]['state'].trim().toUpperCase())
     {
       aCities.push(gaUserVenues[i]['city']);
     }
@@ -350,8 +350,7 @@ function isInArray(sValue, aArray)
 {
   for(sArrayValue in aArray)
   {
-    //alert( sArrayValue + " == " + sValue);
-    if(aArray[sArrayValue].toUpperCase() === sValue.toUpperCase())
+    if(aArray[sArrayValue].trim().toUpperCase() === sValue.trim().toUpperCase())
     {
       return true;
     }
@@ -459,9 +458,9 @@ function getVenuesFromCountryStateCity(sCountry, sState, sCity)
   var nCount = gaUserVenues.length;
   for(var i = 0; i < nCount; ++i)
   {
-    if( sCountry.toUpperCase() === gaUserVenues[i]['country'].toUpperCase() &&
-        sState.toUpperCase() === gaUserVenues[i]['state'].toUpperCase() &&
-        sCity.toUpperCase() === gaUserVenues[i]['city'].toUpperCase())
+    if( sCountry.trim().toUpperCase() === gaUserVenues[i]['country'].trim().toUpperCase() &&
+        sState.trim().toUpperCase() === gaUserVenues[i]['state'].trim().toUpperCase() &&
+        sCity.trim().toUpperCase() === gaUserVenues[i]['city'].trim().toUpperCase())
     {
       aVenues.push([gaUserVenues[i]['id'],gaUserVenues[i]['name']]);
     }

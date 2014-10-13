@@ -181,27 +181,27 @@ SQL;
     // ..this is to restore them if a problem occurs
     $nVenueRangeID = $this->getVenueRangeID($sVenueRange);
     $sCountry = (key_exists('country', $aRangeValue) && $sVenueRange != self::ALL) ? 
-            $aRangeValue['country'] : '';
+            trim($aRangeValue['country']) : '';
     $sState = (key_exists('state', $aRangeValue) && 
                 ($sVenueRange === self::STATE || 
                  $sVenueRange === self::CITY || 
                  $sVenueRange === self::VENUE)
               ) ?
-            $aRangeValue['state'] : '';
+            trim($aRangeValue['state']) : '';
     $sCity = (key_exists('city', $aRangeValue) && 
                ($sVenueRange === self::CITY || 
                 $sVenueRange === self::VENUE)
               ) ?
-            $aRangeValue['city'] : '';
+            trim($aRangeValue['city']) : '';
     $nVenueID = (key_exists('venue', $aRangeValue) && 
                 $sVenueRange === self::VENUE
               ) ?
             (int)$aRangeValue['venue'] : -1;
     
-    $nDateTypeID = $this->getDateTypeID($sDateType);
-    $sDateFrom = $this->getDateFrom($sDateType, $aDates);
-    $sDateTo = $this->getDateTo($sDateType, $aDates);
-    $sDates = $this->getDates($sDateType, $aDates);
+    $nDateTypeID = (int)$this->getDateTypeID($sDateType);
+    $sDateFrom = trim($this->getDateFrom($sDateType, $aDates));
+    $sDateTo = trim($this->getDateTo($sDateType, $aDates));
+    $sDates = trim($this->getDates($sDateType, $aDates));
     
     // delete conflicting bookings
     $this->deleteBookingDates($sVenueRange, $sCountry, $sState, $sCity, $nVenueID);
@@ -274,7 +274,7 @@ SQL;
           throw new InvalidArgumentException("Country can't be an empty string.");
         }
         $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin' AND " .
-                "UPPER(country)=UPPER('$sCountry')";
+                "UPPER(TRIM(country))=UPPER(TRIM('$sCountry'))";
         break;
       case self::STATE:
         if(empty($sCountry) || empty($sState))
@@ -282,8 +282,8 @@ SQL;
           throw new InvalidArgumentException("Country or state can't be empty.");
         }
         $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin' AND " .
-              "UPPER(country)=UPPER('$sCountry') AND " .
-              "UPPER(state)=UPPER('$sState')";
+              "UPPER(TRIM(country))=UPPER(TRIM('$sCountry')) AND " .
+              "UPPER(TRIM(state))=UPPER(TRIM('$sState'))";
         break;
       case self::CITY:
         if(empty($sCountry) || empty($sState) || empty($sCity))
@@ -291,9 +291,9 @@ SQL;
           throw new InvalidArgumentException("Country, state, and city are required.");
         }
         $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin' AND " .
-              "UPPER(country)=UPPER('$sCountry') AND " .
-              "UPPER(state)=UPPER('$sState') AND " .
-              "UPPER(city)=UPPER('$sCity')";
+              "UPPER(TRIM(country))=UPPER(TRIM('$sCountry')) AND " .
+              "UPPER(TRIM(state))=UPPER(TRIM('$sState')) AND " .
+              "UPPER(TRIM(city))=UPPER(TRIM('$sCity'))";
         break;
       case self::VENUE:
         if(empty($sCountry) || empty($sState) || empty($sCity) || empty($nVenueID))
@@ -301,9 +301,9 @@ SQL;
           throw new InvalidArgumentException("Country, state, city, and venue id are required.");
         }
         $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin' AND " .
-              "UPPER(country)=UPPER('$sCountry') AND " .
-              "UPPER(state)=UPPER('$sState') AND " .
-              "UPPER(city)=UPPER('$sCity') AND " .
+              "UPPER(TRIM(country))=UPPER(TRIM('$sCountry')) AND " .
+              "UPPER(TRIM(state))=UPPER(TRIM('$sState')) AND " .
+              "UPPER(TRIM(city))=UPPER(TRIM('$sCity')) AND " .
               "venue_id='$nVenueID'";
         break;
       default:
@@ -318,7 +318,7 @@ SQL;
     }
   }
   
-  private function getVenueRangeID($sVenueRange)
+  public function getVenueRangeID($sVenueRange)
   {
     $sSQL = "SELECT id FROM venue_range WHERE value='$sVenueRange'";
     $mResult = $this->oConn->query($sSQL);
@@ -336,7 +336,7 @@ SQL;
     return $aRow[0];
   }
   
-  private function getDateTypeID($sDateType)
+  public function getDateTypeID($sDateType)
   {
     $sSQL = "SELECT id FROM date_type WHERE type='$sDateType'";
     $mResult = $this->oConn->query($sSQL);
