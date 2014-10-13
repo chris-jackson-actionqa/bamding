@@ -482,7 +482,7 @@ HTM;
     }
     
     $sVenueRange = (key_exists('venue_range', $hPost))
-      ? $hPost['venue_range'] : '';
+      ? $hPost['venue_range'] : AdminDates::ALL;
     
     $aVenueRangeValues = array();
     if(key_exists('value_range_country', $hPost))
@@ -511,6 +511,13 @@ HTM;
       echo "<h3>Message:</h3>" . $sMessage . '<br /><br />';
     }
     
+    // reset venue range to all on success
+    if( $sMessage === 'Successfully updated.')
+    {
+      $sVenueRange = 'ALL';
+    }
+    
+    // displays the dates and timeframes user already has set
     self::displayDatesTimeFrames($sUserLogin);
     
     // form for applying dates
@@ -519,7 +526,7 @@ HTM;
     
     self::datesVenueRangeSelect($sVenueRange);
     self::datesValueRangeValues($sVenueRange, $aVenueRangeValues);
-    self::datesInputTimeFrame($sVenueRange, $sTimeFrameFrom, $sTimeFrameTo);
+    self::datesInputTimeFrame($sVenueRange);
     self::datesInputCustomRange($sVenueRange, $sCustomFrom, $sCustomTo);
     self::datesInputQuarterRange($sVenueRange, $sQuarterFrom, $sQuarterTo);
     self::datesInputDates($sVenueRange);
@@ -584,7 +591,6 @@ HTM;
     
     $sVenueRange = $hPost['venue_range'];
     
-    var_dump($hPost);
     // if venue range isn't all, but country doesn't exist, throw exception
     if(AdminDates::ALL != $sVenueRange && !key_exists('venue_range_country', $hPost))
     {
@@ -592,9 +598,24 @@ HTM;
     }
     
     // if venue range is state, state range needs to exist
-    if(AdminDates::STATE === $sVenueRange && !key_exists('venue_range_state', $hPost))
+    if((AdminDates::STATE === $sVenueRange || AdminDates::CITY === $sVenueRange || 
+        AdminDates::VENUE === $sVenueRange) && 
+        !key_exists('venue_range_state', $hPost))
     {
       return 'ERROR: State not selected';
+    }
+    
+    // if venue range is city or venue, city range needs to exist
+    if((AdminDates::CITY === $sVenueRange || AdminDates::VENUE === $sVenueRange) && 
+        !key_exists('venue_range_city', $hPost))
+    {
+      return 'ERROR: City not selected';
+    }
+    
+    // if venue range is venue, venue range needs to exist
+    if(AdminDates::VENUE === $sVenueRange && !key_exists('venue_range_venue', $hPost))
+    {
+      return 'ERROR: Venue not selected';
     }
     
     // add range values to the array
@@ -607,6 +628,16 @@ HTM;
     if(key_exists('venue_range_state', $hPost))
     {
       $aRangeValue['state'] = $hPost['venue_range_state'];
+    }
+    
+    if(key_exists('venue_range_city', $hPost))
+    {
+      $aRangeValue['city'] = $hPost['venue_range_city'];
+    }
+    
+    if(key_exists('venue_range_venue', $hPost))
+    {
+      $aRangeValue['venue'] = $hPost['venue_range_venue'];
     }
     
     // get date type

@@ -171,6 +171,8 @@ SQL;
   const ALL = 'ALL';
   const COUNTRY = 'COUNTRY';
   const STATE = 'STATE';
+  const CITY = 'CITY';
+  const VENUE = 'VENUE';
   
   public function updateDatesTimeFrames(
           $sVenueRange, $aRangeValue, $sDateType, $aDates )
@@ -180,10 +182,21 @@ SQL;
     $nVenueRangeID = $this->getVenueRangeID($sVenueRange);
     $sCountry = (key_exists('country', $aRangeValue) && $sVenueRange != self::ALL) ? 
             $aRangeValue['country'] : '';
-    $sState = (key_exists('state', $aRangeValue) && $sVenueRange === self::STATE) ?
+    $sState = (key_exists('state', $aRangeValue) && 
+                ($sVenueRange === self::STATE || 
+                 $sVenueRange === self::CITY || 
+                 $sVenueRange === self::VENUE)
+              ) ?
             $aRangeValue['state'] : '';
-    $sCity = ''; //TODO getCity
-    $nVenueID = '-1'; //TODO get venue id
+    $sCity = (key_exists('city', $aRangeValue) && 
+               ($sVenueRange === self::CITY || 
+                $sVenueRange === self::VENUE)
+              ) ?
+            $aRangeValue['city'] : '';
+    $nVenueID = (key_exists('venue', $aRangeValue) && 
+                $sVenueRange === self::VENUE
+              ) ?
+            (int)$aRangeValue['venue'] : -1;
     
     $nDateTypeID = $this->getDateTypeID($sDateType);
     $sDateFrom = $this->getDateFrom($sDateType, $aDates);
@@ -248,7 +261,8 @@ SQL;
           $nVenueID = -1)
   {
     $mResult = null;
-    //$nVenueRangeID = $this->getVenueRangeID($sVenueRange);
+    $nVenueID = (int)$nVenueID; // sanitize venue id
+    
     switch($sVenueRange)
     {
       case self::ALL:
@@ -260,7 +274,7 @@ SQL;
           throw new InvalidArgumentException("Country can't be an empty string.");
         }
         $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin' AND " .
-                "country='$sCountry'";
+                "UPPER(country)=UPPER('$sCountry')";
         break;
       case self::STATE:
         if(empty($sCountry) || empty($sState))
@@ -268,8 +282,29 @@ SQL;
           throw new InvalidArgumentException("Country or state can't be empty.");
         }
         $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin' AND " .
-              "country='$sCountry' AND " .
-              "state='$sState'";
+              "UPPER(country)=UPPER('$sCountry') AND " .
+              "UPPER(state)=UPPER('$sState')";
+        break;
+      case self::CITY:
+        if(empty($sCountry) || empty($sState) || empty($sCity))
+        {
+          throw new InvalidArgumentException("Country, state, and city are required.");
+        }
+        $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin' AND " .
+              "UPPER(country)=UPPER('$sCountry') AND " .
+              "UPPER(state)=UPPER('$sState') AND " .
+              "UPPER(city)=UPPER('$sCity')";
+        break;
+      case self::VENUE:
+        if(empty($sCountry) || empty($sState) || empty($sCity) || empty($nVenueID))
+        {
+          throw new InvalidArgumentException("Country, state, city, and venue id are required.");
+        }
+        $sSQL = "DELETE FROM booking_dates WHERE user_login='$this->sUserLogin' AND " .
+              "UPPER(country)=UPPER('$sCountry') AND " .
+              "UPPER(state)=UPPER('$sState') AND " .
+              "UPPER(city)=UPPER('$sCity') AND " .
+              "venue_id='$nVenueID'";
         break;
       default:
         throw new InvalidArgumentException("Invalid venue range: $sVenueRange");

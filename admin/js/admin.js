@@ -33,7 +33,7 @@ function initDatesDatePickers()
     });
 }
 
-var aDates = new Array();
+var aDates = [];
 
 // adds user's selected date to the list of dates
 // validates the date before adding it to the list
@@ -190,6 +190,10 @@ function initUserVenues(sUserLogin)
     }); // end ajax call
 }
 
+/**
+ * When venue range selection changes
+ * 
+ */
 $(document).ready(function(){
   $("#selectVenueRange").change(function(){
     // clear previous entries
@@ -220,6 +224,7 @@ $(document).ready(function(){
       $("#selectCountry").html(sOptions + sOption);
     }
     
+    // fade out fields  and return if venue range isn't one of the following
     if($("#selectVenueRange").val() != 'STATE' &&
        $("#selectVenueRange").val() != 'CITY'  &&
        $("#selectVenueRange").val() != 'VENUE')
@@ -229,24 +234,33 @@ $(document).ready(function(){
       $(".venue").fadeOut();
       return;
     }
-    
+   
     // STATES
-    // get states and populate the state select field
     $(".state").fadeIn();
-    // get states from country
-    var aStates = getStatesFromCountry($("#selectCountry").val());
-    aStates = uniqueArray(aStates, '');
-    var nCount = aStates.length;
-    sOption = '';
-    for(var i = 0; i < nCount; ++i)
+    updateSelectState();
+    
+    // fade out fields  and return if venue range isn't one of the following
+    if($("#selectVenueRange").val() !== 'CITY'  &&
+       $("#selectVenueRange").val() !== 'VENUE')
     {
-      sOption += "<option value='" + 
-              aStates[i] + 
-              "'>" + 
-              aStates[i] +
-              "</option>";
-      $("#selectState").html(sOption);
+      $(".city").fadeOut();
+      $(".venue").fadeOut();
+      return;
     }
+    
+    // CITY
+    $(".city").fadeIn();
+    updateSelectCity();
+    
+    // fade out fields  and return if venue range isn't one of the following
+    if($("#selectVenueRange").val() !== 'VENUE')
+    {
+      $(".venue").fadeOut();
+      return;
+    }
+    
+    $(".venue").fadeIn();
+    updateSelectVenue();
   });
 });
 
@@ -255,14 +269,15 @@ $(document).ready(function(){
  * This will also return duplicates.
  * @param {string} sCountry
  * @returns {getStatesFromCountry.aStates|Array} array of states
+ * @todo refactor to handle states, cities, and venues based on params
  */
 function getStatesFromCountry(sCountry)
 {
-  var aStates = new Array();
+  var aStates = [];
   var nCount = gaUserVenues.length;
   for(var i = 0; i < nCount; ++i)
   {
-    if(sCountry == gaUserVenues[i]['country'])
+    if(sCountry.toUpperCase() === gaUserVenues[i]['country'].toUpperCase())
     {
       aStates.push(gaUserVenues[i]['state']);
     }
@@ -271,9 +286,37 @@ function getStatesFromCountry(sCountry)
   return aStates;
 }
 
+/**
+ * Get cities based on country and state
+ * @param {string} sCountry
+ * @param {string} sState
+ * @returns {Array|getCitiesFromCountryState.aCities|undefined} array of cities
+ */
+function getCitiesFromCountryState(sCountry, sState)
+{
+  if(sCountry === '' || sState === '')
+  {
+    alert('Either country or state not provided.');
+    return;
+  }
+  
+  var aCities = new Array();
+  var nCount = gaUserVenues.length;
+  for(var i = 0; i < nCount; ++i)
+  {
+    if(sCountry.toUpperCase() === gaUserVenues[i]['country'].toUpperCase() && 
+       sState.toUpperCase() === gaUserVenues[i]['state'].toUpperCase())
+    {
+      aCities.push(gaUserVenues[i]['city']);
+    }
+  }
+  
+  return aCities;
+}
+
 function uniqueArray(aDataRows, sKey)
 {
-  var aUnique = new Array();
+  var aUnique = [];
   
   var nLength = aDataRows.length;
   for(var i = 0; i < nLength; ++i)
@@ -308,11 +351,121 @@ function isInArray(sValue, aArray)
   for(sArrayValue in aArray)
   {
     //alert( sArrayValue + " == " + sValue);
-    if(aArray[sArrayValue] == sValue)
+    if(aArray[sArrayValue].toUpperCase() === sValue.toUpperCase())
     {
       return true;
     }
   }
   
   return false;
+}
+
+$(document).ready(function(){
+  $("#selectCountry").change(function(){
+    // update states
+    updateSelectState();
+    // update cities
+    updateSelectCity();
+    // update venues
+    updateSelectVenue();
+  });
+});
+
+$(document).ready(function(){
+  $("#selectState").change(function(){
+    // update cities
+    updateSelectCity();
+    // update venues
+    updateSelectVenue();
+  });
+});
+
+$(document).ready(function(){
+  $("#selectCity").change(function(){
+    // update venues
+    updateSelectVenue();
+  });
+});
+
+function updateSelectState()
+{
+  // get states from country
+    var aStates = getStatesFromCountry($("#selectCountry").val());
+    aStates = uniqueArray(aStates, '');
+    var nCount = aStates.length;
+    var sOption = '';
+    for(var i = 0; i < nCount; ++i)
+    {
+      sOption += "<option value='" + 
+              aStates[i] + 
+              "'>" + 
+              aStates[i] +
+              "</option>";
+      $("#selectState").html(sOption);
+    }
+}
+
+function updateSelectCity()
+{
+ // get selected country and state
+    var sCountry = $("#selectCountry").val();
+    var sState = $("#selectState").val();
+    
+    // get cities from country and state
+    var aCities = getCitiesFromCountryState(sCountry, sState);
+    aCities = uniqueArray(aCities, '');
+    var nCount = aCities.length;
+    var sOption = '';
+    for(var i = 0; i < nCount; ++i)
+    {
+      sOption += "<option value='" + 
+              aCities[i] + 
+              "'>" + 
+              aCities[i] +
+              "</option>";
+      $("#selectCity").html(sOption);
+    } 
+}
+
+function updateSelectVenue()
+{
+  var sCountry = $("#selectCountry").val();
+  var sState = $("#selectState").val();
+  var sCity = $("#selectCity").val();
+  
+  var aVenues = getVenuesFromCountryStateCity(sCountry, sState, sCity);
+  var nCount = aVenues.length;
+  var sOption = '';
+  for(var i = 0; i < nCount; ++i)
+  {
+    sOption += "<option value='" + 
+              aVenues[i][0] + 
+              "'>" + 
+              aVenues[i][1] +
+              "</option>";
+      $("#selectVenue").html(sOption);
+  }
+}
+
+function getVenuesFromCountryStateCity(sCountry, sState, sCity)
+{
+  if(sCountry === '' || sState === '' || sCity === '')
+  {
+    alert("Country, state, and city must be defined.");
+    return;
+  }
+  
+  var aVenues = [];
+  var nCount = gaUserVenues.length;
+  for(var i = 0; i < nCount; ++i)
+  {
+    if( sCountry.toUpperCase() === gaUserVenues[i]['country'].toUpperCase() &&
+        sState.toUpperCase() === gaUserVenues[i]['state'].toUpperCase() &&
+        sCity.toUpperCase() === gaUserVenues[i]['city'].toUpperCase())
+    {
+      aVenues.push([gaUserVenues[i]['id'],gaUserVenues[i]['name']]);
+    }
+  }
+  
+  return aVenues;
 }
