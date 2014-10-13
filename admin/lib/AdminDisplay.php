@@ -299,92 +299,7 @@ HTM;
     
     if(-1 !== $nAllVenueIndex)
     {
-      // get date type
-      $nTimeframeID = $oAdminDates->getDateTypeID(AdminDates::TIMEFRAME);
-      $nCustomRangeID = $oAdminDates->getDateTypeID(AdminDates::CUSTOMRANGE);
-      $nCollegeID = $oAdminDates->getDateTypeID(AdminDates::QUARTERRANGE);
-      $nDatesID = $oAdminDates->getDateTypeID(AdminDates::DATES);
-      
-      // display timeframe
-      switch ($hDates[$nAllVenueIndex]['date_type'])
-      {
-        case $nTimeframeID:
-          // get from month
-          $nTimestamp = strtotime($hDates[$nAllVenueIndex]['date_from']);
-          $sMonth = date('F', $nTimestamp);
-          echo $sMonth;
-          
-          // get to month
-          if('0000-00-00' !== $hDates[$nAllVenueIndex]['date_to'])
-          {
-            $nTimestamp = strtotime($hDates[$nAllVenueIndex]['date_to']);
-            $sMonth = date('F', $nTimestamp);
-            echo ' through ' . $sMonth . '<br />';
-          }
-          break;
-        case $nCustomRangeID:
-          // get from month
-          $nTimestamp = strtotime($hDates[$nAllVenueIndex]['date_from']);
-          $sMonth = date('F j, Y', $nTimestamp);
-          echo $sMonth;
-          
-          // get to month
-          if('0000-00-00' !== $hDates[$nAllVenueIndex]['date_to'])
-          {
-            $nTimestamp = strtotime($hDates[$nAllVenueIndex]['date_to']);
-            $sMonth = date('F j, Y', $nTimestamp);
-            echo ' through ' . $sMonth . '<br />';
-          }
-          break;
-        case $nCollegeID:
-          // get 'from' quarter
-          $sQuarter = '';
-          switch($hDates[$nAllVenueIndex]['date_from'])
-          {
-            case AdminDates::FALL:
-              $sQuarter = 'Fall';
-              break;
-            case AdminDates::WINTER:
-              $sQuarter = 'Winter';
-              break;
-            case AdminDates::SPRING:
-              $sQuarter = 'Spring';
-              break;
-            case AdminDates::SUMMER:
-              $sQuarter = 'Summer';
-              break;
-          }
-          echo $sQuarter;
-          
-          // get to month
-          if('0000-00-00' !== $hDates[$nAllVenueIndex]['date_to'])
-          {
-            $sQuarter = '';
-            switch($hDates[$nAllVenueIndex]['date_to'])
-            {
-              case AdminDates::FALL:
-                $sQuarter = 'Fall';
-                break;
-              case AdminDates::WINTER:
-                $sQuarter = 'Winter';
-                break;
-              case AdminDates::SPRING:
-                $sQuarter = 'Spring';
-                break;
-              case AdminDates::SUMMER:
-                $sQuarter = 'Summer';
-                break;
-            }
-            echo ' through ' . $sQuarter . '<br />';
-          }
-          break;
-        case $nDatesID:
-          
-          break;
-        default:
-          throw new InvalidArgumentException("Unknown date type in dates");
-          break;
-      }
+      self::datesDisplayDatesTimeFramesForVenueRange($sUser, $hDates[$nAllVenueIndex]);
     }
     
     echo '<br />';
@@ -983,5 +898,127 @@ HTM;
     echo '<br />';
     
     echo '</fieldset>';
+  }
+  
+  public static function datesDisplayDatesTimeFramesForVenueRange($sUser, $hDates, $bIndent = false)
+  {
+    // get date type
+      $oAdminDates = new AdminDates($sUser);
+      $nTimeframeID = $oAdminDates->getDateTypeID(AdminDates::TIMEFRAME);
+      $nCustomRangeID = $oAdminDates->getDateTypeID(AdminDates::CUSTOMRANGE);
+      $nCollegeID = $oAdminDates->getDateTypeID(AdminDates::QUARTERRANGE);
+      $nDatesID = $oAdminDates->getDateTypeID(AdminDates::DATES);
+      
+      // display timeframe
+      switch ($hDates['date_type'])
+      {
+        case $nTimeframeID:
+          // get from month
+          $nTimestamp = strtotime($hDates['date_from']);
+          $sMonth = date('F', $nTimestamp);
+          echo $sMonth;
+          
+          // get to month
+          if('0000-00-00' !== $hDates['date_to'])
+          {
+            $nTimestamp = strtotime($hDates['date_to']);
+            $sMonth = date('F', $nTimestamp);
+            echo ' through ' . $sMonth . '<br />';
+          }
+          break;
+        case $nCustomRangeID:
+          // get from month
+          $nTimestamp = strtotime($hDates['date_from']);
+          $sMonth = date('F j, Y', $nTimestamp);
+          echo $sMonth;
+          
+          // get to month
+          if('0000-00-00' !== $hDates['date_to'])
+          {
+            $nTimestamp = strtotime($hDates['date_to']);
+            $sMonth = date('F j, Y', $nTimestamp);
+            echo ' through ' . $sMonth . '<br />';
+          }
+          break;
+        case $nCollegeID:
+          // get 'from' quarter
+          $sQuarter = '';
+          switch($hDates['date_from'])
+          {
+            case AdminDates::FALL:
+              $sQuarter = 'Fall';
+              break;
+            case AdminDates::WINTER:
+              $sQuarter = 'Winter';
+              break;
+            case AdminDates::SPRING:
+              $sQuarter = 'Spring';
+              break;
+            case AdminDates::SUMMER:
+              $sQuarter = 'Summer';
+              break;
+          }
+          echo $sQuarter;
+          
+          // get to month
+          if('0000-00-00' !== $hDates['date_to'])
+          {
+            $sQuarter = '';
+            switch($hDates['date_to'])
+            {
+              case AdminDates::FALL:
+                $sQuarter = 'Fall';
+                break;
+              case AdminDates::WINTER:
+                $sQuarter = 'Winter';
+                break;
+              case AdminDates::SPRING:
+                $sQuarter = 'Spring';
+                break;
+              case AdminDates::SUMMER:
+                $sQuarter = 'Summer';
+                break;
+            }
+            echo ' through ' . $sQuarter . '<br />';
+          }
+          break;
+        case $nDatesID:
+          $sDates = $hDates['dates'];
+          // split the string to an array of dates
+          $aDates = split(',', $sDates);
+          
+          // find all the months to group by
+          $aMonths = array();
+          foreach($aDates as $sDate)
+          {
+            // get month of entry
+            $sMonth = date('F', strtotime($sDate));
+            array_push($aMonths, $sMonth);
+          }
+          // make sure no duplicate months
+          $aMonths = array_unique($aMonths);
+          
+          // for each month, print the dates belonging to that month
+          foreach($aMonths as $sMonth)
+          {
+            echo "$sMonth: ";
+            $sDay = '';
+            foreach($aDates as $sDate)
+            {
+              $sMonthOfDate = date('F', strtotime($sDate));
+              if(strtoupper($sMonth) === strtoupper($sMonthOfDate))
+              {
+                $sDay .= date('jS', strtotime($sDate)) . ", ";
+              }
+            }
+            $sDay = chop($sDay, ', ');
+            echo $sDay;
+            echo "<br />";
+          }
+          break;
+        default:
+          throw new InvalidArgumentException("Unknown date type in dates");
+          break;
+      }
   }
 }
