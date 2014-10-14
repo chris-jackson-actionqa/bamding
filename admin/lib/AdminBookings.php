@@ -126,4 +126,132 @@ SQL;
     return Database::fetch_all($mResult);
   }
 
+  public function getUpcomingBookings()
+  {
+    $sSQL = <<<SQL
+SELECT DISTINCT user_login, next_contact
+FROM bookings
+WHERE pause=0
+ORDER BY next_contact
+SQL;
+    
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new InvalidArgumentException("Could not get upcoming bookings from the database.");
+      error_log($sSQL);
+      error_log($this->oConn->error);
+    }
+    
+    return Database::fetch_all($mResult);
+  }
+  
+  public function getUserTodayEmailBookings($sUser)
+  {
+    if(empty($sUser))
+    {
+      throw new InvalidArgumentException('User name cannot be empty');
+    }
+    
+    $sSQL = <<<SQL
+SELECT
+  my_venues.email,
+  my_venues.booker_fname,
+  my_venues.name,
+  my_venues.id,
+  my_venues.country,
+  my_venues.state,
+  my_venues.city
+FROM `bookings`
+INNER JOIN my_venues
+ON my_venues.id=bookings.venue_id
+WHERE
+  bookings.next_contact<=CURDATE() AND
+  bookings.user_login='$sUser' AND
+  bookings.pause=0 AND 
+  my_venues.email IS NOT NULL AND
+  my_venues.email<>''
+ORDER BY my_venues.state, my_venues.city;
+SQL;
+    
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new InvalidArgumentException("Could not get bookings from the database.");
+    }
+    
+    return Database::fetch_all($mResult);
+  }
+  
+  public function getUserTodaySubFormBookings($sUser)
+  {
+    if(empty($sUser))
+    {
+      throw new InvalidArgumentException('User name cannot be empty');
+    }
+    
+    $sSQL = <<<SQL
+SELECT
+  my_venues.subform,
+  my_venues.booker_fname,
+  my_venues.name,
+  my_venues.country,
+  my_venues.state,
+  my_venues.city
+FROM `bookings`
+INNER JOIN my_venues
+ON my_venues.id=bookings.venue_id
+WHERE
+  bookings.next_contact<=CURDATE() AND
+  bookings.user_login='$sUser' AND
+  bookings.pause=0 AND 
+  (my_venues.email IS NULL OR my_venues.email='')
+ORDER BY bookings.user_login, my_venues.state, my_venues.city;
+SQL;
+    
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new InvalidArgumentException("Could not get bookings from the database.");
+    }
+    
+    return Database::fetch_all($mResult);
+  }
+  
+  public function updateBookings($sUser)
+  {
+    if(empty($sUser))
+    {
+      return;
+    }
+    
+    $sSQL = <<<SQL
+UPDATE bookings
+SET last_contacted=CURDATE(), next_contact=DATE_ADD(CURDATE(),INTERVAL 2 WEEK)
+WHERE user_login='$sUser' and pause=0 and next_contact<=CURDATE() and frequency_num=2 AND freq_type='W';
+SQL;
+    
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new InvalidArgumentException("Could not update bookings from the database.");
+    }
+    
+    $sSQL = <<<SQL
+UPDATE bookings
+SET last_contacted=CURDATE(), next_contact=DATE_ADD(CURDATE(),INTERVAL 1 MONTH)
+WHERE user_login='$sUser' and pause=0 and next_contact<=CURDATE() and frequency_num=1 AND freq_type='M';
+SQL;
+    
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new InvalidArgumentException("Could not update bookings from the database.");
+    }
+  }
 }

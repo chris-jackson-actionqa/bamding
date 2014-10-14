@@ -347,7 +347,7 @@ SQL;
     
     if( 1 != $mResult->num_rows)
     {
-      throw new InvalidArgumentException('Invalid date type: ' . $sVenueRange);
+      throw new InvalidArgumentException('Invalid date type: ' . $sDateType);
     }
     
     $aRow = $mResult->fetch_row();

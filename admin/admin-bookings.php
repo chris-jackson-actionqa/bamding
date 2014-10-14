@@ -8,11 +8,11 @@
 
 require_once('./lib/adminlib.php');
 
-AdminDisplay::getHeader();
+AdminDisplay::getHeader("Bookings");
 AdminDisplay::getMenu();
-AdminDisplay::getReminders();
-AdminDisplay::getTodaysBookings();
-AdminDisplay::clearBoth();
-AdminDisplay::bookingsForm('admin-bookings.php', 'bookings', $_POST);
-AdminDisplay::displayBookingsTable($_POST);
+AdminDisplayBookings::processBookingUpdate();
+AdminDisplayBookings::upcomingBookings();
+AdminDisplayBookings::showBookingsScript();
+AdminDisplayBookings::showSubForms();
+AdminDisplayBookings::showUpdateBookings();
 AdminDisplay::getFooter();
