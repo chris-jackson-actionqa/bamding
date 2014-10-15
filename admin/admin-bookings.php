@@ -12,6 +12,7 @@ AdminDisplay::getHeader("Bookings");
 AdminDisplay::getMenu();
 AdminDisplayBookings::processBookingUpdate();
 AdminDisplayBookings::upcomingBookings();
+AdminDisplay::showH1User();
 AdminDisplayBookings::showBookingsScript();
 AdminDisplayBookings::showSubForms();
 AdminDisplayBookings::showUpdateBookings();

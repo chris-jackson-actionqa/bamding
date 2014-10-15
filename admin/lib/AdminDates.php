@@ -28,6 +28,11 @@ class AdminDates
     $this->oConn = $oDB->connect();
   }
   
+  /**
+   * Get all the entries for dates and timeframes for the user
+   * @return nothing
+   * @throws Exception SQL error
+   */
   public function getDatesTimeframes()
   {
     

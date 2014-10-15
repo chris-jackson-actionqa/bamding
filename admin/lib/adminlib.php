@@ -15,6 +15,7 @@ require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
 require_once(ADMINPATH . '/lib/AdminDates.php');
 require_once(ADMINPATH . '/lib/AdminDisplay.php');
 require_once(ADMINPATH . '/lib/AdminDisplayBookings.php');
+require_once(ADMINPATH . '/lib/AdminDisplayDates.php');
 require_once(ADMINPATH . '/lib/AdminBookings.php');
 require_once(ADMINPATH . '/lib/AdminReminders.php');
 require_once(ADMINPATH . '/lib/AdminUsers.php');

@@ -5,6 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+require_once('./lib/adminlib.php');
 
 /**
  * Description of AdminDisplay
@@ -557,7 +558,8 @@ HTM;
     }
     
     // displays the dates and timeframes user already has set
-    self::displayDatesTimeFrames($sUserLogin);
+    //self::displayDatesTimeFrames($sUserLogin);
+    AdminDisplayDates::showEditDatesTimeframes();
     
     // form for applying dates
     echo '<h3>Update:</h3>';
@@ -1082,5 +1084,16 @@ HTM;
         throw new InvalidArgumentException("Unknown date type in dates");
         break;
     }
+  }
+  
+  public static function showH1User()
+  {
+    $sUser = (key_exists('user_login', $_GET)) ? $_GET['user_login'] : '';
+    if(empty($sUser))
+    {
+      return;
+    }
+    
+    echo '<h1>'.$sUser.'</h1>';
   }
 }
