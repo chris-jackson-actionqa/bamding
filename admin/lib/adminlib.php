@@ -8,6 +8,7 @@ if(preg_match('/xampp/i', $_SERVER['DOCUMENT_ROOT']))
  else 
 {
   define('ABSPATH', $_SERVER['DOCUMENT_ROOT'] . '/..');
+  define('ADMINPATH', $_SERVER['DOCUMENT_ROOT'] . '/../admin');
 }
 
 require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
