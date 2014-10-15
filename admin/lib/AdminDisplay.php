@@ -217,13 +217,6 @@ HTM;
       return;
     }
     
-    $hTableHeaders = array_keys($hReminderVenues[0]);
-    
-    // Need inline styles for copy/paste to Gmail
-    $sTable = '<table style="border: 1px solid black;border-collapse: collapse;">';
-    $sTD = '<td style="border: 1px solid black;">';
-    $sTH = '<th style="border: 1px solid black;">';
-    
     echo '<div id="user_reminder">';
     echo "<h2>$sUser's Reminder</h2>";
     
@@ -232,19 +225,43 @@ HTM;
     echo "Reminder: Venues will be contacted on ". $hReminderVenues[0]['Next Contact']."<br />";
     echo '<h4>Body:</h4>';
     echo 'The following venues will be contacted:</br>';
-    //echo '<style>table {border-collapse: collapse;}table, td, th {border: 1px solid black;}</style>';
+    
+    // display venues, dates/timeframes, and email standard ending
+    AdminDisplay::displayInlineTable($hReminderVenues);
+    AdminDisplay::displayDatesTimeFrames($sUser);
+    AdminDisplay::standardEmailEnding();
+  }
+  
+  public static function displayInlineTable($hAssocArray)
+  {
+    if(empty($hAssocArray) || 0 == count($hAssocArray))
+    {
+      return;
+    }
+    
+    // Get the keys that will be used for the headers and accessing row data
+    $hTableHeaders = array_keys($hAssocArray[0]);
+    
+    // Need inline styles for copy/paste to Gmail
+    $sTable = '<table style="border: 1px solid black;border-collapse: collapse;">';
+    $sTD = '<td style="border: 1px solid black;">';
+    $sTH = '<th style="border: 1px solid black;">';
+    
     echo $sTable;
     
     // table header row
-    echo '<tr>';
-    foreach($hTableHeaders as $sHeader)
+    if(0 != count($hTableHeaders))
     {
-      echo "$sTH$sHeader</th>";
+      echo '<tr>';
+      foreach($hTableHeaders as $sHeader)
+      {
+        echo "$sTH$sHeader</th>";
+      }
+      echo '</tr>';
     }
-    echo '</tr>';
     
     // table rows
-    foreach($hReminderVenues as $hRow)
+    foreach($hAssocArray as $hRow)
     {
       echo '<tr>';
       foreach($hTableHeaders as $sKey)
@@ -255,10 +272,10 @@ HTM;
     }
     echo '</table>';
     echo '<br />';
-    
-    // dates and time frames
-    AdminDisplay::displayDatesTimeFrames($sUser);
-    
+  }
+  
+  public static function standardEmailEnding()
+  {
     echo "If you'd like to submit more venues:<br/>";
     echo '<a href="http://BamDing.com/myvenues/">My Venues</a><br />';
     echo '<br />';
@@ -267,10 +284,8 @@ HTM;
     echo '<br />';
     echo 'If you have any questions, feel free to reply here.<br />';
     echo '<br />';
-    echo 'Thanks,</br />';
-
+    echo 'Thanks,<br />';
     echo '<div>';
-    
   }
   
   public static function displayDatesTimeFrames($sUser)

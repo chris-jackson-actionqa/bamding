@@ -254,4 +254,37 @@ SQL;
       throw new InvalidArgumentException("Could not update bookings from the database.");
     }
   }
+  
+  public function getUserVenuesContacted($sUser)
+  {
+    if(empty($sUser))
+    {
+      return array();
+    }
+    
+    $sSQL = <<<SQL
+SELECT 
+  my_venues.name AS Venue, 
+  my_venues.city AS City, 
+  my_venues.state AS State, 
+  DATE_FORMAT( bookings.last_contacted, '%m/%d/%Y' ) AS Contacted, 
+  DATE_FORMAT( bookings.next_contact, '%m/%d/%Y' ) AS 'Next Contact'
+FROM `bookings`
+INNER JOIN my_venues ON my_venues.id = bookings.venue_id
+WHERE 
+  bookings.pause=0 AND 
+  bookings.user_login='$sUser' AND 
+  last_contacted=CURDATE()
+ORDER BY my_venues.country, my_venues.state, my_venues.city, my_venues.name;
+SQL;
+    
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new InvalidArgumentException("Could not get contacted venues from the database.");
+    }
+    
+    return Database::fetch_all($mResult);
+  }
 }

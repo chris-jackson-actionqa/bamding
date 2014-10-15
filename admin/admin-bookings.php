@@ -15,4 +15,5 @@ AdminDisplayBookings::upcomingBookings();
 AdminDisplayBookings::showBookingsScript();
 AdminDisplayBookings::showSubForms();
 AdminDisplayBookings::showUpdateBookings();
+AdminDisplayBookings::showBookedEmail();
 AdminDisplay::getFooter();

@@ -136,12 +136,16 @@ class AdminDisplayBookings extends AdminDisplay
   }
   
   public static function
-  showBookedEmail($sUser)
+  showBookedEmail()
   {
+    $sUser = (key_exists('user_login', $_GET)) ? $_GET['user_login'] : '';
     if(empty($sUser))
     {
       return;
     }
+    
+    $oBookings = new AdminBookings();
+    $hVenuesContacted = $oBookings->getUserVenuesContacted($sUser);
     
     echo '<h2>Venues Booked Email</h2>';
     echo '<h3>Subject</h3>';
@@ -149,11 +153,9 @@ class AdminDisplayBookings extends AdminDisplay
     echo '<h3>Body</h3>';
     echo 'The following venues were contacted:<br />';
     //list venues table
-    echo '<br />';
+    AdminDisplayBookings::displayInlineTable($hVenuesContacted);
     // Dates and timeframes
-    echo '<br />';
-    // add more venues
-    // view, pause, resume bookings
-    
+    AdminDisplay::displayDatesTimeFrames($sUser);
+    AdminDisplayBookings::standardEmailEnding();
   }
 }
