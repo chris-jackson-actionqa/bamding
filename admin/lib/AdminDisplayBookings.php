@@ -57,7 +57,8 @@ class AdminDisplayBookings extends AdminDisplay
       $sEmail = $hRow['email'];
       $sBookerFName = (empty($hRow['booker_fname'])) ? '' : $hRow['booker_fname'];
       $sVenueName = $hRow['name'];
-      
+      echo '#' . $hRow['country'] . ', ' . $hRow['state'] . ', ' . $hRow['city'];
+      echo '<br />';
       echo $sEmail . self::DELIM . 
            $sBookerFName . self::DELIM .
            $sVenueName;

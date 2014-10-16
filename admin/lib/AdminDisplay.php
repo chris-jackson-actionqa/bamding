@@ -558,7 +558,7 @@ HTM;
     }
     
     // displays the dates and timeframes user already has set
-    //self::displayDatesTimeFrames($sUserLogin);
+    self::displayDatesTimeFrames($sUserLogin);
     AdminDisplayDates::showEditDatesTimeframes();
     
     // form for applying dates
