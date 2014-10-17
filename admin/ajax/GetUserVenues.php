@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-require_once '../lib/adminlib.php';
+require_once './../lib/adminlib.php';
 
 if(empty($_POST['user_login']))
 {

@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-require_once('./lib/adminlib.php');
+require_once('adminlib.php');
 
 /**
  * Description of AdminDisplay

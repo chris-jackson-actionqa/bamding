@@ -241,8 +241,8 @@ SQL;
     if(FALSE === $mResult)
     {
       //TODO: restore old bookings
-      error_log($sSQL);
-      error_log('Trying to update booking_dates');
+      //error_log($sSQL);
+      //error_log('Trying to update booking_dates');
       throw new RuntimeException('Invalid SQL query: ' . $this->oConn->error . '\n' . $sSQL);
     }
     
@@ -321,8 +321,8 @@ SQL;
     $mResult = $this->oConn->query($sSQL);
     if(FALSE === $mResult)
     {
-      error_log($sSQL);
-      error_log('Trying to delete booking_dates');
+      //error_log($sSQL);
+      //error_log('Trying to delete booking_dates');
       throw new RuntimeException('Unexpected SQL error: ' . $this->oConn->error);
     }
   }
