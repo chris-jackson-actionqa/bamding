@@ -46,19 +46,40 @@ class AdminDisplayDates extends AdminDisplay
     echo '</tr>';
     
     // list all entries
-    foreach($hDates as $hRow)
+    $iIndex = 0;
+    $nCount = count($hDates);
+    for(;$iIndex < $nCount; ++$iIndex)
     {
-      echo '<tr>';
+      $sUserLogin = $hDates[$iIndex]['user_login'];
+      $nVenueRange = (int)$hDates[$iIndex]['venue_range'];
+      $nDateType = $hDates[$iIndex]['date_type'];
+      $sCountry = (empty($hDates[$iIndex]['country'])) ? 
+              '' : trim($hDates[$iIndex]['country']); 
+      $sState = (empty($hDates[$iIndex]['state'])) ? 
+              '' : trim($hDates[$iIndex]['state']);
+      $sCity = (empty($hDates[$iIndex]['city'])) ? 
+              '' : trim($hDates[$iIndex]['city']);
+      $nVenueID = (int)$hDates[$iIndex]['venue_id'];
+      
+      echo '<tr id="editDatesRowID'.$iIndex.'">';
       foreach($hTableHeaders as $sKey)
       {
         echo '<td>';
         if('Delete' === $sKey)
         {
-          echo '<button>X</button>';
+          $sDeleteArgs = "'editDatesRowID$iIndex'," .
+            "'$sUserLogin'" . ',' .
+            $nVenueRange . ',' . 
+            $nDateType . ',' .
+            "'$sCountry'" . ',' .
+            "'$sState'" . ',' .
+            "'$sCity'" . ',' .
+            $nVenueID;
+          echo '<button type="button" onclick="deleteDateTimeframe('.$sDeleteArgs.');">X</button>';
         }
         else
         {
-          echo $hRow[$sKey];
+          echo $hDates[$iIndex][$sKey];
         }
         echo '</td>';
       }

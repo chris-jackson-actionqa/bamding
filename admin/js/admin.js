@@ -468,3 +468,25 @@ function getVenuesFromCountryStateCity(sCountry, sState, sCity)
   
   return aVenues;
 }
+
+function deleteDateTimeframe(
+  sRowID,
+  sUserLogin,
+  nVenueRange,
+  nDateType,
+  sCountry,
+  sState,
+  sCity,
+  nVenueID
+  )
+{
+  $.post( 
+    "ajax/DeleteDateTimeframe.php",
+    { user_login: sUserLogin, venue_range: nVenueRange, date_type: nDateType,
+      country: sCountry, state: sState, city: sCity, venue_id: nVenueID
+    },
+    function() {
+      $('#'+sRowID).fadeOut();
+      }
+    );
+}

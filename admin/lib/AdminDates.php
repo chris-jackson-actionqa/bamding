@@ -260,7 +260,7 @@ SQL;
     
   }
   
-  private function deleteBookingDates(
+  public function deleteBookingDates(
           $sVenueRange, 
           $sCountry = '', 
           $sState = '', 
@@ -311,7 +311,7 @@ SQL;
               "UPPER(TRIM(country))=UPPER(TRIM('$sCountry')) AND " .
               "UPPER(TRIM(state))=UPPER(TRIM('$sState')) AND " .
               "UPPER(TRIM(city))=UPPER(TRIM('$sCity')) AND " .
-              "venue_id='$nVenueID'";
+              "venue_id=$nVenueID";
         break;
       default:
         throw new InvalidArgumentException("Invalid venue range: $sVenueRange");
