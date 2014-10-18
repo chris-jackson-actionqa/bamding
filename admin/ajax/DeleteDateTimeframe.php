@@ -21,4 +21,5 @@ $sCity = (key_exists('city', $_REQUEST)) ?
 $nVenueID = (int)$_REQUEST['venue_id'];
 
 $oAdminDates = new AdminDates($sUser);
-$oAdminDates->deleteBookingDates($nVenueRange, $sCountry, $sState, $sCity, $nVenueID);
+$sVenueRange = $oAdminDates->getVenueRangeFromID($nVenueRange);
+$oAdminDates->deleteBookingDates($sVenueRange, $sCountry, $sState, $sCity, $nVenueID);

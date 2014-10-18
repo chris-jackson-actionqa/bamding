@@ -345,6 +345,32 @@ SQL;
     return $aRow[0];
   }
   
+  /**
+   * Retrieves the string value of the venue range given the ID
+   * @param int $nVenueRange valid venue range ID
+   * @return string Venue range string
+   * @throws RuntimeException on SQL error
+   * @throws InvalidArgumentException if no results found for nVenueRange
+   */
+  public function getVenueRangeFromID($nVenueRange)
+  {
+    $nVenueRange = (int)$nVenueRange;
+    $sSQL = "SELECT value FROM venue_range WHERE id=$nVenueRange";
+    $mResult = $this->oConn->query($sSQL);
+    if(FALSE === $mResult)
+    {
+      throw new RuntimeException('Unknown SQL error: ' . $this->oConn->error);
+    }
+    
+    if( 1 != $mResult->num_rows)
+    {
+      throw new InvalidArgumentException('Invalid venue range id: ' . $nVenueRange);
+    }
+    
+    $aRow = $mResult->fetch_row();
+    return $aRow[0];
+  }
+  
   public function getDateTypeID($sDateType)
   {
     $sSQL = "SELECT id FROM date_type WHERE type='$sDateType'";
