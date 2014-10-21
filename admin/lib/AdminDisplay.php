@@ -289,17 +289,41 @@ HTM;
     echo '<div>';
   }
   
+  /**
+   * Displays user friendly dates and timeframes
+   * @param string $sUser The username for the venues
+   */
   public static function displayDatesTimeFrames($sUser)
   {
+    $sHTML = '';
+    
     // dates and time frames
-    echo '<strong>Dates and TimeFrames:</strong><br />';
+    $sHTML .= "<div id='datesAndTimes'>\n";
+    $sHTML .= self::displayDatesTimeFramesInnerHTML($sUser);
+    $sHTML .= "</div>\n";
+    echo $sHTML;
+  }
+  
+  /**
+   * The inner html for user friendly dates and timeframes.
+   * Intended to be used with an AJAX call.
+   * @param string $sUser username's dates and timeframes to display
+   * @return string the inner html. 
+   */
+  public static function displayDatesTimeFramesInnerHTML($sUser)
+  {
+    
+    $sHTML = '';
+    
+    // dates and time frames
+    $sHTML .= "\t<strong>Dates and TimeFrames:</strong>\n<br />\n";
     
     $oAdminDates = new AdminDates($sUser);
     $hDates = $oAdminDates->getDatesTimeframes($sUser);
     if(0 == count($hDates))
     {
-      echo 'No dates or time frames.<br />';
-      return;
+      $sHTML .= "\t" . 'No dates or time frames.<br />' . "\n";
+      return $sHTML;
     }
     $aKeys = array_keys($hDates[0]);
     
@@ -315,38 +339,39 @@ HTM;
     {
       if($hDates[$nIndex]['venue_range'] === $nALLVenues)
       {
-        echo "All Venues:<br />";
+        $sHTML .= "\tAll Venues:<br />\n";
       }
       else if($hDates[$nIndex]['venue_range'] === $nCountry)
       {
-        echo $hDates[$nIndex]['country'] . ":<br />";
+        $sHTML .= "\t" . $hDates[$nIndex]['country'] . ":<br />";
       }
       else if($hDates[$nIndex]['venue_range'] === $nState)
       {
-        echo $hDates[$nIndex]['state'] . ", " . 
+        $sHTML .= "\t" . $hDates[$nIndex]['state'] . ", " . 
              $hDates[$nIndex]['country'] .
-             ":<br />";
+             ":<br />\n";
       }
       else if($hDates[$nIndex]['venue_range'] === $nCity)
       {
-        echo $hDates[$nIndex]['city'] . ", " . 
+        $sHTML .= $hDates[$nIndex]['city'] . ", " . 
              $hDates[$nIndex]['state'] . ", " . 
              $hDates[$nIndex]['country'] .
-             ":<br />";
+             ":<br />\n";
       }
       else if($hDates[$nIndex]['venue_range'] === $nVenue)
       {
         $oVenues = new Venues('my_venues', $sUser);
         $oVenue = $oVenues->getVenue((int)$hDates[$nIndex]['venue_id']);
-        echo $oVenue->getName() . ", " . 
+        $sHTML .= $oVenue->getName() . ", " . 
              $hDates[$nIndex]['city'] . ", " . 
              $hDates[$nIndex]['state'] . ", " . 
              $hDates[$nIndex]['country'] .
-             ":<br />";
+             ":<br />\n";
       }
-      self::datesDisplayDatesTimeFramesForVenueRange($sUser, $hDates[$nIndex], true);
+      $sHTML .= self::datesDisplayDatesTimeFramesForVenueRange($sUser, $hDates[$nIndex], true);
     }
-    echo '<br />';
+    $sHTML .= '<br />' . "\n";
+    return $sHTML;
   }
   
   public static function getUpdateReminderSentForm($hGet)
@@ -961,6 +986,7 @@ HTM;
   public static function 
     datesDisplayDatesTimeFramesForVenueRange($sUser, $hDates, $bIndent = false)
   {
+    $sHTML = '';
     $sIndent = $bIndent ? self::INDENT : '';
     
     // get date type
@@ -977,31 +1003,31 @@ HTM;
         // get from month
         $nTimestamp = strtotime($hDates['date_from']);
         $sMonth = date('F', $nTimestamp);
-        echo $sIndent . $sMonth;
+        $sHTML .= "\t" . $sIndent . $sMonth;
 
         // get to month
         if('0000-00-00' !== $hDates['date_to'])
         {
           $nTimestamp = strtotime($hDates['date_to']);
           $sMonth = date('F', $nTimestamp);
-          echo ' through ' . $sMonth;
+          $sHTML .= ' through ' . $sMonth;
         }
-        echo '<br />';
+        $sHTML .= '<br />' . "\n";
         break;
       case $nCustomRangeID:
         // get from month
         $nTimestamp = strtotime($hDates['date_from']);
         $sMonth = date('F j, Y', $nTimestamp);
-        echo $sIndent . $sMonth;
+        $sHTML .= $sIndent . $sMonth;
 
         // get to month
         if('0000-00-00' !== $hDates['date_to'])
         {
           $nTimestamp = strtotime($hDates['date_to']);
           $sMonth = date('F j, Y', $nTimestamp);
-          echo ' through ' . $sMonth;
+          $sHTML .= ' through ' . $sMonth;
         }
-        echo '<br />';
+        $sHTML .= '<br />' . "\n";
         break;
       case $nCollegeID:
         // get 'from' quarter
@@ -1021,7 +1047,7 @@ HTM;
             $sQuarter = 'Summer';
             break;
         }
-        echo $sIndent . $sQuarter;
+        $sHTML .= "\t" . $sIndent . $sQuarter;
 
         // get to month
         if('0000-00-00' !== $hDates['date_to'])
@@ -1042,9 +1068,9 @@ HTM;
               $sQuarter = 'Summer';
               break;
           }
-          echo ' through ' . $sQuarter;
+          $sHTML .= ' through ' . $sQuarter;
         }
-        echo '<br />';
+        $sHTML .= '<br />' . "\n";
         break;
       case $nDatesID:
         $sDates = $hDates['dates'];
@@ -1065,7 +1091,7 @@ HTM;
         // for each month, print the dates belonging to that month
         foreach($aMonths as $sMonth)
         {
-          echo "$sIndent$sMonth: ";
+          $sHTML .= "\t$sIndent$sMonth: ";
           $sDay = '';
           foreach($aDates as $sDate)
           {
@@ -1076,14 +1102,16 @@ HTM;
             }
           }
           $sDay = chop($sDay, ', ');
-          echo $sDay;
-          echo "<br />";
+          $sHTML .= $sDay;
+          $sHTML .= "<br />\n";
         }
         break;
       default:
         throw new InvalidArgumentException("Unknown date type in dates");
         break;
     }
+    
+    return $sHTML;
   }
   
   public static function showH1User()

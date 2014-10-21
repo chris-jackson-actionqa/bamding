@@ -30,12 +30,11 @@ class AdminDates
   
   /**
    * Get all the entries for dates and timeframes for the user
-   * @return nothing
+   * @return associative array all user's dates
    * @throws Exception SQL error
    */
   public function getDatesTimeframes()
   {
-    
     $sSQL = <<<SQL
 SELECT * FROM booking_dates
 WHERE user_login='{$this->sUserLogin}'
@@ -622,5 +621,110 @@ SQL;
     
     $aRow = $mResult->fetch_assoc();
     return split(",", $aRow['dates']);
+  }
+  
+  const NEWLINE = 'NEWLINE';
+  
+  /**
+   * Return a 'booking script' friendly dates format complete with NEWLINE 
+   * for multiple dates.
+   * @param int $nVenueID
+   * @return string either the date string or empty string if not found
+   * @todo more elegant solution. Can do one for loop instead of multiple
+   */
+  public function getDatesFromVenueID($nVenueID)
+  {
+    $hDatesTimeFrames = $this->getDatesTimeframes();
+    
+    // start from most specific to least
+    // if venue id specified, return those dates
+    foreach($hDatesTimeFrames as $hRow)
+    {
+      if($hRow['venue_range'] == $this->getVenueRangeID(self::VENUE)&&
+         $nVenueID === $hRow['venue_id'])
+      {
+        return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
+                $this->sUserLogin,
+                $hRow);
+      }
+    }
+    
+    // get the venue's details
+    $oVenues = new Venues('my_venues', $this->sUserLogin);
+    $oVenue = $oVenues->getVenue($nVenueID);
+    $sCity = strtoupper(trim($oVenue->getCity()));
+    $sState = strtoupper(trim($oVenue->getState()));
+    $sCountry = strtoupper(trim($oVenue->getCountry()));
+    
+    // if city specified, return those dates
+    foreach($hDatesTimeFrames as $hRow)
+    {
+      $sRowCity = strtoupper(trim($hRow['city']));
+      $sRowState = strtoupper(trim($hRow['state']));
+      $sRowCountry = strtoupper(trim($hRow['country']));
+      if($hRow['venue_range'] == $this->getVenueRangeID(self::CITY)&&
+         $sCountry === $sRowCountry &&
+         $sState === $sRowState &&
+         $sCity === $sRowCity)
+      {
+        return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
+                $this->sUserLogin,
+                $hRow);
+      }
+    }
+    
+    // if state specified, return those dates
+    foreach($hDatesTimeFrames as $hRow)
+    {
+      $sRowState = strtoupper(trim($hRow['state']));
+      $sRowCountry = strtoupper(trim($hRow['country']));
+      if($hRow['venue_range'] == $this->getVenueRangeID(self::STATE)&&
+         $sCountry === $sRowCountry &&
+         $sState === $sRowState)
+      {
+        return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
+                $this->sUserLogin,
+                $hRow);
+      }
+    }
+    
+    // if country specified, return those dates
+    foreach($hDatesTimeFrames as $hRow)
+    {
+      $sRowCountry = strtoupper(trim($hRow['country']));
+      if($hRow['venue_range'] == $this->getVenueRangeID(self::COUNTRY)&&
+         $sCountry === $sRowCountry)
+      {
+        return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
+                $this->sUserLogin,
+                $hRow);
+      }
+    }
+    
+    // if all venues specified, return those dates
+    foreach($hDatesTimeFrames as $hRow)
+    {
+      if($hRow['venue_range'] == $this->getVenueRangeID(self::ALL))
+      {
+        return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
+                $this->sUserLogin,
+                $hRow);
+      }
+    }
+    
+    return 'NO_DATES';
+  }
+  
+  /**
+   * Return a 'booking script' friendly timeframe format.
+   * If the venue has dates like October 17 and November 13th,
+   * this function will return 'October through November'.
+   * 
+   * @param type $nVenueID
+   * @return type
+   */
+  public function getTimeFrameFromVenueID($nVenueID)
+  {
+    return $sTimeFrame;
   }
 }

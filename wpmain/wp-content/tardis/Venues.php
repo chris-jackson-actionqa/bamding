@@ -123,6 +123,11 @@ SQL;
     return $aVenues;
   }
   
+  /**
+   * Get the venue object from the id
+   * @param int $nVenueID
+   * @return \Venue or null if doesn't exist
+   */
   public function getVenue($nVenueID)
   {
     $nVenueID = (int)$nVenueID;

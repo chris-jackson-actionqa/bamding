@@ -33,6 +33,11 @@ class AdminDisplayBookings extends AdminDisplay
   }
   
   const DELIM = '>>';
+  
+  /**
+   * Booking input script for TourBooking.php
+   * @return nothing
+   */
   public static function 
   showBookingsScript()
   {
@@ -51,17 +56,27 @@ class AdminDisplayBookings extends AdminDisplay
     
     $oBookings = new AdminBookings();
     $hBookings = $oBookings->getUserTodayEmailBookings($sUser);
+    $oAdminDates = new AdminDates($sUser);
     
     foreach($hBookings as $hRow)
     {
       $sEmail = $hRow['email'];
       $sBookerFName = (empty($hRow['booker_fname'])) ? '' : $hRow['booker_fname'];
       $sVenueName = $hRow['name'];
+      
+      $sDates = $oAdminDates->getDatesFromVenueID($hRow['id']);
+      if('NO_DATES' !== $sDates)
+      {
+        // remove trailing new line characters
+        $sDates = str_replace("<br />\n", '', $sDates);
+      }
+      
       echo '#' . $hRow['country'] . ', ' . $hRow['state'] . ', ' . $hRow['city'];
       echo '<br />';
       echo $sEmail . self::DELIM . 
            $sBookerFName . self::DELIM .
-           $sVenueName;
+           $sVenueName . self::DELIM . 
+           $sDates;
       echo '<br />';
     }
   }

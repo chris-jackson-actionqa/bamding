@@ -487,6 +487,16 @@ function deleteDateTimeframe(
     },
     function() {
       $('#'+sRowID).fadeOut();
+      // update date/timeframe user-friendly div
+      $.post(
+        "ajax/DisplayDatesTimeFrames.php",
+        { user_login: sUserLogin },
+        function(data){
+          $("#datesAndTimes").html(data);
+          }
+        );
       }
     );
+    
+  
 }
