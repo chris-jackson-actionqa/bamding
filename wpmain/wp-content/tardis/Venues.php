@@ -33,6 +33,11 @@ class Venues
     $this->sUserID = $sUserID;
     $this->sActID = $sActID;
   }
+  
+  public function __destruct()
+  {
+    $this->oConn->close();
+  }
 
   // add a venue
   public function addVenue(Venue $oVenue)
@@ -178,6 +183,8 @@ SQL;
       
       $sVal = (is_null($hVenue['website'])) ? '' : $hVenue['website'];
       $oVenue->setWebsite($sVal);
+      
+      $mResult->close();
     }
     
     return $oVenue;

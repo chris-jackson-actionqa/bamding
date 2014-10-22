@@ -65,6 +65,7 @@ class AdminDisplayBookings extends AdminDisplay
       $sVenueName = $hRow['name'];
       
       $sDates = $oAdminDates->getDatesFromVenueID($hRow['id']);
+      $sTimeFrame = $oAdminDates->getDatesFromVenueID($hRow['id'], AdminDates::TIMEFRAME_FORMAT);
       if('NO_DATES' !== $sDates)
       {
         // remove trailing new line characters
@@ -76,7 +77,8 @@ class AdminDisplayBookings extends AdminDisplay
       echo $sEmail . self::DELIM . 
            $sBookerFName . self::DELIM .
            $sVenueName . self::DELIM . 
-           $sDates;
+           $sDates . self::DELIM .
+           $sTimeFrame;
       echo '<br />';
     }
   }

@@ -48,7 +48,9 @@ SQL;
     }
     
     //results for above query
-    return Database::fetch_all($mResult);
+    $hAll = Database::fetch_all($mResult);
+    $mResult->close();
+    return $hAll;
   }
   
   /**
@@ -341,6 +343,7 @@ SQL;
     }
     
     $aRow = $mResult->fetch_row();
+    $mResult->close();
     return $aRow[0];
   }
   
@@ -624,6 +627,8 @@ SQL;
   }
   
   const NEWLINE = 'NEWLINE';
+  const DATES_FORMAT = 'DATES_FORMAT';
+  const TIMEFRAME_FORMAT = 'TIMEFRAME_FORMAT';
   
   /**
    * Return a 'booking script' friendly dates format complete with NEWLINE 
@@ -632,7 +637,7 @@ SQL;
    * @return string either the date string or empty string if not found
    * @todo more elegant solution. Can do one for loop instead of multiple
    */
-  public function getDatesFromVenueID($nVenueID)
+  public function getDatesFromVenueID($nVenueID, $sDateOrTimeFrame = self::DATES_FORMAT)
   {
     $hDatesTimeFrames = $this->getDatesTimeframes();
     
@@ -643,9 +648,19 @@ SQL;
       if($hRow['venue_range'] == $this->getVenueRangeID(self::VENUE)&&
          $nVenueID === $hRow['venue_id'])
       {
-        return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
-                $this->sUserLogin,
-                $hRow);
+        if( self::DATES_FORMAT === $sDateOrTimeFrame)
+        {
+          return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
+                  $this->sUserLogin,
+                  $hRow,
+                  self::NEWLINE);
+        }
+        else if( self::TIMEFRAME_FORMAT === $sDateOrTimeFrame)
+        {
+          return AdminDisplay::datesDisplayOnlyTimeFrameFromVenueRange(
+                  $this->sUserLogin,
+                  $hRow);
+        }
       }
     }
     
@@ -667,9 +682,19 @@ SQL;
          $sState === $sRowState &&
          $sCity === $sRowCity)
       {
-        return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
-                $this->sUserLogin,
-                $hRow);
+        if( self::DATES_FORMAT === $sDateOrTimeFrame)
+        {
+          return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
+                  $this->sUserLogin,
+                  $hRow,
+                  self::NEWLINE);
+        }
+        else if( self::TIMEFRAME_FORMAT === $sDateOrTimeFrame)
+        {
+          return AdminDisplay::datesDisplayOnlyTimeFrameFromVenueRange(
+                  $this->sUserLogin,
+                  $hRow);
+        }
       }
     }
     
@@ -682,9 +707,19 @@ SQL;
          $sCountry === $sRowCountry &&
          $sState === $sRowState)
       {
-        return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
-                $this->sUserLogin,
-                $hRow);
+        if( self::DATES_FORMAT === $sDateOrTimeFrame)
+        {
+          return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
+                  $this->sUserLogin,
+                  $hRow,
+                  self::NEWLINE);
+        }
+        else if( self::TIMEFRAME_FORMAT === $sDateOrTimeFrame)
+        {
+          return AdminDisplay::datesDisplayOnlyTimeFrameFromVenueRange(
+                  $this->sUserLogin,
+                  $hRow);
+        }
       }
     }
     
@@ -695,9 +730,19 @@ SQL;
       if($hRow['venue_range'] == $this->getVenueRangeID(self::COUNTRY)&&
          $sCountry === $sRowCountry)
       {
-        return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
-                $this->sUserLogin,
-                $hRow);
+        if( self::DATES_FORMAT === $sDateOrTimeFrame)
+        {
+          return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
+                  $this->sUserLogin,
+                  $hRow,
+                  self::NEWLINE);
+        }
+        else if( self::TIMEFRAME_FORMAT === $sDateOrTimeFrame)
+        {
+          return AdminDisplay::datesDisplayOnlyTimeFrameFromVenueRange(
+                  $this->sUserLogin,
+                  $hRow);
+        }
       }
     }
     
@@ -706,9 +751,19 @@ SQL;
     {
       if($hRow['venue_range'] == $this->getVenueRangeID(self::ALL))
       {
-        return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
-                $this->sUserLogin,
-                $hRow);
+        if( self::DATES_FORMAT === $sDateOrTimeFrame)
+        {
+          return AdminDisplay::datesDisplayDatesTimeFramesForVenueRange(
+                  $this->sUserLogin,
+                  $hRow);
+        }
+        else if( self::TIMEFRAME_FORMAT === $sDateOrTimeFrame)
+        {
+          return AdminDisplay::datesDisplayOnlyTimeFrameFromVenueRange(
+                  $this->sUserLogin,
+                  $hRow,
+                  self::NEWLINE);
+        }
       }
     }
     

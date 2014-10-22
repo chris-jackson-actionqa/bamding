@@ -7,6 +7,7 @@
  */
 
 require_once('./lib/adminlib.php');
+ini_set('max_execution_time', 300); //TODO: debug why timeout occurs
 
 AdminDisplay::getHeader("Bookings");
 AdminDisplay::getMenu();
