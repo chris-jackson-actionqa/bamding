@@ -16,6 +16,6 @@ if (!current_user_can("access_s2member_level1"))
 get_header();  
 
 // display dates and timeframes
-DisplayDates::displayDatesTimeFrames(get_user_field('user_login'));
+DisplayDates::showDatesForm(get_user_field('user_login'), $_GET, $_POST);
 
 get_footer();

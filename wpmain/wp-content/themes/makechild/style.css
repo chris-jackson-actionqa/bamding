@@ -24,3 +24,7 @@ Updated: 2014-07-23 08:19:49
   max-width: 320px;
   min-width: 220px;
 }
+
+#datesAndTimeFrames h2{
+  font-size: 1.2em;
+}
