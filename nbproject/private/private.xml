@@ -2,21 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/xampp/htdocs/bamding/admin/js/admin.js</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/tardis/Venues.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/admin/lib/AdminDisplay.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/admin/lib/AdminBookings.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/admin/lib/AdminReminders.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/test/testinclude.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/admin/admin-dates.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/admin/lib/adminlib.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/admin/admin-user-reminder.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/admin/lib/AdminUsers.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/admin/lib/AdminDates.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/test/VenuesTest.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/admin/admin-bookings.php</file>
-            <file>file:/C:/xampp/htdocs/bamding/wpmain/wp-content/tardis/Database.php</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

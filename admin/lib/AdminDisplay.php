@@ -21,6 +21,7 @@ class AdminDisplay
 <html>
 <head>
   <title>$sTitle</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum=scale=1" />
   <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
   <link rel="stylesheet" type="text/css" href="admin-style.css">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
