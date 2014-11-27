@@ -221,11 +221,30 @@ SQL;
     return Database::fetch_all($mResult);
   }
   
+  /**
+   * @todo Need to dynamically calculate the intervals instead of hardcoding
+   * @param type $sUser
+   * @return type
+   * @throws InvalidArgumentException
+   */
   public function updateBookings($sUser)
   {
     if(empty($sUser))
     {
       return;
+    }
+    
+    $sSQL = <<<SQL
+UPDATE bookings
+SET last_contacted=CURDATE(), next_contact=DATE_ADD(CURDATE(),INTERVAL 1 WEEK)
+WHERE user_login='$sUser' and pause=0 and next_contact<=CURDATE() and frequency_num=1 AND freq_type='W';
+SQL;
+    
+    $mResult = $this->oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new InvalidArgumentException("Could not update bookings from the database.");
     }
     
     $sSQL = <<<SQL
