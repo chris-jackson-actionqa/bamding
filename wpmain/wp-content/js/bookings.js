@@ -116,12 +116,6 @@ function initDatesDatePickers()
     });
 }
 
-$( window ).load(function() {
-  $(document).ready(function(){
-    initDatesDatePickers();
-  });
-});
-
 var aDates = [];
 
 // adds user's selected date to the list of dates

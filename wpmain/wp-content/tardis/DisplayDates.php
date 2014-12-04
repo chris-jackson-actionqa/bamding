@@ -13,8 +13,19 @@ class DisplayDates {
    * @param string $sUserLogin logged in user
    */
   public static function showDatesForm($sUserLogin, $hGet, $hPost){
-    //echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>';
-    echo '<script src="' . Site::getBaseURL() . '/wp-content/js/bookings.js"></script>';
+    ?>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+<script src="<?php echo Site::getBaseURL()?>/wp-content/js/bookings.js"></script>
+<script>
+  $( window ).load(
+  $(function() {
+    initDatesDatePickers();
+    }));
+</script>
+    <?php
     
     $sVenueRange = (key_exists('venue_range', $hPost))
       ? $hPost['venue_range'] : BookingDates::ALL;
