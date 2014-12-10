@@ -58,8 +58,16 @@ class AdminDisplayBookings extends AdminDisplay
     $hBookings = $oBookings->getUserTodayEmailBookings($sUser);
     $oAdminDates = new AdminDates($sUser);
     
+    $category = 'NOT_SET_YET_BRO';
+    
     foreach($hBookings as $hRow)
     {
+      $row_category = strtoupper(trim($hRow['category']));
+      if( $category !== $hRow['category'])
+      {
+        $category = $row_category;
+        echo "<h3>Category: $row_category</h3>";
+      }
       $sEmail = $hRow['email'];
       $sBookerFName = (empty($hRow['booker_fname'])) ? '' : $hRow['booker_fname'];
       $sVenueName = $hRow['name'];
@@ -69,9 +77,11 @@ class AdminDisplayBookings extends AdminDisplay
       if('NO_DATES' !== $sDates)
       {
         // remove trailing new line characters
-        $sDates = str_replace("<br />\n", '', $sDates);
+        $sDates = trim(str_replace("<br />\n", '', $sDates));
       }
       
+      $sTimeFrame = str_replace("&nbsp;", '', $sTimeFrame);
+            
       echo '#' . $hRow['country'] . ', ' . $hRow['state'] . ', ' . $hRow['city'];
       echo '<br />';
       echo $sEmail . self::DELIM . 
@@ -102,8 +112,16 @@ class AdminDisplayBookings extends AdminDisplay
     $oBookings = new AdminBookings();
     $hBookings = $oBookings->getUserTodaySubFormBookings($sUser);
     
+    $category = 'NOT_SET_YET_BRO';
+    
     foreach($hBookings as $hRow)
     {
+      $row_category = strtoupper(trim($hRow['category']));
+      if( $category !== $hRow['category'])
+      {
+        $category = $row_category;
+        echo "<h3>Category: $row_category</h3>";
+      }
       $sWebsite = $hRow['subform'];
       $sBookerFName = (empty($hRow['booker_fname'])) ? '' : $hRow['booker_fname'];
       $sVenueName = $hRow['name'];

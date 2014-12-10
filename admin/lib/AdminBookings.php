@@ -156,6 +156,7 @@ SQL;
     
     $sSQL = <<<SQL
 SELECT
+  my_venues.category,
   my_venues.email,
   my_venues.booker_fname,
   my_venues.name,
@@ -172,7 +173,8 @@ WHERE
   bookings.pause=0 AND 
   my_venues.email IS NOT NULL AND
   my_venues.email<>''
-ORDER BY my_venues.state, my_venues.city;
+ORDER BY my_venues.category, my_venues.country, my_venues.state, 
+  my_venues.city, my_venues.name;
 SQL;
     
     $mResult = $this->oConn->query($sSQL);
@@ -194,6 +196,7 @@ SQL;
     
     $sSQL = <<<SQL
 SELECT
+  my_venues.category,
   my_venues.subform,
   my_venues.booker_fname,
   my_venues.name,
@@ -208,7 +211,8 @@ WHERE
   bookings.user_login='$sUser' AND
   bookings.pause=0 AND 
   (my_venues.email IS NULL OR my_venues.email='')
-ORDER BY bookings.user_login, my_venues.state, my_venues.city;
+ORDER BY my_venues.category, my_venues.country, my_venues.state, 
+  my_venues.city, my_venues.name;
 SQL;
     
     $mResult = $this->oConn->query($sSQL);
