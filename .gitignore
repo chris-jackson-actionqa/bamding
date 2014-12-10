@@ -236,3 +236,4 @@ page-bugs.php
 
 # ignore behat
 bin/
+vendor/
