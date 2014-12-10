@@ -63,7 +63,7 @@ class AdminDisplayBookings extends AdminDisplay
     foreach($hBookings as $hRow)
     {
       $row_category = strtoupper(trim($hRow['category']));
-      if( $category !== $hRow['category'])
+      if( $category !== $row_category)
       {
         $category = $row_category;
         echo "<h3>Category: $row_category</h3>";
@@ -78,6 +78,10 @@ class AdminDisplayBookings extends AdminDisplay
       {
         // remove trailing new line characters
         $sDates = trim(str_replace("<br />\n", '', $sDates));
+      }
+      else
+      {
+          $sDates = $sTimeFrame = '';
       }
       
       $sTimeFrame = str_replace("&nbsp;", '', $sTimeFrame);
@@ -117,7 +121,7 @@ class AdminDisplayBookings extends AdminDisplay
     foreach($hBookings as $hRow)
     {
       $row_category = strtoupper(trim($hRow['category']));
-      if( $category !== $hRow['category'])
+      if( $category !== $row_category)
       {
         $category = $row_category;
         echo "<h3>Category: $row_category</h3>";
