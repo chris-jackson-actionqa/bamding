@@ -224,9 +224,6 @@ pip-log.txt
 ########################
 # NETBEANS
 ########################
-nbproject\*
-nbproject/private/private.xml
-nbproject/private/private.xml
-nbproject/private/private.xml
+nbproject/
 
 vendor/
