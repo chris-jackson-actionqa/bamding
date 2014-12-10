@@ -222,8 +222,9 @@ SQL;
   }
   
   /**
-   * @todo Need to dynamically calculate the intervals instead of hardcoding
-   * @param type $sUser
+   * Update the last_contacted and next_contact dates
+   * 
+   * @param string $sUser
    * @return type
    * @throws InvalidArgumentException
    */
@@ -234,43 +235,44 @@ SQL;
       return;
     }
     
+    // Select distinct frequency and frequency types for this user
     $sSQL = <<<SQL
-UPDATE bookings
-SET last_contacted=CURDATE(), next_contact=DATE_ADD(CURDATE(),INTERVAL 1 WEEK)
-WHERE user_login='$sUser' and pause=0 and next_contact<=CURDATE() and frequency_num=1 AND freq_type='W';
+SELECT DISTINCT frequency_num, freq_type
+FROM bookings
+WHERE user_login='$sUser'
 SQL;
     
     $mResult = $this->oConn->query($sSQL);
-    
     if(FALSE === $mResult)
     {
       throw new InvalidArgumentException("Could not update bookings from the database.");
     }
     
-    $sSQL = <<<SQL
-UPDATE bookings
-SET last_contacted=CURDATE(), next_contact=DATE_ADD(CURDATE(),INTERVAL 2 WEEK)
-WHERE user_login='$sUser' and pause=0 and next_contact<=CURDATE() and frequency_num=2 AND freq_type='W';
-SQL;
+    $hFrequencyTypes['D'] = 'DAY';
+    $hFrequencyTypes['W'] = 'WEEK';
+    $hFrequencyTypes['M'] = 'MONTH';
+    $hFrequencyTypes['Y'] = 'YEAR';
     
-    $mResult = $this->oConn->query($sSQL);
-    
-    if(FALSE === $mResult)
+    while ($hRow = $mResult->fetch_assoc())
     {
-      throw new InvalidArgumentException("Could not update bookings from the database.");
-    }
-    
-    $sSQL = <<<SQL
+      $num_interval = (int)trim($hRow['frequency_num']);
+      $type_freq = trim($hRow['freq_type']);
+      $type_interval = $hFrequencyTypes[$type_freq];
+      $sSQL = <<<SQL
 UPDATE bookings
-SET last_contacted=CURDATE(), next_contact=DATE_ADD(CURDATE(),INTERVAL 1 MONTH)
-WHERE user_login='$sUser' and pause=0 and next_contact<=CURDATE() and frequency_num=1 AND freq_type='M';
+SET last_contacted=CURDATE(), next_contact=DATE_ADD(CURDATE(),INTERVAL $num_interval $type_interval)
+WHERE user_login='$sUser' and 
+      pause=0 and 
+      next_contact<=CURDATE() and 
+      frequency_num=$num_interval AND freq_type='$type_freq';
 SQL;
+      
+      $mUpdateResult = $this->oConn->query($sSQL);
     
-    $mResult = $this->oConn->query($sSQL);
-    
-    if(FALSE === $mResult)
-    {
-      throw new InvalidArgumentException("Could not update bookings from the database.");
+      if(FALSE === $mUpdateResult)
+      {
+        throw new InvalidArgumentException("Could not update bookings from the database.");
+      }
     }
   }
   

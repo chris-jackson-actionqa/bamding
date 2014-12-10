@@ -225,9 +225,6 @@ pip-log.txt
 # NETBEANS
 ########################
 nbproject/
-nbproject/private/private.xml
-nbproject/private/private.xml
-nbproject/private/private.xml
 
 ########################
 # local debugging
@@ -236,4 +233,6 @@ page-bugs.php
 
 # ignore behat
 bin/
+
+>>>>>>> origin/master
 vendor/
