@@ -219,15 +219,21 @@ HTM;
       return;
     }
     
-    echo '<div id="user_reminder">';
-    echo "<h2>$sUser's Reminder</h2>";
+    $user_email = AdminUsers::getEmail($sUser);
     
-    echo '<h3>Reminder email</h3>';
-    echo '<h4>Subject:</h4>';
-    echo "Reminder: Venues will be contacted on ". $hReminderVenues[0]['Next Contact']."<br />";
-    echo '<h4>Body:</h4>';
-    echo 'The following venues will be contacted:</br>';
+    ?>
+    <div id="user_reminder">
+      <h2><?php echo $sUser;?>'s Reminder</h2>
+      <h3>Reminder email</h3>
+      <h4>To:</h4>
+      <a href="mailto:<?php echo $user_email; ?>"><?php echo $user_email; ?></a>
+      <h4>Subject:</h4>
+      Reminder: Venues will be contacted on <?php echo $hReminderVenues[0]['Next Contact']; ?>
+      <br />
+      <h4>Body:</h4>
+      The following venues will be contacted:</br>
     
+      <?php
     // display venues, dates/timeframes, and email standard ending
     AdminDisplay::displayInlineTable($hReminderVenues);
     AdminDisplay::displayDatesTimeFrames($sUser);

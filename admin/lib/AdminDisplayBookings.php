@@ -184,10 +184,13 @@ class AdminDisplayBookings extends AdminDisplay
       return;
     }
     
+    $user_email = AdminUsers::getEmail($sUser);
     $oBookings = new AdminBookings();
     $hVenuesContacted = $oBookings->getUserVenuesContacted($sUser);
     
     echo '<h2>Venues Booked Email</h2>';
+    echo '<h3>To:</h3>';
+    echo '<a href="mailto:' . $user_email . '">' . $user_email . '</a>';
     echo '<h3>Subject</h3>';
     echo 'Venues contacted<br />';
     echo '<h3>Body</h3>';

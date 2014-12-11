@@ -37,4 +37,28 @@ SQL;
     
     return $aUsers;
   }
+  
+  /**
+   * Get the user's email address
+   * 
+   * @param string $user_login
+   * @return string the user's email
+   * @throws Exception
+   */
+  public static function getEmail($user_login)
+  {
+    $oDB = new Database();
+    $oConn = $oDB->connect(true);
+    
+    $sSQL = "SELECT user_email FROM wp_users WHERE user_login='$user_login'";
+    $mResult = $oConn->query($sSQL);
+    
+    if(FALSE === $mResult)
+    {
+      throw new RuntimeException("Could not get $user_login's email.");
+    }
+    
+    $hRow = $mResult->fetch_assoc();
+    return trim($hRow['user_email']);
+  }
 }
