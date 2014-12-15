@@ -24,6 +24,9 @@ class Venue
   private $sZip = '';
   private $sCountry = '';
   
+  // information
+  private $note = '';
+  
   
   //-------GETTERS AND SETTERS
   /**
@@ -155,4 +158,27 @@ class Venue
   {
     $this->sCountry = $sCountry;
   }
-};
+  
+  /**
+   * Get the venue's notes
+   * @return string
+   */
+  public function getNote()
+  {
+    return $this->note;
+  }
+  
+  /**
+   * Set the note
+   * @param string $note
+   * @throws InvalidArgumentException
+   */
+  public function setNote($note)
+  {
+    if(strlen($note) > 65535)
+    {
+      throw new InvalidArgumentException("Notes must be less than 65,535 characters long.");
+    }
+    $this->note = $note;
+  }
+}

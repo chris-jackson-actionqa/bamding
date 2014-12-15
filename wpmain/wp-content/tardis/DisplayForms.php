@@ -25,6 +25,25 @@ class DisplayForms
     }
   }
   
+  /**
+   * Displays a <textarea>
+   * @param string $sLabel for the <label>
+   * @param string $sName name attribute for <textarea>
+   * @param string $sValue content for <textarea>
+   * @param string $sAttributes optional attributes
+   */
+  public static function displayTextArea($sLabel, $sName, $sValue = '', $sAttributes = '')
+  {
+    ?>
+<label><?php echo $sLabel; ?></label>
+<br />
+<textarea name="<?php echo $sName; ?>" <?php echo $sAttributes; ?> >
+<?php echo $sValue; ?>
+</textarea>
+<br />
+    <?php 
+  }
+  
   public static function displayVenueForm($sAction, $nBehavior, $nVenueID = -1)
   {
     // Can't have an empty action url for the form
@@ -91,6 +110,11 @@ class DisplayForms
     
     DisplayForms::displayInput
             ('Website:', 'url', 'bd_venue_website', $oVenue->getWebsite());
+    
+    DisplayForms::displayTextArea
+            ('Note:', 'bd_venue_note', $oVenue->getNote(),
+            'cols="50" maxlength="65535"'
+            );
     
     // Submit button
     $sSubmitText = (DisplayForms::EDIT_VENUE == $nBehavior) ? 'Update Venue' : 'Add Venue';

@@ -39,7 +39,7 @@ class ProcessForms
         break;
       default:
         return; //do nothing
-    };
+    }
     
     $oVenue = new Venue();
     
@@ -157,6 +157,11 @@ class ProcessForms
             && !empty($hPostData['bd_venue_website']) )
     {
       $oVenue->setWebsite($hPostData['bd_venue_website']);
+    }
+    
+    if( array_key_exists('bd_venue_note', $hPostData))
+    {
+      $oVenue->setNote($hPostData['bd_venue_note']);
     }
     
     // Error if both email and submission form are empty.

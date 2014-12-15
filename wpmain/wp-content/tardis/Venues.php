@@ -12,6 +12,7 @@ class Venues
 {
   private $oConn;
   private $sTable;
+  private $sTableNotes = 'my_venues_notes';
   private $sUserID;
   private $sActID;
 
@@ -100,6 +101,35 @@ SQL;
       throw new Exception("Unable to add venue to database: " .
         $this->oConn->error );
     }
+    
+    $this->addVenueNote($oVenue);
+}
+
+public function addVenueNote(Venue $oVenue)
+{
+  $venue_id = $this->getVenueID($oVenue);
+  
+  $sSQL = <<<SQL
+INSERT INTO $this->sTableNotes
+(
+  user_login,
+  venue_id,
+  note
+)
+VALUES
+(
+'{$this->sUserID}',
+'$venue_id',
+'{$oVenue->getNote()}'
+)
+SQL;
+  $mResult = $this->oConn->query($sSQL);
+
+  if(TRUE !== $mResult )
+  {
+    throw new Exception("Unable to add venue note to database: " .
+      $this->oConn->error );
+  }
 }
 
   // get venues
@@ -235,6 +265,7 @@ SQL;
       throw new RuntimeException("Failed to remove venue.");
     }
   }
+  
   
   /**
    * Updates an existing venue
