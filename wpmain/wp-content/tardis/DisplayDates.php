@@ -480,6 +480,9 @@ class DisplayDates {
     {
     $oBookingDates = new BookingDates($hGet['user_login']);
     $oBookingDates->updateDatesTimeFrames($hPost['venue_range'], $aRangeValue, $sDateType, $aDates);
+    mail( "seth@bamding.com", 
+          "Dates changed for ".$hGet['user_login'], 
+          "Dates changed for ".$hGet['user_login']);
     }
     catch(Exception $ex)
     {
