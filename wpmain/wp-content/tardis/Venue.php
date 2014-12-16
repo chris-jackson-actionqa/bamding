@@ -25,6 +25,7 @@ class Venue
   private $sCountry = '';
   
   // information
+  private $category = '';
   private $note = '';
   
   
@@ -180,5 +181,23 @@ class Venue
       throw new InvalidArgumentException("Notes must be less than 65,535 characters long.");
     }
     $this->note = $note;
+  }
+  
+  /**
+   * Get the category
+   * @return string
+   */
+  public function getCategory()
+  {
+    return $this->category;
+  }
+  
+  /**
+   * Set category
+   * @param string $category
+   */
+  public function setCategory($category)
+  {
+    $this->category = $category;
   }
 }

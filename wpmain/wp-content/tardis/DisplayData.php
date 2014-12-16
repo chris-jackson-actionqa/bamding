@@ -25,17 +25,23 @@ class DisplayData
     }
     $sAction = Site::getBaseURL() . '/removevenue/';
     echo '<form name="bdVenueList" action="' . $sAction . '" method="post">';
-    echo '<table>';
     
-    //display field names
     ?>
-<tr>
-  <th>Remove</th>
-  <th>Venue</th>
-  <th>City</th>
-  <th>State</th>
-  <th>Country</th>
-</tr>
+<select name="bd_venues_bulk_action">
+  <option value="bulk">Bulk Action</option>
+  <option value="remove">Remove</option>
+  <option value="category">Set Category</option>
+</select>
+<input type='submit' value='Apply'>
+<table>
+  <tr>
+    <th><input name="bd_select_all_venues" type="checkbox"></th>
+    <th>Venue</th>
+    <th>City</th>
+    <th>State</th>
+    <th>Country</th>
+    <th>Category</th>
+  </tr>
     
   <?php
     
@@ -58,10 +64,22 @@ class DisplayData
       echo "  <td>" . $aRow['state'] . "</td>";
       // Country
       echo "  <td>" . $aRow['country'] . "</td>";
+      
+      ?>
+    <td><?php echo $aRow['category'];?></td>
+  </tr>
+<?php
     }
-    echo '</table>';
-    echo "<input type='submit' value='Remove'>";
-    echo '</form>';
+?>
+</table>
+<select name="bd_venues_bulk_action">
+  <option value="bulk">Bulk Action</option>
+  <option value="remove">Remove</option>
+  <option value="category">Set Category</option>
+</select>
+<input type='submit' value='Apply'>
+</form>
+<?php
   }
   
 }
