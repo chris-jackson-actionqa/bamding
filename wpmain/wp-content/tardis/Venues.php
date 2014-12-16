@@ -102,12 +102,12 @@ SQL;
         $this->oConn->error );
     }
     
-    $this->addVenueNote($oVenue);
+    $this->addVenueNote($this->getVenueID($oVenue), $oVenue->getNote());
 }
 
-public function addVenueNote(Venue $oVenue)
+public function addVenueNote($nVenueID, $note)
 {
-  $venue_id = $this->getVenueID($oVenue);
+  $venue_id = (int)$nVenueID;
   
   $sSQL = <<<SQL
 INSERT INTO $this->sTableNotes
@@ -120,7 +120,7 @@ VALUES
 (
 '{$this->sUserID}',
 '$venue_id',
-'{$oVenue->getNote()}'
+'$note'
 )
 SQL;
   $mResult = $this->oConn->query($sSQL);
@@ -214,10 +214,36 @@ SQL;
       $sVal = (is_null($hVenue['website'])) ? '' : $hVenue['website'];
       $oVenue->setWebsite($sVal);
       
+      $oVenue->setNote($this->getVenueNote($nVenueID));
+      
       $mResult->close();
     }
     
     return $oVenue;
+  }
+  
+  /**
+   * Return the venues note
+   * @param int $nVenueID
+   * @return string note
+   */
+  public function getVenueNote($nVenueID)
+  {
+    $nVenueID = (int)$nVenueID;
+    $sUserID = $this->sUserID;
+    $sSQL = "SELECT * FROM my_venues_notes "
+            . "WHERE user_login='$sUserID' AND venue_id='$nVenueID'";
+    $mResult = $this->oConn->query($sSQL);
+    
+    $note = '';
+    if(FALSE !== $mResult)
+    {
+      $hNoteRow = $mResult->fetch_assoc();
+      $note = $hNoteRow['note'];
+      $mResult->close();
+    }
+    
+    return $note;
   }
 
   // remove a venue
@@ -263,6 +289,23 @@ SQL;
     if(FALSE === $mResult)
     {
       throw new RuntimeException("Failed to remove venue.");
+    }
+    
+    $this->removeVenueNote($nVenueID);
+  }
+  
+  /**
+   * Delete the note row from the database.
+   * @param int $nVenueID
+   * @throws RuntimeException
+   */
+  public function removeVenueNote($nVenueID)
+  {
+    $sSQL = "DELETE FROM my_venues_notes WHERE venue_id=$nVenueID";
+    $mResult = $this->oConn->query($sSQL);
+    if(FALSE === $mResult)
+    {
+      throw new RuntimeException("Could not delete venue's notes.");
     }
   }
   
@@ -316,6 +359,59 @@ SQL;
     {
       throw new RuntimeException("Failed to update venue.");
     }
+    
+    $this->updateVenueNote($nVenueID, $oVenue->getNote());
+  }
+  
+  /**
+   * Update the venue note. Create a new note entry if the venue's note doesn't
+   * exist.
+   * @param int $nVenueID
+   * @param string $note
+   * @throws RuntimeException
+   */
+  public function updateVenueNote($nVenueID, $note)
+  {
+    // if venue id doesn't exist in note db
+    if(!$this->doesVenueNoteExist($nVenueID))
+    {
+      // add new venue note
+      $this->addVenueNote($nVenueID, $note);
+    }
+    else
+    {
+      // update venue note
+      $sSQL = <<<SQL
+UPDATE my_venues_notes
+SET note='$note'
+WHERE user_login='{$this->sUserID}' AND venue_id=$nVenueID
+SQL;
+      $mResult = $this->oConn->query($sSQL);
+      
+      if(FALSE === $mResult)
+      {
+        throw new RuntimeException("Could not update venue's note.");
+      }
+    }
+  }
+  
+  /**
+   * Check if the note exists for the venue id
+   * @param int $nVenueID
+   * @return bool
+   */
+  public function doesVenueNoteExist($nVenueID)
+  {
+    $nVenueID = (int)$nVenueID;
+    
+    $sSQL = "SELECT * FROM my_venues_notes WHERE venue_id=$nVenueID";
+    $mResult = $this->oConn->query($sSQL);
+    $ret = FALSE;
+    if(FALSE !== $mResult && 0 !== $mResult->num_rows)
+    {
+      $ret = TRUE;
+    }
+    return $ret;
   }
   
   public function doesVenueBelongToUser($nVenueID)
