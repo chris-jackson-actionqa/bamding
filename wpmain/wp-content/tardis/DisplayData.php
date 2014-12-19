@@ -16,6 +16,10 @@ class DisplayData
 {
   public static function displayMyVenues($sUserID)
   {
+    $script_location = Site::getBaseURL().'/wp-content/js/bookings.js';
+    ?>
+<script src='<?php echo $script_location; ?>'></script>
+  <?php
     $oVenues = new Venues('my_venues', $sUserID);
     $aAllMyVenues = $oVenues->getAllMyVenues();
     if(0 == count($aAllMyVenues))
@@ -35,7 +39,10 @@ class DisplayData
 <input type='submit' value='Apply'>
 <table>
   <tr>
-    <th><input name="bd_select_all_venues" type="checkbox"></th>
+    <th>
+      <input name="bd_select_all_venues" type="checkbox" 
+             onchange="toggleAllMyVenuesCheckBoxes(this);">
+    </th>
     <th>Venue</th>
     <th>City</th>
     <th>State</th>

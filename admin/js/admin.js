@@ -497,6 +497,5 @@ function deleteDateTimeframe(
         );
       }
     );
-    
-  
 }
+
