@@ -28,53 +28,57 @@ class DisplayData
       return;
     }
     $sAction = Site::getBaseURL() . '/removevenue/';
-    echo '<form name="bdVenueList" action="' . $sAction . '" method="post">';
-    
     ?>
-<select name="bd_venues_bulk_action">
-  <option value="bulk">Bulk Action</option>
-  <option value="remove">Remove</option>
-  <option value="category">Set Category</option>
-</select>
-<input type='submit' value='Apply'>
-<table>
-  <tr>
-    <th>
-      <input name="bd_select_all_venues" type="checkbox" 
-             onchange="toggleAllMyVenuesCheckBoxes(this);">
-    </th>
-    <th>Venue</th>
-    <th>City</th>
-    <th>State</th>
-    <th>Country</th>
-    <th>Category</th>
-  </tr>
+<form name="bdVenueList" action="<?php echo $sAction; ?>" method="post">
+    <select name="bd_venues_bulk_action">
+      <option value="bulk">Bulk Action</option>
+      <option value="remove">Remove</option>
+      <option value="category">Set Category</option>
+    </select>
+    <input type='submit' value='Apply'>
+    
+    <table>
+      <tr>
+        <th>
+          <input name="bd_select_all_venues" type="checkbox" 
+                 id="my_venues_header_checkbox"
+                 onchange="toggleAllMyVenuesCheckBoxes(this);">
+        </th>
+        <th>Venue</th>
+        <th>City</th>
+        <th>State</th>
+        <th>Country</th>
+        <th>Category</th>
+      </tr>
     
   <?php
     
     foreach($aAllMyVenues as $aRow)
     {
-      echo "<tr>";
-      // check box with venue id
-      echo "  <td><input type='checkbox' name='" .
-              $aRow['name'] . "' value='" . $aRow['id'] . "'>" .
-              "</td>";
-      // Venue
-      echo "  <td><a href='" .
-              Site::getBaseURL() . '/editvenue' .
-              '?venue_id=' . $aRow['id'] .
-              "'>" .
-              $aRow['name'] . "</a></td>";
-      // City
-      echo "  <td>" . $aRow['city'] . "</td>";
-      // State
-      echo "  <td>" . $aRow['state'] . "</td>";
-      // Country
-      echo "  <td>" . $aRow['country'] . "</td>";
-      
       ?>
-    <td><?php echo $aRow['category'];?></td>
-  </tr>
+      <tr>
+        <!-- NAME -->
+        <td>
+            <input type='checkbox' 
+                   name="<?phpecho $aRow['name'];?>" 
+                   value="<?phpecho $aRow['id'];?>"
+                   onchange="uncheckMyVenuesHeaderCheckbox();">
+        </td>
+        <!-- Venue -->
+        <td>
+            <a href="<?php
+                echo Site::getBaseURL() . '/editvenue?venue_id=' . $aRow['id'];?>">
+                <?php echo $aRow['name'];?>
+            </a>
+        </td>
+        <!-- City -->
+        <td><?php echo $aRow['city'];?></td>
+        <!-- State -->
+        <td><?php echo $aRow['state'];?></td>
+        <!-- Country -->
+        <td><?php echo $aRow['country'];?></td>
+        <td><?php echo $aRow['category'];?></td>
+      </tr>
 <?php
     }
 ?>

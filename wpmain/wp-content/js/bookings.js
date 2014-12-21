@@ -594,18 +594,21 @@ function deleteDateTimeframe(
 function toggleAllMyVenuesCheckBoxes(ele)
 {
   var checkboxes = document.getElementsByTagName('input');
-  if (ele.checked) {
-         for (var i = 0; i < checkboxes.length; i++) {
-             if (checkboxes[i].type === 'checkbox') {
-                 checkboxes[i].checked = true;
-             }
-         }
-     } else {
-         for (var i = 0; i < checkboxes.length; i++) {
-             console.log(i)
-             if (checkboxes[i].type === 'checkbox') {
-                 checkboxes[i].checked = false;
-             }
-         }
-     }
+    for (var i = 0; i < checkboxes.length; i++) 
+    {
+        if (checkboxes[i].type === 'checkbox') 
+        {
+            checkboxes[i].checked = ele.checked;
+        }
+    }
 }
+
+/**
+ * Uncheck the header checkbox on My Venues table
+ */
+function uncheckMyVenuesHeaderCheckbox()
+{
+    var checkbox = document.getElementById("my_venues_header_checkbox");
+    checkbox.checked = false;
+}
+
