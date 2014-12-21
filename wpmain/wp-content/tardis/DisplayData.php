@@ -1,5 +1,5 @@
 <?php
-require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
+require_once(ABSPATH . '/wp-content/tardis/bamding_lib.php');
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,87 +12,80 @@ require_once(ABSPATH. '/wp-content/tardis/bamding_lib.php');
  *
  * @author Seth
  */
-class DisplayData 
-{
-  public static function displayMyVenues($sUserID)
-  {
-    $script_location = Site::getBaseURL().'/wp-content/js/bookings.js';
-    ?>
-<script src='<?php echo $script_location; ?>'></script>
-  <?php
-    $oVenues = new Venues('my_venues', $sUserID);
-    $aAllMyVenues = $oVenues->getAllMyVenues();
-    if(0 == count($aAllMyVenues))
-    {
-      echo '<div>No venues found for you.</div>';
-      return;
+class DisplayData {
+
+    public static function displayMyVenues($sUserID) {
+        $script_location = Site::getBaseURL() . '/wp-content/js/bookings.js';
+        ?>
+        <script src='<?php echo $script_location; ?>'></script>
+        <?php
+        $oVenues = new Venues('my_venues', $sUserID);
+        $aAllMyVenues = $oVenues->getAllMyVenues();
+        if (0 == count($aAllMyVenues)) {
+            echo '<div>No venues found for you.</div>';
+            return;
+        }
+        ?>
+        <form name="bdVenueList" action="" method="post" onsubmit="applyMyVenuesForm(this);">
+            <select name="bd_venues_bulk_action">
+                <option value="bulk">Bulk Action</option>
+                <option value="remove">Remove</option>
+                <option value="category">Set Category</option>
+            </select>
+            <input type='submit' value='Apply'>
+
+            <table>
+                <tr>
+                    <th>
+                        <input name="bd_select_all_venues" type="checkbox" 
+                               id="my_venues_header_checkbox"
+                               onchange="toggleAllMyVenuesCheckBoxes(this);">
+                    </th>
+                    <th>Venue</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th>Category</th>
+                </tr>
+
+        <?php
+        foreach ($aAllMyVenues as $aRow) {
+            ?>
+                    <tr>
+                        <!-- NAME -->
+                        <td>
+                            <input type='checkbox' 
+                                   name="<?php echo $aRow['name']; ?>" 
+                                   value="<?php echo $aRow['id']; ?>"
+                                   onchange="uncheckMyVenuesHeaderCheckbox();">
+                        </td>
+                        <!-- Venue -->
+                        <td>
+                            <a href="<?php echo Site::getBaseURL() . '/editvenue?venue_id=' . $aRow['id']; ?>">
+            <?php echo $aRow['name']; ?>
+                            </a>
+                        </td>
+                        <!-- City -->
+                        <td><?php echo $aRow['city']; ?></td>
+                        <!-- State -->
+                        <td><?php echo $aRow['state']; ?></td>
+                        <!-- Country -->
+                        <td><?php echo $aRow['country']; ?></td>
+                        <td><?php echo $aRow['category']; ?></td>
+                    </tr>
+            <?php
+        }
+        ?>
+            </table>
+            <select name="bd_venues_bulk_action">
+                <option value="bulk">Bulk Action</option>
+                <option value="remove">Remove</option>
+                <option value="category">Set Category</option>
+            </select>
+            <input type='submit' value='Apply'>
+        </form>
+        <?php
     }
-    $sAction = Site::getBaseURL() . '/removevenue/';
-    ?>
-<form name="bdVenueList" action="<?php echo $sAction; ?>" method="post">
-    <select name="bd_venues_bulk_action">
-      <option value="bulk">Bulk Action</option>
-      <option value="remove">Remove</option>
-      <option value="category">Set Category</option>
-    </select>
-    <input type='submit' value='Apply'>
-    
-    <table>
-      <tr>
-        <th>
-          <input name="bd_select_all_venues" type="checkbox" 
-                 id="my_venues_header_checkbox"
-                 onchange="toggleAllMyVenuesCheckBoxes(this);">
-        </th>
-        <th>Venue</th>
-        <th>City</th>
-        <th>State</th>
-        <th>Country</th>
-        <th>Category</th>
-      </tr>
-    
-  <?php
-    
-    foreach($aAllMyVenues as $aRow)
-    {
-      ?>
-      <tr>
-        <!-- NAME -->
-        <td>
-            <input type='checkbox' 
-                   name="<?phpecho $aRow['name'];?>" 
-                   value="<?phpecho $aRow['id'];?>"
-                   onchange="uncheckMyVenuesHeaderCheckbox();">
-        </td>
-        <!-- Venue -->
-        <td>
-            <a href="<?php
-                echo Site::getBaseURL() . '/editvenue?venue_id=' . $aRow['id'];?>">
-                <?php echo $aRow['name'];?>
-            </a>
-        </td>
-        <!-- City -->
-        <td><?php echo $aRow['city'];?></td>
-        <!-- State -->
-        <td><?php echo $aRow['state'];?></td>
-        <!-- Country -->
-        <td><?php echo $aRow['country'];?></td>
-        <td><?php echo $aRow['category'];?></td>
-      </tr>
-<?php
-    }
-?>
-</table>
-<select name="bd_venues_bulk_action">
-  <option value="bulk">Bulk Action</option>
-  <option value="remove">Remove</option>
-  <option value="category">Set Category</option>
-</select>
-<input type='submit' value='Apply'>
-</form>
-<?php
-  }
-  
 }
 
 //XXXXX||||==-------------==||||XXXXX

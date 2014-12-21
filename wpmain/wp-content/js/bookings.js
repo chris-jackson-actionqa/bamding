@@ -612,3 +612,15 @@ function uncheckMyVenuesHeaderCheckbox()
     checkbox.checked = false;
 }
 
+/**
+ * 
+ */
+function applyMyVenuesForm(form)
+{
+    select_name = document.getElementsByName("bd_venues_bulk_action");
+    
+    
+    alert(select_name);
+    // document.bdVenueList.action = getBaseURL() + "/removevenue/";
+}
+
