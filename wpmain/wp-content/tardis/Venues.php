@@ -538,4 +538,14 @@ SQL;
     
     return Database::fetch_all($mResult);
   }
-};
+  
+  public function getCategories()
+  {
+    return ['Libraries', 'Pre-Schools', 'Festivals'];
+  }
+  
+  public function addCategory($sCategory)
+  {
+    
+  }
+}

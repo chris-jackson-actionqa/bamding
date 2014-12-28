@@ -28,3 +28,21 @@ Updated: 2014-07-23 08:19:49
 #datesAndTimeFrames h2{
   font-size: 1.2em;
 }
+
+.popup {
+  position: absolute;
+  left: 100px;
+  top: 100px;
+  background: #ff0000;
+  z-index: 10;
+}
+
+.hidden_item {
+  display: none;
+}
+
+#btn_category_submit {
+  margin-top: 10px;
+  background-color: #cccccc;
+  opacity: 0.5;
+}

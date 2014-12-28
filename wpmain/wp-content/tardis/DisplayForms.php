@@ -162,6 +162,13 @@ class DisplayForms
     // Display the venues to be removed
     foreach($_POST as $sVenue=>$nID)
     {
+      // skip the bulk action selection and main checkbox
+      if(strtolower(trim('bd_venues_bulk_action_top')) === $sVenue ||
+         strtolower(trim('bd_select_all_venues')) === $sVenue ||
+         strtolower(trim('bd_venues_bulk_action_bottom')) === $sVenue)
+      {
+        continue;
+      }
       echo '<input type="text" name="' . (int)$nID . '" value="' . $sVenue . '" readonly>';
       echo '<br />';
     }

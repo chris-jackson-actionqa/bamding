@@ -26,8 +26,11 @@ class DisplayData {
             return;
         }
         ?>
-        <form name="bdVenueList" action="" method="post" onsubmit="applyMyVenuesForm(this);">
-            <select name="bd_venues_bulk_action">
+        <form name="bdVenueList" action="" method="post" 
+              onsubmit="applyMyVenuesForm(this);">
+          <select name="bd_venues_bulk_action_top" 
+                  id="bd_venues_bulk_action_top"
+                  onchange="coordinateSelectBoxes('bd_venues_bulk_action_top');">
                 <option value="bulk">Bulk Action</option>
                 <option value="remove">Remove</option>
                 <option value="category">Set Category</option>
@@ -77,7 +80,9 @@ class DisplayData {
         }
         ?>
             </table>
-            <select name="bd_venues_bulk_action">
+            <select name="bd_venues_bulk_action_bottom"
+                    id="bd_venues_bulk_action_bottom"
+                    onchange="coordinateSelectBoxes('bd_venues_bulk_action_bottom');">
                 <option value="bulk">Bulk Action</option>
                 <option value="remove">Remove</option>
                 <option value="category">Set Category</option>
