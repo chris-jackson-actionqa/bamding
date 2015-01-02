@@ -617,10 +617,137 @@ function uncheckMyVenuesHeaderCheckbox()
  */
 function applyMyVenuesForm(form)
 {
-    select_name = document.getElementsByName("bd_venues_bulk_action");
+    select_box = document.getElementById("bd_venues_bulk_action_top");
+    option = select_box.options.item(select_box.options.selectedIndex).value;
     
     
-    alert(select_name);
+    switch(option)
+    {
+      case 'remove':
+        document.bdVenueList.action = getBaseURL() + "/removevenue/";
+        break;
+      case 'category':
+        document.bdVenueList.action = getBaseURL() + "/category/";
+        break;
+    }
+    
     // document.bdVenueList.action = getBaseURL() + "/removevenue/";
 }
 
+/**
+ * Change the top and bottom select boxes to the same selected option.
+ * 
+ * @param {string} select_box_id the box that triggered the change event
+ */
+function coordinateSelectBoxes(select_box_id)
+{
+  select_box = document.getElementById(select_box_id);
+  top_select = document.getElementById('bd_venues_bulk_action_top');
+  bottom_select = document.getElementById('bd_venues_bulk_action_bottom');
+  
+  top_select.options.selectedIndex = select_box.options.selectedIndex;
+  bottom_select.options.selectedIndex = select_box.options.selectedIndex;
+}
+
+function confirmRemoveMyVenues()
+{
+  document.bdVenueList.action = getBaseURL() + "/removevenue/";
+}
+
+//---------------------------------
+// CATEGORY
+//---------------------------------
+
+function categorySelected(elem)
+{
+  selected = elem.options.selectedIndex;
+  value = elem.options.item(selected).value;
+  
+  switch(value)
+  {
+    case "blank":
+      categoryDisableSubmit();
+      categoryHideAddNew();
+      break;
+    case "add_new":
+      categoryDisableSubmit();
+      categoryShowAddNew();
+      break;
+    default:
+      categoryEnableSubmit();
+      categoryHideAddNew();
+      break;
+  }
+}
+
+function categoryDisableSubmit()
+{
+  elem = document.getElementById("btn_category_submit");
+  elem.disabled = true;
+  elem.style.backgroundColor = "#cccccc";
+  elem.style.opacity = 0.5;
+}
+
+function categoryEnableSubmit()
+{
+  elem = document.getElementById("btn_category_submit");
+  elem.disabled = false;
+  elem.style.backgroundColor = "#000000";
+  elem.style.opacity = 1.0;
+}
+
+function categoryShowAddNew()
+{
+  textbox = document.getElementById("txt_new_category");
+  textbox.style.display = "inline";
+  textbox.textContent = "";
+  textbox.focus();
+  
+  button = document.getElementById("btn_add_category");
+  button.style.display = "inline";
+  button.disabled = true;
+  button.style.backgroundColor = "#cccccc";
+  button.style.opacity = 0.5;
+}
+
+function categoryHideAddNew()
+{
+  textbox = document.getElementById("txt_new_category");
+  button = document.getElementById("btn_add_category");
+  
+  textbox.style.display = "none";
+  button.style.display = "none";
+}
+
+function disableAddNewOnEmpty(textbox)
+{
+  button = document.getElementById("btn_add_category");
+  if( textbox.value.trim() === "")
+  {
+    button.disabled = true;
+    button.style.backgroundColor = "#cccccc";
+    button.style.opacity = 0.5;
+  }
+  else
+  {
+    button.disabled = false;
+    button.style.backgroundColor = "#000000";
+    button.style.opacity = 1.0;
+  }
+}
+
+function addCategoryToDropdown()
+{
+  form = document.getElementById("form_category");
+  select = document.getElementById("select_category");
+  category = document.getElementById("txt_new_category");
+  select.innerHTML += 
+          '<option value="' + 
+          category.value + 
+          '">' + 
+          category.value + 
+          '</option>';
+  select.options.selectedIndex = select.length -1;
+  categoryHideAddNew();
+  categoryEnableSubmit();
+}
