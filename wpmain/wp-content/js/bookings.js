@@ -735,3 +735,19 @@ function disableAddNewOnEmpty(textbox)
     button.style.opacity = 1.0;
   }
 }
+
+function addCategoryToDropdown()
+{
+  form = document.getElementById("form_category");
+  select = document.getElementById("select_category");
+  category = document.getElementById("txt_new_category");
+  select.innerHTML += 
+          '<option value="' + 
+          category.value + 
+          '">' + 
+          category.value + 
+          '</option>';
+  select.options.selectedIndex = select.length -1;
+  categoryHideAddNew();
+  categoryEnableSubmit();
+}

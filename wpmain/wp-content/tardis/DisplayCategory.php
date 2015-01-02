@@ -22,7 +22,7 @@ class DisplayCategory
     ?>
 <script src='<?php echo $script_location; ?>'></script>
 <form id="form_category" method="post" action="<?php echo $sMyVenuesURI; ?>">
-  <select name="category" onchange="categorySelected(this);">
+  <select id="select_category" name="category" onchange="categorySelected(this);">
     <option value="blank" selected></option>
     <option value="add_new">Add New Category</option>
     <?php
@@ -44,9 +44,11 @@ class DisplayCategory
           name="btn_add_category" 
           id="btn_add_category" 
           class="hidden_item"
-          disabled>
+          disabled
+          onclick="addCategoryToDropdown();">
     Add Category
   </button>
+  <input type="hidden" name="bd_venue_method"  value="set_category">
   <br />
   <input type="submit" value="Submit" id="btn_category_submit" disabled>
 </form>
