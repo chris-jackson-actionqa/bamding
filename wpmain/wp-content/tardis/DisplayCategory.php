@@ -49,9 +49,48 @@ class DisplayCategory
     Add Category
   </button>
   <input type="hidden" name="bd_venue_method"  value="set_category">
+  <?php    DisplayCategory::addHiddenVenueIDsToForm(); ?>
   <br />
   <input type="submit" value="Submit" id="btn_category_submit" disabled>
 </form>
     <?php
+  }
+  
+    /**
+   * get the venue ids passed from the request
+   * @return array venue ids
+   */
+  public static function getVenueIDs()
+  {
+    $venues = array();
+    foreach($_REQUEST as $entry)
+    {
+      $match = ("bd_venues_bulk_action_top" === $entry) ||
+               ("bd_select_all_venues" === $entry) ||
+               ("bd_venues_bulk_action_bottom" === $entry);
+      
+      if($match)
+      {
+        continue;
+      }
+      
+      array_push($venues, $entry);
+    }
+    
+    return $venues;
+  }
+  
+  /**
+   * Add hidden input fields to the form for the venue ids
+   */
+  public static function addHiddenVenueIDsToForm()
+  {
+    $venues = DisplayCategory::getVenueIDs();
+    foreach($venues as $id)
+    {
+      ?>
+<input type="hidden" name="venue_<?php echo $id; ?>" value="<?php echo $id; ?>">
+      <?php
+    }
   }
 }

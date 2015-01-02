@@ -312,4 +312,40 @@ class ProcessForms
     }
     self::mailOnVenue($sUserLogin, $sVenueInfo , $hPostData['action']);
   }
+  
+  public static function setVenueCategory()
+  {
+    // return if venue method isn't to set the category
+    if( empty($_REQUEST['bd_venue_method']) ||
+        'set_category' !== $_REQUEST['bd_venue_method'])
+    {
+      return;
+    }
+    
+    // Get the category
+    if( empty($_REQUEST['category']))
+    {
+      return;
+    }
+    
+    $category = $_REQUEST['category'];
+    $category = trim($category);
+    
+    // get the venue ids
+    $venue_ids = array();
+    foreach($_REQUEST as $key => $entry)
+    {
+      if( 1 === preg_match('/venue_(\d+)/', $key))
+      {
+        array_push($venue_ids, intval($entry));
+      }
+    }
+    
+    // add the category to the venues
+    foreach($venue_ids as $venue_id)
+    {
+      $venues = new Venues('my_venues', get_user_field('user_login'));
+      $venues->setCategoryForVenue($venue_id, $category);
+    }
+  }
 }

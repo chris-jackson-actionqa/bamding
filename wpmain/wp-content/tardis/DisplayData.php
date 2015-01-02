@@ -35,7 +35,7 @@ class DisplayData {
                 <option value="remove">Remove</option>
                 <option value="category">Set Category</option>
             </select>
-            <input type='submit' value='Apply'>
+            <input type='submit' value='Apply' id="btn_myven_apply_top">
 
             <table>
                 <tr>
@@ -87,7 +87,7 @@ class DisplayData {
                 <option value="remove">Remove</option>
                 <option value="category">Set Category</option>
             </select>
-            <input type='submit' value='Apply'>
+            <input type='submit' value='Apply' id="btn_myven_apply_bottom">
         </form>
         <?php
     }

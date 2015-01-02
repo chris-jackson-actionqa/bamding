@@ -630,8 +630,6 @@ function applyMyVenuesForm(form)
         document.bdVenueList.action = getBaseURL() + "/category/";
         break;
     }
-    
-    // document.bdVenueList.action = getBaseURL() + "/removevenue/";
 }
 
 /**
@@ -654,10 +652,30 @@ function confirmRemoveMyVenues()
   document.bdVenueList.action = getBaseURL() + "/removevenue/";
 }
 
+function toggleMyVenuesApplyButton()
+{
+  top_select = document.getElementById('bd_venues_bulk_action_top');
+  option = top_select.options[top_select.options.selectedIndex].value;
+  top_apply_button = document.getElementById('btn_myven_apply_top');
+  bottom_apply_button = document.getElementById('btn_myven_apply_bottom');
+  if('bulk' === option)
+  {
+    
+  }
+}
+
 //---------------------------------
 // CATEGORY
 //---------------------------------
 
+/**
+ * When selection changes
+ * For blank selection, disable submit and "add new".
+ * For "add new", disable submit and show add new input.
+ * For a legit option, enable submit.
+ * @param {type} elem element selected
+ * @returns {undefined}
+ */
 function categorySelected(elem)
 {
   selected = elem.options.selectedIndex;
@@ -680,6 +698,10 @@ function categorySelected(elem)
   }
 }
 
+/**
+ * Disable submit button
+ * @returns {undefined}
+ */
 function categoryDisableSubmit()
 {
   elem = document.getElementById("btn_category_submit");
@@ -688,6 +710,10 @@ function categoryDisableSubmit()
   elem.style.opacity = 0.5;
 }
 
+/**
+ * Enable submit button
+ * @returns {undefined}
+ */
 function categoryEnableSubmit()
 {
   elem = document.getElementById("btn_category_submit");
@@ -696,6 +722,10 @@ function categoryEnableSubmit()
   elem.style.opacity = 1.0;
 }
 
+/**
+ * Show the add new textbox and button
+ * @returns {undefined}
+ */
 function categoryShowAddNew()
 {
   textbox = document.getElementById("txt_new_category");
@@ -710,15 +740,25 @@ function categoryShowAddNew()
   button.style.opacity = 0.5;
 }
 
+/**
+ * Hide the add new textbox and button
+ * @returns {undefined}
+ */
 function categoryHideAddNew()
 {
   textbox = document.getElementById("txt_new_category");
   button = document.getElementById("btn_add_category");
   
+  textbox.value = "";
   textbox.style.display = "none";
   button.style.display = "none";
 }
 
+/**
+ * Disable the add new button when the textbox is empty
+ * @param {type} textbox
+ * @returns {undefined}
+ */
 function disableAddNewOnEmpty(textbox)
 {
   button = document.getElementById("btn_add_category");
@@ -736,18 +776,67 @@ function disableAddNewOnEmpty(textbox)
   }
 }
 
+/**
+ * Add the "add new" textbox value to the dropdown menu of categories
+ * @returns {undefined}
+ */
 function addCategoryToDropdown()
 {
   form = document.getElementById("form_category");
   select = document.getElementById("select_category");
   category = document.getElementById("txt_new_category");
-  select.innerHTML += 
-          '<option value="' + 
-          category.value + 
-          '">' + 
-          category.value + 
-          '</option>';
-  select.options.selectedIndex = select.length -1;
+  
+  if(doesCategoryAlreadyExist(category.value))
+  {
+    alert("Category already exists.");
+    
+    // select the already existing category
+    for( var i = 0; i < select.options.length; ++i)
+    {
+      var option = select.options[i].text;
+      option = option.trim().toLowerCase();
+      var val = category.value;
+      val = val.trim().toLowerCase();
+      
+      if(val === option)
+      {
+        select.options.selectedIndex = i;
+      }
+    }
+  }
+  else
+  {
+    select.innerHTML += 
+            '<option value="' + 
+            category.value.trim() + 
+            '">' + 
+            category.value.trim() + 
+            '</option>';
+    select.options.selectedIndex = select.length - 1;
+  }
+  
   categoryHideAddNew();
   categoryEnableSubmit();
+}
+
+/**
+ * Check if the new category is already in the options
+ * @param {string} category new category to check for
+ * @returns {Boolean}
+ */
+function doesCategoryAlreadyExist(category)
+{
+  category = category.trim().toLowerCase();
+  var select = document.getElementById("select_category");
+  for( var i = 0; i < select.options.length; ++i )
+  {
+    var option = select.options[i].text;
+    option = option.trim().toLowerCase();
+    if( category === option)
+    {
+      return true;
+    }
+  }
+  
+  return false;
 }

@@ -539,13 +539,62 @@ SQL;
     return Database::fetch_all($mResult);
   }
   
+  /**
+   * Return the distinct categories for the venues
+   * @return array the categories
+   * @throws RuntimeException if SQL query fails
+   */
   public function getCategories()
   {
-    return ['Libraries', 'Pre-Schools', 'Festivals'];
+    $sql = <<<SQL
+SELECT DISTINCT category
+FROM my_venues
+WHERE user_login='{$this->sUserID}'
+SQL;
+    $result = $this->oConn->query($sql);
+    if(FALSE === $result)
+    {
+      throw new RuntimeException('Could not get categories');
+    }
+    
+    $rows = Database::fetch_all($result);
+    $categories = array();
+    foreach( $rows as $row)
+    {
+      array_push($categories, $row['category']);
+    }
+    
+    return $categories;
   }
   
-  public function addCategory($sCategory)
+  /**
+   * Set the category for the venue
+   * 
+   * @param int $venue_id the venue id
+   * @param string $sCategory the non-empty category
+   * @throws InvalidArgumentException
+   * @throws RuntimeException
+   */
+  public function setCategoryForVenue($venue_id, $sCategory)
   {
+    $venue_id = (int)$venue_id;
+    $sCategory = trim($sCategory);
+    if(empty($venue_id) || empty($sCategory))
+    {
+      throw new InvalidArgumentException(
+              'Category and venue id cannot be empty');
+    }
     
+    $sql = <<<SQL
+UPDATE my_venues
+SET category='$sCategory'
+WHERE user_login='{$this->sUserID}' AND
+      id=$venue_id
+SQL;
+    $result = $this->oConn->query($sql);
+    if( FALSE === $result)
+    {
+      throw new RuntimeException('Could not update venue with category');
+    }
   }
 }

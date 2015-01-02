@@ -9,6 +9,7 @@ if (current_user_can("access_s2member_level1"))
   // Process any new venue submissions, edits, or removals
   ProcessForms::doVenue($_POST);
   ProcessForms::removeVenues($_POST);
+  ProcessForms::setVenueCategory();
   
   // Display the venues
   echo '<h1>My Venues</h1>';
