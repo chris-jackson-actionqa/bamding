@@ -46,3 +46,28 @@ Updated: 2014-07-23 08:19:49
   background-color: #cccccc;
   opacity: 0.5;
 }
+
+.btn_disabled {
+  background-color: #cccccc;
+  opacity: 0.2;
+}
+
+.btn_enabled {
+  background-color: #000000;
+  opacity: 1.0;
+}
+
+#bdAddMyVenueLink {
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  background-color:#CCE3D7;
+  -webkit-box-shadow: #B3B3B3 10px 10px 10px;
+  -moz-box-shadow: #B3B3B3 10px 10px 10px; 
+  box-shadow: #B3B3B3 10px 10px 10px;
+  padding: 8px 8px 8px 8px;
+}
+
+#bdVenueList {
+  margin-top: 25px;
+}

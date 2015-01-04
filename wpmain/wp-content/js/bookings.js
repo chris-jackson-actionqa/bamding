@@ -4,6 +4,103 @@
  * and open the template in the editor.
  */
 
+var BAMDING = {
+    MYVENUES : {
+        
+        /**
+         * toggle the "Apply" button's disabled property
+         * Disable if "Bulk Action" is selected.
+         * Disable if no venues selected on other settings.
+         * Enable if venues are selected and "Bulk Action" isn't selected.
+         * 
+         * @returns {undefined}
+         */
+        toggleBulkApply: function()
+        {
+          top_select = document.getElementById('bd_venues_bulk_action_top');
+          option = top_select.options[top_select.options.selectedIndex].value;
+          top_apply_button = document.getElementById('btn_myven_apply_top');
+          bottom_apply_button = document.getElementById('btn_myven_apply_bottom');
+          if('bulk' === option || !BAMDING.MYVENUES.isVenueSelected())
+          {
+              top_apply_button.disabled = true;
+              top_apply_button.className = "btn_disabled";
+              
+              bottom_apply_button.disabled = true;
+              bottom_apply_button.className = "btn_disabled";
+          }
+          else
+          {
+              top_apply_button.disabled = false;
+              top_apply_button.className = "btn_enabled";
+              
+              bottom_apply_button.disabled = false;
+              bottom_apply_button.className = "btn_enabled";
+          }
+        },
+        
+        /**
+         * Change the top and bottom select boxes to the same selected option.
+         * 
+         * @param {string} select_box_id the box that triggered the change event
+         */
+        coordinateSelectBoxes: function(select_box_id)
+        {
+          select_box = document.getElementById(select_box_id);
+          top_select = document.getElementById('bd_venues_bulk_action_top');
+          bottom_select = document.getElementById('bd_venues_bulk_action_bottom');
+
+          top_select.options.selectedIndex = select_box.options.selectedIndex;
+          bottom_select.options.selectedIndex = select_box.options.selectedIndex;
+        },
+        
+        /**
+         * When the bulk action selection changes, 
+         * coordinate the values of both the bulk action boxes and
+         * enable or disable the "Apply" button appropriately
+         * @param {type} elem
+         * @returns {undefined}
+         */
+        changeBulkActionSelection: function(elem)
+        {
+          BAMDING.MYVENUES.coordinateSelectBoxes(elem.id);
+          BAMDING.MYVENUES.toggleBulkApply();
+        },
+        
+        /**
+         * Is there a venue that's selected (checkbox is checked)
+         * @returns {Boolean}
+         */
+        isVenueSelected: function()
+        {
+          var foundSelected = false;
+          
+          inputs = document.getElementsByTagName("input");
+          var numInputs = inputs.length;
+          for(var i = 0; i < numInputs; ++i)
+          {
+            input = inputs[i];
+            if(input.type !== "checkbox")
+            {
+              continue;
+            }
+            else if (input.name === "bd_select_all_venues")
+            {
+              continue;
+            }
+            else if (input.checked)
+            {
+              foundSelected = true;
+              break;
+            }
+          }
+          
+          return foundSelected;
+        }
+    }
+};
+
+
 function getBaseURL()
 {
   pathArray = window.location.href.split( '/' );
@@ -586,6 +683,8 @@ function deleteDateTimeframe(
 // My Venues
 //----------------------------------
 
+
+
 /**
  * Toggle all the input checkboxes in the table
  * @param {object} ele the element calling this function
@@ -632,21 +731,6 @@ function applyMyVenuesForm(form)
     }
 }
 
-/**
- * Change the top and bottom select boxes to the same selected option.
- * 
- * @param {string} select_box_id the box that triggered the change event
- */
-function coordinateSelectBoxes(select_box_id)
-{
-  select_box = document.getElementById(select_box_id);
-  top_select = document.getElementById('bd_venues_bulk_action_top');
-  bottom_select = document.getElementById('bd_venues_bulk_action_bottom');
-  
-  top_select.options.selectedIndex = select_box.options.selectedIndex;
-  bottom_select.options.selectedIndex = select_box.options.selectedIndex;
-}
-
 function confirmRemoveMyVenues()
 {
   document.bdVenueList.action = getBaseURL() + "/removevenue/";
@@ -663,6 +747,8 @@ function toggleMyVenuesApplyButton()
     
   }
 }
+
+
 
 //---------------------------------
 // CATEGORY

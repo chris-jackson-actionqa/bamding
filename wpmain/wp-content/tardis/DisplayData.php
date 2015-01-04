@@ -26,23 +26,31 @@ class DisplayData {
             return;
         }
         ?>
-        <form name="bdVenueList" action="" method="post" 
+        <form name="bdVenueList" 
+              id="bdVenueList"
+              action="" 
+              method="post" 
               onsubmit="applyMyVenuesForm(this);">
           <select name="bd_venues_bulk_action_top" 
                   id="bd_venues_bulk_action_top"
-                  onchange="coordinateSelectBoxes('bd_venues_bulk_action_top');">
+                  onchange="BAMDING.MYVENUES.changeBulkActionSelection(this);">
                 <option value="bulk">Bulk Action</option>
                 <option value="remove">Remove</option>
                 <option value="category">Set Category</option>
             </select>
-            <input type='submit' value='Apply' id="btn_myven_apply_top">
+          <input type='submit' 
+                 value='Apply' 
+                 id="btn_myven_apply_top"
+                 class="btn_disabled"
+                 disabled>
 
             <table>
                 <tr>
                     <th>
-                        <input name="bd_select_all_venues" type="checkbox" 
+                        <input name="bd_select_all_venues" 
+                               type="checkbox" 
                                id="my_venues_header_checkbox"
-                               onchange="toggleAllMyVenuesCheckBoxes(this);">
+                               onchange="toggleAllMyVenuesCheckBoxes(this); BAMDING.MYVENUES.toggleBulkApply();">
                     </th>
                     <th>Venue</th>
                     <th>City</th>
@@ -60,7 +68,7 @@ class DisplayData {
                             <input type='checkbox' 
                                    name="<?php echo $aRow['name']; ?>" 
                                    value="<?php echo $aRow['id']; ?>"
-                                   onchange="uncheckMyVenuesHeaderCheckbox();">
+                                   onchange="uncheckMyVenuesHeaderCheckbox(); BAMDING.MYVENUES.toggleBulkApply();">
                         </td>
                         <!-- Venue -->
                         <td>
@@ -82,12 +90,16 @@ class DisplayData {
             </table>
             <select name="bd_venues_bulk_action_bottom"
                     id="bd_venues_bulk_action_bottom"
-                    onchange="coordinateSelectBoxes('bd_venues_bulk_action_bottom');">
+                    onchange="BAMDING.MYVENUES.changeBulkActionSelection(this);">
                 <option value="bulk">Bulk Action</option>
                 <option value="remove">Remove</option>
                 <option value="category">Set Category</option>
             </select>
-            <input type='submit' value='Apply' id="btn_myven_apply_bottom">
+            <input type='submit' 
+                   value='Apply' 
+                   id="btn_myven_apply_bottom"
+                   class="btn_disabled"
+                   disabled>
         </form>
         <?php
     }
