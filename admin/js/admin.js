@@ -4,6 +4,53 @@
  * and open the template in the editor.
  */
 
+var BAMDING = {
+  ADMIN: {
+    REMINDERS: {
+      sendReminderEmail: function()
+      {
+        elemUserEmail = document.getElementById("reminder_email_user_email");
+        elemSubject = document.getElementById("reminder_email_subject");
+        elemBody = document.getElementById("reminder_email_body");
+        
+        to = "sethalicious@gmail.com";
+        from = "seth@bamding.com";
+        subject = $elemSubject.innerHTML;
+        body = "<html><body>" + elemBody.innerHTML + "</body></html>";
+        
+        
+      }
+    }
+  }
+};
+
+$(document).ready( function(){
+  /**
+   * Send email (via ajax) for reminder emails
+   */
+  $("#reminder_send_mail_button").click(function(){
+    elemUserEmail = document.getElementById("reminder_email_user_email");
+    elemSubject = document.getElementById("reminder_email_subject");
+    elemBody = document.getElementById("reminder_email_body");
+
+    to = elemUserEmail.innerHTML;
+    from = "seth@bamding.com";
+    subject = elemSubject.innerHTML;
+    body = "<html><body>" + elemBody.innerHTML + "</body></html>";
+
+    $.post('ajax/SendEmail.php',
+    {
+      to: to,
+      from: from,
+      subject: subject,
+      body: body
+    },
+    function(data,status){
+      alert("Data: " + data + "\nStatus: " + status);
+    });
+  });
+  });
+
 // initialized by PHP when user selected on AdminDates
 var gaVenues;
 

@@ -226,11 +226,12 @@ HTM;
       <h2><?php echo $sUser;?>'s Reminder</h2>
       <h3>Reminder email</h3>
       <h4>To:</h4>
-      <a href="mailto:<?php echo $user_email; ?>"><?php echo $user_email; ?></a>
+      <a id="reminder_email_user_email" href="mailto:<?php echo $user_email; ?>"><?php echo $user_email; ?></a>
       <h4>Subject:</h4>
-      Reminder: Venues will be contacted on <?php echo $hReminderVenues[0]['Next Contact']; ?>
+      <div contenteditable="true" id="reminder_email_subject">Reminder: Venues will be contacted on <?php echo $hReminderVenues[0]['Next Contact']; ?></div>
       <br />
       <h4>Body:</h4>
+      <div id="reminder_email_body" contenteditable="true">
       The following venues will be contacted:</br>
     
       <?php
@@ -238,6 +239,10 @@ HTM;
     AdminDisplay::displayInlineTable($hReminderVenues);
     AdminDisplay::displayDatesTimeFrames($sUser);
     AdminDisplay::standardEmailEnding();
+    ?>
+      </div>
+      <button id="reminder_send_mail_button">Send Email</button>
+    <?php
   }
   
   public static function displayInlineTable($hAssocArray)
@@ -293,7 +298,8 @@ HTM;
     echo 'If you have any questions, feel free to reply here.<br />';
     echo '<br />';
     echo 'Thanks,<br />';
-    echo '<div>';
+    echo 'Seth Jackson (Founder of BamDing)<br />';
+    echo 'http://BamDing.com<br />';
   }
   
   /**
