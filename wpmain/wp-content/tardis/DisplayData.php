@@ -17,7 +17,12 @@ class DisplayData {
     public static function displayMyVenues($sUserID) {
         $script_location = Site::getBaseURL() . '/wp-content/js/bookings.js';
         ?>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src='<?php echo $script_location; ?>'></script>
+        <script>
+          var allVenues = BAMDING.MYVENUES.getAllVenues(
+            "<?php echo get_user_field('user_login');  ?>");
+        </script>
         <?php
         $oVenues = new Venues('my_venues', $sUserID);
         $aAllMyVenues = $oVenues->getAllMyVenues();
@@ -26,6 +31,7 @@ class DisplayData {
             return;
         }
         ?>
+        
         <form name="bdVenueList" 
               id="bdVenueList"
               action="" 
@@ -43,20 +49,31 @@ class DisplayData {
                  id="btn_myven_apply_top"
                  class="btn_disabled"
                  disabled>
+          
+        <select id="filter_venues_select">
+          <option>Filter: All</option>
+          <option>Filter: State</option>
+          <option>Filter: City</option>
+          <option>Filter: Name</option>
+          <option>Filter: Category</option>
+          <option>Filter: Note</option>
+        </select>
+          <input id="filter_venues_input" 
+                 onkeyup="BAMDING.MYVENUES.filterVenues(allVenues);">
 
             <table>
                 <tr>
-                    <th>
-                        <input name="bd_select_all_venues" 
-                               type="checkbox" 
-                               id="my_venues_header_checkbox"
-                               onchange="toggleAllMyVenuesCheckBoxes(this); BAMDING.MYVENUES.toggleBulkApply();">
-                    </th>
-                    <th>Venue</th>
-                    <th>City</th>
-                    <th>State</th>
-                    <th>Country</th>
-                    <th>Category</th>
+                  <th>
+                    <input name="bd_select_all_venues" 
+                           type="checkbox" 
+                           id="my_venues_header_checkbox"
+                           onchange="toggleAllMyVenuesCheckBoxes(this); BAMDING.MYVENUES.toggleBulkApply();">
+                  </th>
+                  <th>Venue</th>
+                  <th>City</th>
+                  <th>State</th>
+                  <th>Country</th>
+                  <th>Category</th>
                 </tr>
 
         <?php

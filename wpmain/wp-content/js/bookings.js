@@ -96,6 +96,29 @@ var BAMDING = {
           }
           
           return foundSelected;
+        },
+        
+        filterVenues: function(allVenues)
+        {
+          alert(allVenues);
+        },
+        
+        getAllVenues: function(user_login) 
+        {
+          var allVenues = {};
+          $(document).ready(function() 
+          {
+            $.post( getBaseURL() + "/wp-content/ajax/GetAllVenues.php",
+            {
+              user_login: user_login
+            },
+            function(data, status)
+            {
+              allVenues = data;
+            });
+          });
+          
+          return allVenues;
         }
     }
 };
