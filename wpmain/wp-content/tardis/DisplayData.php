@@ -20,8 +20,8 @@ class DisplayData {
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src='<?php echo $script_location; ?>'></script>
         <script>
-          var allVenues = BAMDING.MYVENUES.getAllVenues(
-            "<?php echo get_user_field('user_login');  ?>");
+          BAMDING.MYVENUES.getAllVenues(
+            "<?php echo get_user_field('user_login'); ?>");
         </script>
         <?php
         $oVenues = new Venues('my_venues', $sUserID);
@@ -59,9 +59,9 @@ class DisplayData {
           <option>Filter: Note</option>
         </select>
           <input id="filter_venues_input" 
-                 onkeyup="BAMDING.MYVENUES.filterVenues(allVenues);">
+                 onkeyup="BAMDING.MYVENUES.filterVenues();">
 
-            <table>
+            <table id="venues_table">
                 <tr>
                   <th>
                     <input name="bd_select_all_venues" 

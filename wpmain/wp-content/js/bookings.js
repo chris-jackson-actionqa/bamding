@@ -6,7 +6,8 @@
 
 var BAMDING = {
     MYVENUES : {
-        
+        _venues: null,
+        _user_login: "",
         /**
          * toggle the "Apply" button's disabled property
          * Disable if "Bulk Action" is selected.
@@ -98,15 +99,29 @@ var BAMDING = {
           return foundSelected;
         },
         
-        filterVenues: function(allVenues)
+        filterVenues: function()
         {
-          alert(allVenues);
+          var myvenues = BAMDING.MYVENUES;
+          if( null === myvenues._venues)
+          {
+            myvenues.getAllVenues(myvenues._user_login);
+          }
+          
+          // get filter type
+          // TODO
+                    
+          // delete all rows except header
+          myvenues.deleteTableRows();
+          
+          
+          
+          
+          
         },
         
         getAllVenues: function(user_login) 
         {
-          var allVenues = {};
-          $(document).ready(function() 
+          jQuery(document).ready(function($) 
           {
             $.post( getBaseURL() + "/wp-content/ajax/GetAllVenues.php",
             {
@@ -114,11 +129,20 @@ var BAMDING = {
             },
             function(data, status)
             {
-              allVenues = data;
+              BAMDING.MYVENUES._venues = data;
+              BAMDING.MYVENUES._user_login = user_login;
             });
           });
-          
-          return allVenues;
+        },
+        
+        deleteTableRows: function()
+        {
+          var table = document.getElementById('venues_table');
+          var num_rows = table.rows.length;
+          for( var i = num_rows -1; i > 0; --i)
+          {
+            table.deleteRow(i);
+          }
         }
     }
 };
