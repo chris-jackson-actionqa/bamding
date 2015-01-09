@@ -52,11 +52,11 @@ class DisplayData {
           
         <select id="filter_venues_select">
           <option>Filter: All</option>
+          <option>Filter: Name</option>
           <option>Filter: State</option>
           <option>Filter: City</option>
-          <option>Filter: Name</option>
+          <option>Filter: Country</option>
           <option>Filter: Category</option>
-          <option>Filter: Note</option>
         </select>
           <input id="filter_venues_input" 
                  onkeyup="BAMDING.MYVENUES.filterVenues();">

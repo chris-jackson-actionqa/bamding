@@ -71,3 +71,8 @@ Updated: 2014-07-23 08:19:49
 #bdVenueList {
   margin-top: 25px;
 }
+
+#filter_venues_select {
+  margin-top: 6px;
+  margin-left: 30%;
+}
