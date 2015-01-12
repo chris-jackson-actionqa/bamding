@@ -5,7 +5,7 @@ if(!defined('ABSPATH') && preg_match('/xampp/i', $_SERVER['DOCUMENT_ROOT']))
 }
 elseif (!defined('ABSPATH'))
 {
-  define('ABSPATH', $_SERVER['DOCUMENT_ROOT'] . '/..');
+  define('ABSPATH', $_SERVER['DOCUMENT_ROOT']);
 }
 
 require_once(ABSPATH. '/wp-content/tardis/Database.php');
