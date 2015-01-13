@@ -65,9 +65,10 @@ class DisplayDates {
     self::displayDatesTimeFrames($sUserLogin);
     //AdminDisplayDates::showEditDatesTimeframes();
     
+    $dates_url = Site::getBaseURL() . "/dates/?user_login='$sUserLogin'";
     // form for applying dates
     echo '<h3>Update:</h3>';
-    echo '<form id="datesForm" method="post" action="admin-dates.php?user_login='. $sUserLogin . '">';
+    echo '<form id="datesForm" method="post" action="'.$dates_url.'">';
     
     self::datesVenueRangeSelect($sVenueRange);
     self::datesValueRangeValues($sVenueRange, $aVenueRangeValues);
