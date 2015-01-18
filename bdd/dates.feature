@@ -13,4 +13,4 @@ Feature: Dates and Time Frames Page
     And select from month as "January"
     And select to month as "February"
     And hit "Submit"
-    Then 
+    Then
