@@ -4,13 +4,11 @@ Feature: Dates and Time Frames Page
   I want to set the dates or time frames I want to book
   so that the booker knows when I want to be booked
 
-  Scenario: Add a time frame of from month to month
-    Given we are logged in
-    And we have an active venue
-    When we go to the Dates page
-    And select "All Venues"
-    And select "Time-Frame"
-    And select from month as "January"
-    And select to month as "February"
-    And hit "Submit"
-    Then
+  Scenario: Default selections of dates page
+    Given we go to the Dates page
+    Then All Venues is selected
+    And Time-Frame option is selected
+    And Time-Frame's "Month From" is visible
+    And Time-Frame's "Month To" is visible
+    And "Update" is visible
+

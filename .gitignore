@@ -234,8 +234,5 @@ page-bugs.php
 # ignore behat
 bin/
 
->>>>>>> origin/master
-vendor/
-nbproject/private/private.properties
-nbproject/private/private.xml
-nbproject/project.properties
+# ignore pycharm settings
+bdd/.idea/
