@@ -313,6 +313,32 @@ class ProcessForms
     self::mailOnVenue($sUserLogin, $sVenueInfo , $hPostData['action']);
   }
   
+  public static function processMultipleBookings()
+  {
+    $bookings = new Bookings(get_user_field('user_login'));
+   
+    $action = $_REQUEST['bd_bookings_bulk_action_top'];
+    
+    foreach($_REQUEST as $key => $value)
+    {
+      if(strpos($key, "venue_") !== FALSE)
+      {
+        switch($action)
+        {
+          case 'start':
+            $bookings->setPause((int)$value, FALSE);
+            break;
+          case 'pause':
+            $bookings->setPause((int)$value, FALSE);
+            break;
+          default:
+            throw new RuntimeException("Unrecognized action: $action");
+        }
+      }
+    }
+   
+  }
+  
   public static function setVenueCategory()
   {
     // return if venue method isn't to set the category

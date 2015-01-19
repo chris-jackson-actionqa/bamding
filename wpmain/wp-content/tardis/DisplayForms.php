@@ -200,32 +200,19 @@ class DisplayForms
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="<?php echo Site::getBaseURL(); ?>/wp-content/js/bookings.js"></script>
 <h1>Bookings</h1>
-<form>
+<form action="" method="post">
   <select name="bd_bookings_bulk_action_top" 
                   id="bd_bookings_bulk_action_top"
-                  onchange="BAMDING.MYVENUES.changeBulkActionSelection(this);">
+                  onchange="BAMDING.BOOKINGS.changeBulkActionSelection(this);">
     <option value="bulk">Bulk Action</option>
     <option value="start">Start Booking</option>
     <option value="pause">Pause Booking</option>
   </select>
   <input type='submit' 
          value='Apply' 
-         id="btn_myven_apply_top"
+         id="btn_bookings_apply_top"
          class="btn_disabled"
          disabled>
-          
-  <select id="filter_venues_select">
-    <option>Filter: All</option>
-    <option>Filter: Paused</option>
-    <option>Filter: Active</option>
-    <option>Filter: Name</option>
-    <option>Filter: State</option>
-    <option>Filter: City</option>
-    <option>Filter: Country</option>
-    <option>Filter: Category</option>
-  </select>
-  <input id="filter_venues_input" 
-         onkeyup="BAMDING.MYVENUES.filterVenues();">
           
 <table id="bookings_table">
   <tr>
@@ -233,7 +220,7 @@ class DisplayForms
       <input name="bd_select_all_bookings" 
              type="checkbox" 
              id="bookings_header_checkbox"
-             onchange="BAMDING.BOOKINGS.toggleAllBookingsCheckboxes(this);">
+             onchange="BAMDING.BOOKINGS.toggleAllBookingsCheckboxes(this); BAMDING.BOOKINGS.toggleBulkApply();">
     </th>
     <th>Status</th>
     <th>Venue</th>
@@ -253,7 +240,9 @@ class DisplayForms
   <tr id="<?php echo $row['venue_id']; ?>">
     <td>
       <input type="checkbox"
-             onchange="BAMDING.BOOKINGS.uncheckSelectAll();">
+             name="venue_<?php echo $row['venue_id']; ?>"
+             value="<?php echo $row['venue_id']; ?>"
+             onchange="BAMDING.BOOKINGS.uncheckSelectAll(); BAMDING.BOOKINGS.toggleBulkApply();">
     </td>
     <td>
       <?php
@@ -273,17 +262,17 @@ class DisplayForms
     <td><?php echo $row['last_contacted']; ?></td>
     <td><?php echo $row['next_contact']; ?></td>
     <td><?php echo $row['frequency_num']; ?></td>
-    <td><?php echo $row['category']; ?></td>
     <td>
       <?php echo self::getFriendlyFrequencyType($row['freq_type'], 
             $row['frequency_num']); ?>
     </td>
+    <td><?php echo $row['category']; ?></td>
   </tr>
     <?php
   }
   ?>
 </table>
-  <select name="bd_venues_bulk_action_bottom"
+  <select name="bd_bookings_bulk_action_bottom"
                     id="bd_bookings_bulk_action_bottom"
                     onchange="BAMDING.MYVENUES.changeBulkActionSelection(this);">
     <option value="bulk">Bulk Action</option>
@@ -292,7 +281,7 @@ class DisplayForms
   </select>
   <input type='submit' 
          value='Apply' 
-         id="btn_myven_apply_bottom"
+         id="btn_bookings_apply_bottom"
          class="btn_disabled"
          disabled>
 </form>

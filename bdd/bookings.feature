@@ -19,8 +19,24 @@ Feature: Bookings page for starting, pausing, and editing bookings for venues.
     When I click a row's checkbox to deselect it
     Then the table header checkbox should be un-selected
 
+  Scenario Outline: Selecting different bulk actions should enable or disable the "Apply" button
+    Given I <check_venues> check all venues
+    When I select <bulk_action>
+    Then the Apply button should be <apply_enabled>
+
+    Examples:
+    | check_venues | bulk_action | apply_enabled |
+    | do          | pause       | enabled        |
+    | do          | start       | enabled        |
+    | do          | bulk        | disabled       |
+    | do not      | pause       | disabled       |
+    | do not      | start       | disabled       |
+    | do not      | bulk        | disabled       |
+
   Scenario: Bulk pause all venues
     Given I select all venues
     And I select the bulk action Pause
     And I select Apply
-    Then Both venues will show as paused
+    And I select Start for all venues
+    And I select Apply
+    Then All venues will show as active

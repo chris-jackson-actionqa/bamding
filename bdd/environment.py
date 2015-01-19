@@ -4,6 +4,7 @@ import bamding_web_test
 def before_all(context):
     context.driver = webdriver.Firefox()
     context.bamding = bamding_web_test.BamDingWebTest(context.driver)
+    context.driver.maximize_window()
     context.bamding.login()
     context.bamding.remove_all_venues()
 
