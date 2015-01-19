@@ -237,6 +237,25 @@ var BAMDING = {
           
           return filtered;
         }
+    },
+    BOOKINGS: {
+      toggleAllBookingsCheckboxes: function(ele)
+      {
+        var checkboxes = document.getElementsByTagName('input');
+        for (var i = 0; i < checkboxes.length; i++) 
+        {
+          if (checkboxes[i].type === 'checkbox') 
+          {
+              checkboxes[i].checked = ele.checked;
+          }
+        }
+      },
+      
+      uncheckSelectAll: function()
+      {
+        var checkbox = document.getElementById("bookings_header_checkbox");
+        checkbox.checked = false;
+      }
     }
 };
 

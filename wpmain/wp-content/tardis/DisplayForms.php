@@ -120,7 +120,8 @@ class DisplayForms
     $sSubmitText = (DisplayForms::EDIT_VENUE == $nBehavior) ? 'Update Venue' : 'Add Venue';
     
     echo '<br />';
-    echo '<input type="submit" value="' . $sSubmitText . '">';
+    echo '<input type="submit" value="' . $sSubmitText . '" '
+            . 'id="bd_venue_add_button">';
     echo '</form>';
     
   }
@@ -177,7 +178,7 @@ class DisplayForms
     echo '<a href="' . $sMyVenuesURI . '"><b>No! Take me back to my venues!</b></a>';
     
     // Yes
-    echo '<input type="submit" value="Yes, remove them.">';
+    echo '<input type="submit" value="Yes, remove them." id="bd_btn_remove">';
     
     echo '</form>';
     
@@ -185,25 +186,117 @@ class DisplayForms
   
   public static function displayBookings($sUserLogin)
   {
-    echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>';
-    echo '<script src="' . Site::getBaseURL() . '/wp-content/js/bookings.js"></script>';
-    
-    echo '<h1>Bookings</h1>';
-    echo '<div id="div_not_contacted">';
-    self::displayBookingsNotContacted($sUserLogin);
-    echo '</div>';
-    
-    echo '<div id="div_scheduled">';
-    self::displayBookingsScheduled($sUserLogin);
-    echo '</div>';
-    
-    echo '<div id="div_paused">';
-    self::displayBookingsActivePaused($sUserLogin, FALSE);
-    echo '</div>';
-    
-    echo '<div id="div_active">';
-    self::displayBookingsActivePaused($sUserLogin, TRUE);
-    echo '</div>';
+    $oBookings = new Bookings($sUserLogin);
+    $hBookingInfo = $oBookings->getAllBookings();
+    if(is_null($hBookingInfo) || 0 == count($hBookingInfo))
+    {
+      ?>
+<h1>Bookings</h1>
+<h2>No venues added</h2>
+      <?php
+      return;
+    }
+    ?>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="<?php echo Site::getBaseURL(); ?>/wp-content/js/bookings.js"></script>
+<h1>Bookings</h1>
+<form>
+  <select name="bd_bookings_bulk_action_top" 
+                  id="bd_bookings_bulk_action_top"
+                  onchange="BAMDING.MYVENUES.changeBulkActionSelection(this);">
+    <option value="bulk">Bulk Action</option>
+    <option value="start">Start Booking</option>
+    <option value="pause">Pause Booking</option>
+  </select>
+  <input type='submit' 
+         value='Apply' 
+         id="btn_myven_apply_top"
+         class="btn_disabled"
+         disabled>
+          
+  <select id="filter_venues_select">
+    <option>Filter: All</option>
+    <option>Filter: Paused</option>
+    <option>Filter: Active</option>
+    <option>Filter: Name</option>
+    <option>Filter: State</option>
+    <option>Filter: City</option>
+    <option>Filter: Country</option>
+    <option>Filter: Category</option>
+  </select>
+  <input id="filter_venues_input" 
+         onkeyup="BAMDING.MYVENUES.filterVenues();">
+          
+<table id="bookings_table">
+  <tr>
+    <th>
+      <input name="bd_select_all_bookings" 
+             type="checkbox" 
+             id="bookings_header_checkbox"
+             onchange="BAMDING.BOOKINGS.toggleAllBookingsCheckboxes(this);">
+    </th>
+    <th>Status</th>
+    <th>Venue</th>
+    <th>City</th>
+    <th>State</th>
+    <th>Last Contact</th>
+    <th>Next Contact</th>
+    <th>Every</th>
+    <th>Interval</th>
+    <th>Category</th>
+  </tr>
+  
+  <?php
+  foreach($hBookingInfo as $row)
+  {
+    ?>
+  <tr id="<?php echo $row['venue_id']; ?>">
+    <td>
+      <input type="checkbox"
+             onchange="BAMDING.BOOKINGS.uncheckSelectAll();">
+    </td>
+    <td>
+      <?php
+      if((int)$row['pause'] === 1)
+      {
+        echo "Paused";
+      }
+      else
+      {
+        echo "Active";
+      }
+      ?>
+    </td>
+    <td><?php echo $row['name']; ?></td>
+    <td><?php echo $row['city']; ?></td>
+    <td><?php echo $row['state']; ?></td>
+    <td><?php echo $row['last_contacted']; ?></td>
+    <td><?php echo $row['next_contact']; ?></td>
+    <td><?php echo $row['frequency_num']; ?></td>
+    <td><?php echo $row['category']; ?></td>
+    <td>
+      <?php echo self::getFriendlyFrequencyType($row['freq_type'], 
+            $row['frequency_num']); ?>
+    </td>
+  </tr>
+    <?php
+  }
+  ?>
+</table>
+  <select name="bd_venues_bulk_action_bottom"
+                    id="bd_bookings_bulk_action_bottom"
+                    onchange="BAMDING.MYVENUES.changeBulkActionSelection(this);">
+    <option value="bulk">Bulk Action</option>
+    <option value="start">Start Booking</option>
+    <option value="pause">Pause Booking</option>
+  </select>
+  <input type='submit' 
+         value='Apply' 
+         id="btn_myven_apply_bottom"
+         class="btn_disabled"
+         disabled>
+</form>
+    <?php
   }
   
   public static function displayBookingsNotContacted($sUserLogin)

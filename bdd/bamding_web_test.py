@@ -4,6 +4,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import Select
 import time
 
 class BamDingWebTest():
@@ -46,3 +48,63 @@ class BamDingWebTest():
         if dates_url != self.driver.current_url:
             self.driver.get(dates_url)
         assert dates_url == self.driver.current_url
+
+    def remove_all_venues(self):
+        self.go_to_my_venues()
+        # throws exception if table doesn't exist. That means there's no venues. Just return
+        try:
+            bulk_action = Select(self.driver.find_element_by_id('bd_venues_bulk_action_top'))
+        except NoSuchElementException:
+            return
+
+        # select all venues,  choose bulk action 'Remove', and hit Apply
+        bulk_action.select_by_visible_text('Remove')
+        self.driver.find_element_by_id('my_venues_header_checkbox').click()
+        self.driver.find_element_by_id('btn_myven_apply_top').click()
+
+        # wait for the confirmation page
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located((By.ID, 'bd_btn_remove')))
+
+        # hit Yes to remove them
+        self.driver.find_element_by_id('bd_btn_remove').click()
+
+        # wait for my venues page
+        wait.until(EC.visibility_of_element_located((By.ID, 'bdAddMyVenueLink')))
+
+    def go_to_my_venues(self):
+        url = "http://localhost/wordpress/myvenues/"
+        if url != self.driver.current_url:
+            self.driver.get(url)
+        assert url == self.driver.current_url
+
+    def go_to_bookings(self):
+        url = "http://localhost/wordpress/bookings/"
+        if url != self.driver.current_url:
+            self.driver.get(url)
+        assert url == self.driver.current_url
+
+    def add_venue(self, venue_dictionary):
+        self.go_to_my_venues()
+        add_venue_button = self.driver.find_element_by_id('bdAddMyVenueLink')
+        ActionChains(self.driver).move_to_element(add_venue_button).click().perform()
+
+        # wait for add venue page
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.visibility_of_element_located((By.NAME, 'bd_venue_name')))
+
+        # now on add venue page
+        self.driver.find_element_by_name('bd_venue_name').send_keys(venue_dictionary['name'])
+        self.driver.find_element_by_name('bd_venue_email').send_keys(venue_dictionary['email'])
+        self.driver.find_element_by_name('bd_venue_city').send_keys(venue_dictionary['city'])
+        self.driver.find_element_by_name('bd_venue_state').send_keys(venue_dictionary['state'])
+        self.driver.find_element_by_name('bd_venue_country').send_keys(venue_dictionary['country'])
+
+        submit_new_venue_button = self.driver.find_element_by_id('bd_venue_add_button')
+        ActionChains(self.driver).move_to_element(submit_new_venue_button).click().perform()
+
+        # wait for my venues to load
+        wait.until(EC.visibility_of_element_located((By.ID, 'bdAddMyVenueLink')))
+
+        # TODO: verify venue added
+        pass
