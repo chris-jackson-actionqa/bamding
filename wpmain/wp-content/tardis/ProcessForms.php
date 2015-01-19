@@ -271,6 +271,14 @@ class ProcessForms
     mail($sTo, $sSubject, $sMessage);
   }
   
+  public static function mailOnBulk($action, $message)
+  {
+    $user = get_user_field('user_login');
+    $sTo = "seth@bamding.com";
+    $sSubject = "Venue $action for $user";
+    mail($sTo, $sSubject, $message);
+  }
+  
   public static function mailOnError($sUserID, $sDescription, $oException)
   {
     $sTo = "seth@bamding.com";
@@ -318,25 +326,27 @@ class ProcessForms
     $bookings = new Bookings(get_user_field('user_login'));
    
     $action = $_REQUEST['bd_bookings_bulk_action_top'];
-    
     foreach($_REQUEST as $key => $value)
     {
-      if(strpos($key, "venue_") !== FALSE)
+      if(strpos($key, "venue_") === FALSE)
       {
-        switch($action)
-        {
-          case 'start':
-            $bookings->setPause((int)$value, FALSE);
-            break;
-          case 'pause':
-            $bookings->setPause((int)$value, FALSE);
-            break;
-          default:
-            throw new RuntimeException("Unrecognized action: $action");
-        }
+        continue;
+      }
+      
+      switch($action)
+      {
+        case 'start':
+          $bookings->setPause((int)$value, FALSE);
+          break;
+        case 'pause':
+          $bookings->setPause((int)$value, TRUE);
+          break;
+        default:
+          throw new RuntimeException("Unrecognized action: $action");
       }
     }
-   
+    
+    self::mailOnBulk($action, "");
   }
   
   public static function setVenueCategory()

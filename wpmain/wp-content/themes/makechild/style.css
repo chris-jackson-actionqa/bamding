@@ -76,3 +76,11 @@ Updated: 2014-07-23 08:19:49
   margin-top: 6px;
   margin-left: 30%;
 }
+
+.row_paused {
+  background-color: #DDDDDD;
+}
+
+.row_active {
+  background-color: #FFFFFF;
+}

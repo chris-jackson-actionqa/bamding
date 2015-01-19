@@ -236,8 +236,16 @@ class DisplayForms
   <?php
   foreach($hBookingInfo as $row)
   {
+    if((int)$row['pause'] === 1)
+    {
+      $row_class = "row_paused";
+    }
+    else
+    {
+      $row_class = "row_active";
+    }
     ?>
-  <tr id="<?php echo $row['venue_id']; ?>">
+  <tr class="<?php echo $row_class; ?>" id="<?php echo $row['venue_id']; ?>">
     <td>
       <input type="checkbox"
              name="venue_<?php echo $row['venue_id']; ?>"

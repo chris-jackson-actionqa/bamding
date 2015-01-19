@@ -141,7 +141,8 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
-    checkboxes[0].click()
+    if not checkboxes[0].is_selected():
+        checkboxes[0].click()
 
 @step("I select the bulk action Pause")
 def step_impl(context):
@@ -172,12 +173,13 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     rows = context.driver.find_elements_by_xpath("//table//tr")
-    # first row is header. Don't need it
-    rows.pop[0]
-
     for row in rows:
-        cells = row.find_elements_by_tag_name('td')
-        assert cells[1].text == "Paused"
+        cells = row.text
+        if "Status" in cells:
+            continue
+
+        assert "Paused" in cells
+    pass
 
 
 @then("All venues will show as active")
@@ -192,4 +194,77 @@ def step_impl(context):
             continue
 
         assert "Active" in cells
+    pass
+
+
+@when("all venues are selected")
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
+    if not checkboxes[0].is_selected():
+        checkboxes[0].click()
+    pass
+
+
+@step("I click Apply")
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    context.driver.find_element_by_id('btn_bookings_apply_top').click()
+    pass
+
+
+@step("I choose Start for all venues")
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    bulk_select = Select(context.driver.find_element_by_id('bd_bookings_bulk_action_top'))
+    bulk_select.select_by_visible_text("Start Booking")
+    pass
+
+
+@step("I choose the bulk action Pause")
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    bulk_select = Select(context.driver.find_element_by_id('bd_bookings_bulk_action_top'))
+    bulk_select.select_by_visible_text("Pause Booking")
+    pass
+
+
+@when("I choose the second venue")
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    checkbox = context.driver.find_element_by_xpath("//table[@id='bookings_table']/tbody/tr[3]/td[1]/input")
+    if not checkbox.is_selected():
+        checkbox.click()
+
+    context.checkbox_value = checkbox.get_attribute('value')
+    pass
+
+
+@step("I choose Start Booking")
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    bulk_select = Select(context.driver.find_element_by_id('bd_bookings_bulk_action_top'))
+    bulk_select.select_by_visible_text("Start Booking")
+    pass
+
+
+@then("the second venue should be at the top of the table below the header")
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    checkbox = context.driver.find_element_by_xpath("//table[@id='bookings_table']/tbody/tr[2]/td[1]/input")
+    assert context.checkbox_value == checkbox.get_attribute('value')
     pass

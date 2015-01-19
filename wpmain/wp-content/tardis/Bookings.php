@@ -38,7 +38,7 @@ FROM $sTable
 INNER JOIN my_venues
 ON bookings.venue_id=my_venues.id
 WHERE $sTable.user_login='{$this->sUserLogin}' $sWhere
-ORDER BY my_venues.country, my_venues.state, my_venues.city, my_venues.name
+ORDER BY bookings.pause, my_venues.country, my_venues.state, my_venues.city, my_venues.name
 SQL;
     
     $mResult = $this->oConn->query($sSQL);

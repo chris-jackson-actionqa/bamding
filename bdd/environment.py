@@ -10,12 +10,16 @@ def before_all(context):
 
     # add two venues
     venue_one = {'name': 'Funhouse', 'email': 'fun@house.com',
-                 'country': 'United States', 'state': 'WA', 'city': 'Seattle'}
+                 'country': '', 'state': 'WA', 'city': 'Seattle'}
     context.bamding.add_venue(venue_one)
 
     venue_two = {'name': "Bob's Burgers", 'email': 'bob@burgers.com',
-                 'country': 'United States', 'state': 'ME', 'city': "Seymour's Bay"}
+                 'country': '', 'state': 'ME', 'city': "Seymour's Bay"}
     context.bamding.add_venue(venue_two)
+
+    venue_three = {'name': "Enterprise", 'email': 'jean@picard.com',
+                   'country': '', 'state': 'NY', 'city': "Alpha"}
+    context.bamding.add_venue(venue_three)
 
 def before_scenario(context, scenario):
     # set those venues to start booking

@@ -36,7 +36,27 @@ Feature: Bookings page for starting, pausing, and editing bookings for venues.
   Scenario: Bulk pause all venues
     Given I select all venues
     And I select the bulk action Pause
-    And I select Apply
+    And I click Apply
+    When all venues are selected
+    And I choose Start for all venues
+    And I click Apply
+    Then All venues will show as active
+
+  Scenario: Bulk activate all venues
+    Given I select all venues
     And I select Start for all venues
     And I select Apply
-    Then All venues will show as active
+    When all venues are selected
+    And I choose the bulk action Pause
+    And I click Apply
+    Then All venues will show as paused
+
+  Scenario: Active venues show before paused venues
+    Given I select all venues
+    And I select the bulk action Pause
+    And I click Apply
+    When I choose the second venue
+    And I choose Start Booking
+    And I click Apply
+    Then the second venue should be at the top of the table below the header
+
