@@ -1,10 +1,8 @@
 from behave import *
-import bamding_web_test
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select
-import time
 
 use_step_matcher("re")
+
 
 @given("I have 2 active venues")
 def step_impl(context):
@@ -32,7 +30,6 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     context.driver.find_element_by_id("bookings_header_checkbox").click()
-    pass
 
 
 @then("all the checkboxes in the table should be checked")
@@ -43,7 +40,6 @@ def step_impl(context):
     checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
     for box in checkboxes:
         assert box.is_selected()
-    pass
 
 
 @step("see that all the checkboxes are selected")
@@ -54,7 +50,6 @@ def step_impl(context):
     checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
     for box in checkboxes:
         assert box.is_selected()
-    pass
 
 
 @then("I click the table header checkbox")
@@ -63,7 +58,6 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     context.driver.find_element_by_id("bookings_header_checkbox").click()
-    pass
 
 
 @step("see that none of the checkboxes are selected")
@@ -74,7 +68,6 @@ def step_impl(context):
     checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
     for box in checkboxes:
         assert not box.is_selected()
-    pass
 
 
 @when("I click a row's checkbox to deselect it")
@@ -84,7 +77,6 @@ def step_impl(context):
     """
     checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
     checkboxes[1].click()
-    pass
 
 
 @then("the table header checkbox should be un-selected")
@@ -94,7 +86,6 @@ def step_impl(context):
     """
     checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
     assert not checkboxes[0].is_selected()
-    pass
 
 
 @given("I (?P<check_venues>.+) check all venues")
@@ -106,7 +97,6 @@ def step_impl(context, check_venues):
     if "do" == check_venues:
         checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
         checkboxes[0].click()
-    pass
 
 
 @when("I select (?P<bulk_action>.+)")
@@ -119,7 +109,6 @@ def step_impl(context, bulk_action):
 
     options = {'pause': "Pause Booking", 'start': "Start Booking", 'bulk': "Bulk Action"}
     bulk_select.select_by_visible_text(options[bulk_action])
-    pass
 
 
 @then("the Apply button should be (?P<apply_enabled>.+)")
@@ -135,6 +124,7 @@ def step_impl(context, apply_enabled):
     else:
         assert state
 
+
 @given("I select all venues")
 def step_impl(context):
     """
@@ -144,6 +134,7 @@ def step_impl(context):
     if not checkboxes[0].is_selected():
         checkboxes[0].click()
 
+
 @step("I select the bulk action Pause")
 def step_impl(context):
     """
@@ -152,12 +143,14 @@ def step_impl(context):
     bulk_select = Select(context.driver.find_element_by_id('bd_bookings_bulk_action_top'))
     bulk_select.select_by_visible_text("Pause Booking")
 
+
 @step("I select Apply")
 def step_impl(context):
     """
     :type context behave.runner.Context
     """
     context.driver.find_element_by_id('btn_bookings_apply_top').click()
+
 
 @step("I select Start for all venues")
 def step_impl(context):
@@ -166,6 +159,7 @@ def step_impl(context):
     """
     bulk_select = Select(context.driver.find_element_by_id('bd_bookings_bulk_action_top'))
     bulk_select.select_by_visible_text("Start Booking")
+
 
 @then("All venues will show as paused")
 def step_impl(context):
@@ -179,7 +173,6 @@ def step_impl(context):
             continue
 
         assert "Paused" in cells
-    pass
 
 
 @then("All venues will show as active")
@@ -194,7 +187,6 @@ def step_impl(context):
             continue
 
         assert "Active" in cells
-    pass
 
 
 @when("all venues are selected")
@@ -205,7 +197,6 @@ def step_impl(context):
     checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
     if not checkboxes[0].is_selected():
         checkboxes[0].click()
-    pass
 
 
 @step("I click Apply")
@@ -214,7 +205,6 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     context.driver.find_element_by_id('btn_bookings_apply_top').click()
-    pass
 
 
 @step("I choose Start for all venues")
@@ -224,7 +214,6 @@ def step_impl(context):
     """
     bulk_select = Select(context.driver.find_element_by_id('bd_bookings_bulk_action_top'))
     bulk_select.select_by_visible_text("Start Booking")
-    pass
 
 
 @step("I choose the bulk action Pause")
@@ -234,7 +223,6 @@ def step_impl(context):
     """
     bulk_select = Select(context.driver.find_element_by_id('bd_bookings_bulk_action_top'))
     bulk_select.select_by_visible_text("Pause Booking")
-    pass
 
 
 @when("I choose the second venue")
@@ -247,7 +235,6 @@ def step_impl(context):
         checkbox.click()
 
     context.checkbox_value = checkbox.get_attribute('value')
-    pass
 
 
 @step("I choose Start Booking")
@@ -257,7 +244,6 @@ def step_impl(context):
     """
     bulk_select = Select(context.driver.find_element_by_id('bd_bookings_bulk_action_top'))
     bulk_select.select_by_visible_text("Start Booking")
-    pass
 
 
 @then("the second venue should be at the top of the table below the header")
@@ -267,4 +253,3 @@ def step_impl(context):
     """
     checkbox = context.driver.find_element_by_xpath("//table[@id='bookings_table']/tbody/tr[2]/td[1]/input")
     assert context.checkbox_value == checkbox.get_attribute('value')
-    pass

@@ -1,7 +1,13 @@
 from selenium import webdriver
 import bamding_web_test
 
+
 def before_all(context):
+    """
+    Initialize tests
+    :param context:
+    :return:
+    """
     context.driver = webdriver.Firefox()
     context.bamding = bamding_web_test.BamDingWebTest(context.driver)
     context.driver.maximize_window()
@@ -21,7 +27,14 @@ def before_all(context):
                    'country': '', 'state': 'NY', 'city': "Alpha"}
     context.bamding.add_venue(venue_three)
 
+
 def before_scenario(context, scenario):
+    """
+    Go to bookings page. Clear any checked venues
+    :param context:
+    :param scenario:
+    :return:
+    """
     # set those venues to start booking
     context.bamding.go_to_bookings()
     checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
@@ -31,6 +44,12 @@ def before_scenario(context, scenario):
         if box.is_selected():
             raise RuntimeError("Could not deselect checkbox.")
 
+
 def after_all(context):
+    """
+    Remove all the venues and  close the browser.
+    :param context:
+    :return:
+    """
     context.bamding.remove_all_venues()
     context.driver.close()

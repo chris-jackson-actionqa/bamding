@@ -184,6 +184,12 @@ class DisplayForms
     
   }
   
+  /**
+   * Display bookings
+   * TODO: Break into smaller functions
+   * @param type $sUserLogin
+   * @return type
+   */
   public static function displayBookings($sUserLogin)
   {
     $oBookings = new Bookings($sUserLogin);

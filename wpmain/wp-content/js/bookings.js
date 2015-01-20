@@ -60,7 +60,6 @@ var BAMDING = {
          * coordinate the values of both the bulk action boxes and
          * enable or disable the "Apply" button appropriately
          * @param {type} elem
-         * @returns {undefined}
          */
         changeBulkActionSelection: function(elem)
         {
@@ -99,6 +98,10 @@ var BAMDING = {
           return foundSelected;
         },
         
+        /**
+         * Filter shown venues based on search criteria
+         * @returns {undefined}
+         */
         filterVenues: function()
         {
           var myvenues = BAMDING.MYVENUES;
@@ -117,6 +120,11 @@ var BAMDING = {
           myvenues.buildTableRows(filtered);
         },
         
+        /**
+         * Ajax: Get all venues for the user
+         * @param {string} user_login
+         * @returns {undefined}
+         */
         getAllVenues: function(user_login) 
         {
           jQuery(document).ready(function($) 
@@ -133,6 +141,10 @@ var BAMDING = {
           });
         },
         
+        /**
+         * Delete row from the table
+         * @returns {undefined}
+         */
         deleteTableRows: function()
         {
           var table = document.getElementById('venues_table');
@@ -143,6 +155,11 @@ var BAMDING = {
           }
         },
         
+        /**
+         * Build table rows
+         * @param {type} venues
+         * @returns {undefined}
+         */
         buildTableRows: function(venues)
         {
           var table = document.getElementById('venues_table');
@@ -183,6 +200,10 @@ var BAMDING = {
           }
         },
         
+        /**
+         * Get the filtered venues 
+         * @returns {Array|Object|BAMDING.MYVENUES.getFilteredVenues.venues|BAMDING.MYVENUES.getFilteredVenues.filtered}
+         */
         getFilteredVenues: function()
         {
           // get filter type
@@ -238,7 +259,17 @@ var BAMDING = {
           return filtered;
         }
     },
+    
+    /**
+     * BOOKINGS namespace
+     * @type type
+     */
     BOOKINGS: {
+      /**
+       * Toggle booking checkboxes
+       * @param {type} ele
+       * @returns {undefined}
+       */
       toggleAllBookingsCheckboxes: function(ele)
       {
         var checkboxes = document.getElementsByTagName('input');
@@ -251,34 +282,42 @@ var BAMDING = {
         }
       },
       
+      /**
+       * unselect the top header checkbox
+       * @returns {undefined}
+       */
       uncheckSelectAll: function()
       {
         var checkbox = document.getElementById("bookings_header_checkbox");
         checkbox.checked = false;
       },
       
+      /**
+       * enable/disable the Apply button 
+       * @returns {undefined}
+       */
       toggleBulkApply: function()
       {
         top_select = document.getElementById('bd_bookings_bulk_action_top');
-          option = top_select.options[top_select.options.selectedIndex].value;
-          top_apply_button = document.getElementById('btn_bookings_apply_top');
-          bottom_apply_button = document.getElementById('btn_bookings_apply_bottom');
-          if('bulk' === option || !BAMDING.BOOKINGS.isVenueSelected())
-          {
-              top_apply_button.disabled = true;
-              top_apply_button.className = "btn_disabled";
-              
-              bottom_apply_button.disabled = true;
-              bottom_apply_button.className = "btn_disabled";
-          }
-          else
-          {
-              top_apply_button.disabled = false;
-              top_apply_button.className = "btn_enabled";
-              
-              bottom_apply_button.disabled = false;
-              bottom_apply_button.className = "btn_enabled";
-          }
+        option = top_select.options[top_select.options.selectedIndex].value;
+        top_apply_button = document.getElementById('btn_bookings_apply_top');
+        bottom_apply_button = document.getElementById('btn_bookings_apply_bottom');
+        if('bulk' === option || !BAMDING.BOOKINGS.isVenueSelected())
+        {
+            top_apply_button.disabled = true;
+            top_apply_button.className = "btn_disabled";
+
+            bottom_apply_button.disabled = true;
+            bottom_apply_button.className = "btn_disabled";
+        }
+        else
+        {
+            top_apply_button.disabled = false;
+            top_apply_button.className = "btn_enabled";
+
+            bottom_apply_button.disabled = false;
+            bottom_apply_button.className = "btn_enabled";
+        }
       },
         
         /**

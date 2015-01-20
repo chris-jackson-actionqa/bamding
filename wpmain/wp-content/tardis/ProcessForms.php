@@ -271,11 +271,16 @@ class ProcessForms
     mail($sTo, $sSubject, $sMessage);
   }
   
+  /**
+   * Mail on bulk bookings
+   * @param type $action
+   * @param type $message
+   */
   public static function mailOnBulk($action, $message)
   {
     $user = get_user_field('user_login');
     $sTo = "seth@bamding.com";
-    $sSubject = "Venue $action for $user";
+    $sSubject = "Venue(s) $action for $user";
     mail($sTo, $sSubject, $message);
   }
   
@@ -321,6 +326,10 @@ class ProcessForms
     self::mailOnVenue($sUserLogin, $sVenueInfo , $hPostData['action']);
   }
   
+  /**
+   * Process bulk action from Bookings page
+   * @throws RuntimeException
+   */
   public static function processMultipleBookings()
   {
     $bookings = new Bookings(get_user_field('user_login'));
