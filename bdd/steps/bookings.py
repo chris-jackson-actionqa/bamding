@@ -253,3 +253,11 @@ def step_impl(context):
     """
     checkbox = context.driver.find_element_by_xpath("//table[@id='bookings_table']/tbody/tr[2]/td[1]/input")
     assert context.checkbox_value == checkbox.get_attribute('value')
+
+
+@given('The "By State" filter is chosen')
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    assert False

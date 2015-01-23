@@ -125,13 +125,19 @@ var BAMDING = {
          * @param {string} user_login
          * @returns {undefined}
          */
-        getAllVenues: function(user_login) 
+        getAllVenues: function(user_login, type) 
         {
+          if(typeof(type)==='undefined')
+          {
+            type = 'venues';
+          }
+          
           jQuery(document).ready(function($) 
           {
             $.post( getBaseURL() + "/wp-content/ajax/GetAllVenues.php",
             {
-              user_login: user_login
+              user_login: user_login,
+              type: type
             },
             function(data, status)
             {
@@ -377,6 +383,151 @@ var BAMDING = {
 
           top_select.options.selectedIndex = select_box.options.selectedIndex;
           bottom_select.options.selectedIndex = select_box.options.selectedIndex;
+        },
+        
+        /**
+         * Filter shown venues based on search criteria
+         * @returns {undefined}
+         */
+        filterVenues: function()
+        {
+          var myvenues = BAMDING.MYVENUES;
+          var bookings = BAMDING.BOOKINGS;
+          if( null === myvenues._venues)
+          {
+            myvenues.getAllVenues(myvenues._user_login, 'bookings');
+          }
+          
+          // delete all rows except header
+          bookings.deleteTableRows();
+          
+          // get filtered venues
+          filtered = bookings.getFilteredVenues();
+          
+          // build the table
+          bookings.buildTableRows(filtered);
+        },
+        
+        /**
+         * Delete row from the table
+         * @returns {undefined}
+         */
+        deleteTableRows: function()
+        {
+          var table = document.getElementById('bookings_table');
+          var num_rows = table.rows.length;
+          for( var i = num_rows -1; i > 0; --i)
+          {
+            table.deleteRow(i);
+          }
+        },
+        
+        /**
+         * Get the filtered venues 
+         * @returns {Array|Object|BAMDING.MYVENUES.getFilteredVenues.venues|BAMDING.MYVENUES.getFilteredVenues.filtered}
+         */
+        getFilteredVenues: function()
+        {
+          // get filter type
+          var filter_select = document.getElementById("filter_bookings_select");
+          var filter_index = filter_select.options.selectedIndex;
+          var filter_type = filter_select.options[filter_index].text;
+          
+          // get filter
+          var search = document.getElementById("filter_bookings_input").value;
+          search = search.trim().toLowerCase();
+          
+          // get venues
+          var venues = BAMDING.MYVENUES._venues;
+          
+          // if the search is empty, return all venues
+          if( "" === search)
+          {
+            return venues;
+          }
+          
+          var filtered = [];
+          var is_all = "Filter: All" === filter_type;
+          var is_city = "Filter: City" === filter_type;
+          var is_venue_name = "Filter: Name" === filter_type;
+          var is_state = "Filter: State" === filter_type;
+          var is_country = "Filter: Country" === filter_type;
+          var is_category = "Filter: Category" === filter_type;
+          for( var i = 0; i < venues.length; ++i)
+          {
+            var name = venues[i].name.trim().toLowerCase();
+            var match_name = (is_venue_name || is_all) && -1 !== name.search(search);
+            
+            var city = venues[i].city.trim().toLowerCase();
+            var match_city = (is_city || is_all) && -1 !== city.search(search);
+            
+            var state = venues[i].state.trim().toLowerCase();
+            var match_state = (is_state || is_all) && -1 !== state.search(search);
+            
+            var country = venues[i].country.trim().toLowerCase();
+            var match_country = (is_country || is_all) && -1 !== country.search(search);
+            
+            var category = venues[i].category.trim().toLowerCase();
+            var match_category = (is_category || is_all) && -1 !== category.search(search);
+            
+            if(match_city || match_name || match_state  
+                    || match_country || match_category)
+            {
+              filtered.push(venues[i]);
+              continue;
+            }
+          }
+          
+          return filtered;
+        },
+        
+        /**
+         * Build table rows
+         * @param {type} venues
+         * @returns {undefined}
+         */
+        buildTableRows: function(venues)
+        {
+          var table = document.getElementById('bookings_table');
+          var num_venues = venues.length;
+          for( var i = 0; i < num_venues; ++i)
+          {
+            var row = table.insertRow(-1);
+            
+            // checkbox
+            var cell = row.insertCell(-1);
+            cell.innerHTML = "<input type='checkbox' " +
+                             "name=\"venue_" + venues[i].id + "\"" + 
+                             "value=\"" + venues[i].id + "\"" +
+                             "onchange=\"BAMDING.BOOKINGS.uncheckSelectAll(); " + 
+                             "BAMDING.BOOKINGS.toggleBulkApply();\">";
+                     
+            // Status
+            cell = row.insertCell(-1);
+            cell.innerHTML = 
+            
+            // Venue name
+            cell = row.insertCell(-1);
+            cell.innerHTML = "<a href=\"" + 
+                    getBaseURL() + "/editvenue?venue_id=" + venues[i].id +
+                    "\">" + venues[i].name + "</a>";
+            
+            // city
+            cell = row.insertCell(-1);
+            cell.innerHTML = venues[i].city;
+            
+            // state
+            cell = row.insertCell(-1);
+            cell.innerHTML = venues[i].state;
+            
+            // country
+            cell = row.insertCell(-1);
+            cell.innerHTML = venues[i].country;
+            
+            // category
+            cell = row.insertCell(-1);
+            cell.innerHTML = venues[i].category;
+          }
         }
     }
 };

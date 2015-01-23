@@ -11,11 +11,17 @@ if(empty($_REQUEST['user_login']))
 {
   echo '';
 }
-else
+else if ($_REQUEST['type'] === 'venues')
 {
   // get user's venue data and store in javascript
   $oUserVenues = new Venues('my_venues', $_REQUEST['user_login']);
-  $aUserVenues = $oUserVenues->getAllMyVenues();
-  $sJSON = \json_encode($aUserVenues);
-  echo $sJSON;
+  $venues = $oUserVenues->getAllMyVenues();
 }
+else if($_REQUEST['type'] === 'bookings')
+{
+  $bookings = new Bookings($_REQUEST['user_login']);
+  $venues = $bookings->getAllBookings();
+}
+
+$sJSON = \json_encode($venues);
+echo $sJSON;

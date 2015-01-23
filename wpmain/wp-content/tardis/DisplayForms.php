@@ -219,6 +219,8 @@ class DisplayForms
          id="btn_bookings_apply_top"
          class="btn_disabled"
          disabled>
+  
+  <?php self::displayBookingsFilter(); ?>
           
 <table id="bookings_table">
   <tr>
@@ -479,5 +481,25 @@ class DisplayForms
     }
     
     return $sFriendlyType;
+  }
+  
+  /**
+   * Display bookings filter
+   * Filter select and input to control the venues shown in the bookings
+   * venues table
+   */
+  public static function displayBookingsFilter()
+  {
+    ?>
+<select id="filter_bookings_select">
+  <option>Filter: All</option>
+  <option>Filter: Name</option>
+  <option>Filter: State</option>
+  <option>Filter: City</option>
+  <option>Filter: Category</option>
+</select>
+<input id="filter_bookings_input"
+       onkeyup="BAMDING.BOOKINGS.filterVenues();">
+    <?php
   }
 }

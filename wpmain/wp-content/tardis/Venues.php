@@ -136,7 +136,7 @@ SQL;
   public function getAllMyVenues()
   {
     $sSQL = "SELECT * FROM my_venues WHERE user_login='$this->sUserID'"
-            . " ORDER BY country,state,city";
+            . " ORDER BY country, state, city, name";
     
     $mResult = $this->oConn->query($sSQL);
 
