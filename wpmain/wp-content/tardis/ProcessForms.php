@@ -334,7 +334,7 @@ class ProcessForms
   {
     $bookings = new Bookings(get_user_field('user_login'));
    
-    $action = $_REQUEST['bd_bookings_bulk_action_top'];
+    $action = trim($_REQUEST['bd_bookings_bulk_action_top']);
     foreach($_REQUEST as $key => $value)
     {
       if(strpos($key, "venue_") === FALSE)
@@ -351,11 +351,14 @@ class ProcessForms
           $bookings->setPause((int)$value, TRUE);
           break;
         default:
-          throw new RuntimeException("Unrecognized action: $action");
+          return;
       }
     }
     
-    self::mailOnBulk($action, "");
+    if(!empty($action))
+    {
+      self::mailOnBulk($action, "");
+    }
   }
   
   public static function setVenueCategory()

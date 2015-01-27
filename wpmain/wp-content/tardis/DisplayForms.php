@@ -205,6 +205,11 @@ class DisplayForms
     ?>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="<?php echo Site::getBaseURL(); ?>/wp-content/js/bookings.js"></script>
+<script>
+  BAMDING.MYVENUES.getAllVenues(
+          "<?php echo get_user_field('user_login'); ?>", 
+          "bookings");
+</script>
 <h1>Bookings</h1>
 <form action="" method="post">
   <select name="bd_bookings_bulk_action_top" 
