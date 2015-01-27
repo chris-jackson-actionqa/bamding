@@ -504,7 +504,13 @@ var BAMDING = {
                      
             // Status
             cell = row.insertCell(-1);
-            cell.innerHTML = 
+            var pausedString = "Active";
+            if( venues[i].pause == 1)
+            {
+                pausedString = "Paused";
+            }
+                
+            cell.innerHTML = pausedString;
             
             // Venue name
             cell = row.insertCell(-1);
@@ -520,14 +526,53 @@ var BAMDING = {
             cell = row.insertCell(-1);
             cell.innerHTML = venues[i].state;
             
-            // country
+            // last contact
             cell = row.insertCell(-1);
-            cell.innerHTML = venues[i].country;
+            cell.innerHTML = venues[i].last_contacted;
+            
+            // next contact
+            cell = row.insertCell(-1);
+            cell.innerHTML = venues[i].next_contact;
+            
+            // frequency number
+            cell = row.insertCell(-1);
+            cell.innerHTML = venues[i].frequency_num;
+            
+            // frequency type
+            cell = row.insertCell(-1);
+            cell.innerHTML = BAMDING.BOOKINGS.getFriendlyFrequencyType(
+                    venues[i].freq_type);
             
             // category
             cell = row.insertCell(-1);
             cell.innerHTML = venues[i].category;
           }
+        },
+        
+        getFriendlyFrequencyType: function(interval_type)
+        {
+            interval_type = interval_type.trim().toLowerCase();
+            
+            if('d' == interval_type)
+            {
+                return "Day(s)";
+            }
+            else if ('w' == interval_type)
+            {
+                return "Week(s)";
+            }
+            else if ('m' == interval_type)
+            {
+                return "Month(s)";
+            }
+            else if ('y' == interval_type)
+            {
+                return "Year(s)";
+            }
+            else
+            {
+                return "Error";
+            }
         }
     }
 };

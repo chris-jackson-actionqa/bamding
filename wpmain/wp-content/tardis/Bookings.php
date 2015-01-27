@@ -33,7 +33,7 @@ class Bookings
     $sWhere = (!empty($sWhere)) ? "AND $sWhere" : "";
     $sTable = Bookings::BOOKINGS_TABLE;
     $sSQL = <<<SQL
-SELECT $sTable.*, my_venues.name, my_venues.city, my_venues.state, my_venues.country 
+SELECT $sTable.*, my_venues.name, my_venues.city, my_venues.state, my_venues.country, my_venues.category 
 FROM $sTable
 INNER JOIN my_venues
 ON bookings.venue_id=my_venues.id
