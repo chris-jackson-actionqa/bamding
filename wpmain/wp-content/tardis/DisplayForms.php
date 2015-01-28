@@ -295,7 +295,7 @@ class DisplayForms
 </table>
   <select name="bd_bookings_bulk_action_bottom"
                     id="bd_bookings_bulk_action_bottom"
-                    onchange="BAMDING.MYVENUES.changeBulkActionSelection(this);">
+                    onchange="BAMDING.BOOKINGS.changeBulkActionSelection(this);">
     <option value="bulk">Bulk Action</option>
     <option value="start">Start Booking</option>
     <option value="pause">Pause Booking</option>

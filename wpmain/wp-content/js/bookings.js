@@ -493,6 +493,8 @@ var BAMDING = {
           for( var i = 0; i < num_venues; ++i)
           {
             var row = table.insertRow(-1);
+            row.className = "row_active";
+            row.id = venues[i].id;
             
             // checkbox
             var cell = row.insertCell(-1);
@@ -505,9 +507,10 @@ var BAMDING = {
             // Status
             cell = row.insertCell(-1);
             var pausedString = "Active";
-            if( venues[i].pause == 1)
+            if( venues[i].pause === 1)
             {
                 pausedString = "Paused";
+                row.className = "row_paused";
             }
                 
             cell.innerHTML = pausedString;
