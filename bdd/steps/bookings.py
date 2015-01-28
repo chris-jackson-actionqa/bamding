@@ -260,4 +260,26 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False
+    filter_select = Select(context.driver.find_element_by_id("filter_bookings_select"))
+    filter_select.select_by_visible_text("Filter: State")
+
+
+@step('a venue with the state "WA" exists')
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    rows = context.driver.find_elements_by_xpath('//table[@id="bookings_table"]/tbody/tr')
+    state_header = context.driver.find_element_by_xpath('//table[@id="bookings_table"]/tbody/tr/th[5]')
+    assert state_header.text == "State", "Expected 'State' column. Found {0}".format(state_header.text)
+
+    for index, row in enumerate(rows):
+        # skip first row
+        if index == 0:
+            continue
+
+        if row.find_element_by_xpath('//td[5]').text.lower() == "wa":
+            return
+
+    assert False, "No venue with state 'WA' is in the table"
+

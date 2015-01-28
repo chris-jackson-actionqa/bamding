@@ -499,15 +499,15 @@ var BAMDING = {
             // checkbox
             var cell = row.insertCell(-1);
             cell.innerHTML = "<input type='checkbox' " +
-                             "name=\"venue_" + venues[i].id + "\"" + 
-                             "value=\"" + venues[i].id + "\"" +
+                             "name=\"venue_" + venues[i].venue_id + "\"" + 
+                             "value=\"" + venues[i].venue_id + "\"" +
                              "onchange=\"BAMDING.BOOKINGS.uncheckSelectAll(); " + 
                              "BAMDING.BOOKINGS.toggleBulkApply();\">";
                      
             // Status
             cell = row.insertCell(-1);
             var pausedString = "Active";
-            if( venues[i].pause === 1)
+            if( venues[i].pause === "1")
             {
                 pausedString = "Paused";
                 row.className = "row_paused";
@@ -518,7 +518,7 @@ var BAMDING = {
             // Venue name
             cell = row.insertCell(-1);
             cell.innerHTML = "<a href=\"" + 
-                    getBaseURL() + "/editvenue?venue_id=" + venues[i].id +
+                    getBaseURL() + "/editvenue?venue_id=" + venues[i].venue_id +
                     "\">" + venues[i].name + "</a>";
             
             // city
