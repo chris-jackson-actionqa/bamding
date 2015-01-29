@@ -278,8 +278,39 @@ def step_impl(context):
         if index == 0:
             continue
 
-        if row.find_element_by_xpath('//td[5]').text.lower() == "wa":
+        state = context.driver.find_element_by_xpath(
+            '//table[@id="bookings_table"]/tbody/tr[{0}]/td[5]'.format(index+1)).text.lower()
+
+        if state == "wa":
             return
 
     assert False, "No venue with state 'WA' is in the table"
 
+
+@when('I type in "WA" into the filter')
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    filter_input = context.driver.find_element_by_id('filter_bookings_input')
+    filter_input.clear()
+    filter_input.send_keys("wa")
+
+
+@then('only "WA" state venues are in the table')
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    rows = context.driver.find_elements_by_xpath('//table[@id="bookings_table"]/tbody/tr')
+    assert len(rows) > 1, "Expected at least one venue in the table."
+
+    for index, row in enumerate(rows):
+        # skip first row
+        if index == 0:
+            continue
+
+        state = context.driver.find_element_by_xpath(
+            '//table[@id="bookings_table"]/tbody/tr[{0}]/td[5]'.format(index+1)).text.lower()
+
+        assert "wa" == state, "Found a state other than WA"
