@@ -11,6 +11,13 @@ class BamDingWebTest():
     """
     Test helper for the site.
     """
+    BOOKINGS_COL_DICT = {
+        "venue": 3,
+        "city": 4,
+        "state": 5,
+        "category": 10,
+    }
+
     def __init__(self, driver):
         """
         Construction

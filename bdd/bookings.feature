@@ -60,35 +60,28 @@ Feature: Bookings page for starting, pausing, and editing bookings for venues.
     And I click Apply
     Then the second venue should be at the top of the table below the header
 
-  @wip
-  Scenario: Filter venues by state
-    Given The "By State" filter is chosen
-    And a venue with the state "WA" exists
-    When I type in "WA" into the filter
-    Then only "WA" state venues are in the table
+  Scenario Outline: Filtering venues for specific types
+    Given the <filter_type> is chosen
+    And a venue with the <type_key> <value> exists
+    When I type in <value> into the filter
+    Then only <value> <type_key> venues are in the table
 
-  Scenario: Filter venues by city
-    Given the "By City" filter is chosen
-    And a venue with the city "Seattle" exists
-    When I type in "Sea" into the filter
-    Then only cities with "sea" in their name are in the table
+  Examples:
+    | filter_type       | type_key      | value     |
+    | Filter: State     | state     | WA        |
+    | Filter: City      | city      | Seattle   |
+    | Filter: Category  | category  | dive bar  |
+    | Filter: Name      | venue     | Funhouse  |
 
-  Scenario: Filter venues by name
-    Given the "By name" filter is chosen
-    And a venue with the name "Funhouse" exists
-    When I type in "fun" into the filter
-    Then only venues with "fun" in their name are in the table
+  Scenario Outline: "Filter: All" filters on all searchable fields
+    Given the Filter: All is chosen
+    When I type in <value> into the filter
+    Then I expect <expected_rows> rows
 
-  Scenario: Filter venues by category
-    Given the "By Category" filter is chosen
-    And a venue with the category "Dive Bar" exists
-    When I type in "dive bar" into the filter
-    Then only venues with "dive bar" in their category are in the table
-
-  Scenario: Filter on all venues
-    Given the "By All" filter is chosen
-    And a venue has "xay" in their name
-    And a venue has "xay" in their city
-    And a venue has "xay" in their category
-    When I type in "xay" into the filter
-    Then those 3 venues are in the table
+    Examples: Filter examples
+      | value | expected_rows |
+      | fun   | 1 |
+      | me    | 1 |
+      | alpha | 1 |
+      | dive  | 1 |
+      | e     | 3 |

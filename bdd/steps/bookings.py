@@ -1,5 +1,6 @@
 from behave import *
 from selenium.webdriver.support.ui import Select
+from bamding_web_test import BamDingWebTest
 
 use_step_matcher("re")
 
@@ -314,3 +315,107 @@ def step_impl(context):
             '//table[@id="bookings_table"]/tbody/tr[{0}]/td[5]'.format(index+1)).text.lower()
 
         assert "wa" == state, "Found a state other than WA"
+
+
+@given('the "By City" filter is chosen')
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    filter_select = Select(context.driver.find_element_by_id("filter_bookings_select"))
+    filter_select.select_by_visible_text("Filter: City")
+
+
+@step('a venue with the city "Seattle" exists')
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    pass
+
+
+@given("the (?P<filter_type>.+) is chosen")
+def step_impl(context, filter_type):
+    """
+    :type context behave.runner.Context
+    :type filter_type str
+    """
+    filter_select = Select(context.driver.find_element_by_id("filter_bookings_select"))
+    filter_select.select_by_visible_text(filter_type)
+
+
+@step("a venue with the (?P<type_key>.+) (?P<value>.+) exists")
+def step_impl(context, type_key, value):
+    """
+    :type context behave.runner.Context
+    :type type_key str
+    :type value str
+    """
+    rows = context.driver.find_elements_by_xpath('//table[@id="bookings_table"]/tbody/tr')
+    if type_key == "category dive":
+        type_key = "category"
+        value = "dive bar"
+    header = context.driver.find_element_by_xpath(
+        '//table[@id="bookings_table"]/tbody/tr/th[{0}]'.format(BamDingWebTest.BOOKINGS_COL_DICT[type_key]))
+    assert header.text.lower() == type_key.lower(), "Expected '{0}' column. Found {1}".format(type_key, header.text)
+
+    for index, row in enumerate(rows):
+        # skip first row
+        if index == 0:
+            continue
+
+        column_text = context.driver.find_element_by_xpath(
+            '//table[@id="bookings_table"]/tbody/tr[{0}]/td[{1}]'.format(
+                index+1,
+                BamDingWebTest.BOOKINGS_COL_DICT[type_key]))\
+            .text.lower()
+
+        if column_text == value.lower():
+            return
+
+    assert False, "No venue with {0} '{1}' is in the table".format(type_key, value)
+
+
+@when("I type in (?P<value>.+) into the filter")
+def step_impl(context, value):
+    """
+    :type context behave.runner.Context
+    :type value str
+    """
+    filter_input = context.driver.find_element_by_id('filter_bookings_input')
+    filter_input.clear()
+    filter_input.send_keys(value)
+
+
+@then("only (?P<value>.+) (?P<type>.+) venues are in the table")
+def step_impl(context, value, type):
+    """
+    :type context behave.runner.Context
+    :type value str
+    :type type str
+    """
+    rows = context.driver.find_elements_by_xpath('//table[@id="bookings_table"]/tbody/tr')
+    assert len(rows) > 1, "Expected at least one venue in the table."
+
+    for index, row in enumerate(rows):
+        # skip first row
+        if index == 0:
+            continue
+
+        cell_text = context.driver.find_element_by_xpath(
+            '//table[@id="bookings_table"]/tbody/tr[{0}]/td[{1}]'.format(
+                index+1,
+                BamDingWebTest.BOOKINGS_COL_DICT[type]))\
+            .text.lower()
+
+        assert value.lower() == cell_text.lower(), "Found a {0} other than {1}".format(type, value)
+
+
+@then("I expect (?P<expected_rows>.+) rows")
+def step_impl(context, expected_rows):
+    """
+    :type context behave.runner.Context
+    :type expected_rows str
+    """
+    rows = context.driver.find_elements_by_xpath('//table[@id="bookings_table"]/tbody/tr')
+    assert len(rows) == int(expected_rows) + 1, "Expected {0} venues in the table.".format(expected_rows)

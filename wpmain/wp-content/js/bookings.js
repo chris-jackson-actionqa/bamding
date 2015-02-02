@@ -517,9 +517,7 @@ var BAMDING = {
             
             // Venue name
             cell = row.insertCell(-1);
-            cell.innerHTML = "<a href=\"" + 
-                    getBaseURL() + "/editvenue?venue_id=" + venues[i].venue_id +
-                    "\">" + venues[i].name + "</a>";
+            cell.innerHTML = venues[i].name;
             
             // city
             cell = row.insertCell(-1);
