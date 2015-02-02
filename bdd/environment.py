@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
 
 import bamding_web_test
 
@@ -61,13 +62,25 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
-    filter_input = context.driver.find_element_by_id("filter_bookings_input")
-    text_len = len(filter_input.get_attribute('value'))
-    backspace_counts = range(text_len)
-    for count in backspace_counts:
-        filter_input.send_keys(Keys.BACK_SPACE)
-    filter_input.clear()
-    pass
+    """
+    Clean up after scenarios
+    :param context:
+    :param scenario:
+    :return:
+    """
+    # if on bookings page, clear out filter input field
+    # Use backspace to trigger javascript changes to generate the table
+    # Just using the .clear method doesn't trigger the required javascript.
+    try:
+        if context.driver.current_url == "http://localhost/wordpress/bookings/":
+            filter_input = context.driver.find_element_by_id("filter_bookings_input")
+            text_len = len(filter_input.get_attribute('value'))
+            backspace_counts = range(text_len)
+            for count in backspace_counts:
+                filter_input.send_keys(Keys.BACK_SPACE)
+            filter_input.clear()
+    except NoSuchElementException as ex:
+        print("Probably no venues. Keep on moving")
 
 
 def add_venues_for_bookings_tests(context):
