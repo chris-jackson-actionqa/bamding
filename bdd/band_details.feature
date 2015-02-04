@@ -30,3 +30,19 @@ Feature: Band Details
     Then the submit button is not enabled
     And the required field (or fields) are highlighted
 
+  @wip
+  Scenario Outline: Are expected fields present
+    Given I check for <required_field>
+    Then <required_field> is on the page
+    And <required_field>'s <label> is on the page
+
+    Examples: Required fields and labels
+    | required_field | label |
+    | solo project checkbox | Solo project? Check here: |
+    | band name             | Band's Name:              |
+    | genre                 | Main Genre of Music:      |
+    | sounds like           | What popular bands do you sound like? |
+    | booking email         | Email used for booking:   |
+    | main website          | Main Website:             |
+    | music                 | Where To Hear Your Music? |
+
