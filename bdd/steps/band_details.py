@@ -120,3 +120,34 @@ def step_impl(context):
     :type context behave.runner.Context
     """
     assert False, "Not implemented"
+
+
+@given("I check for (?P<required_field>.+)")
+def step_impl(context, required_field):
+    """
+    :type context behave.runner.Context
+    :type required_field str
+    """
+    if required_field == "solo project checkbox":
+        context.field_element = context.driver.find_element_by_name("band_details_solo")
+    else:
+        assert False, "Unknown field: {0}".format(required_field)
+
+
+@then("(?P<required_field>.+) is on the page")
+def step_impl(context, required_field):
+    """
+    :type context behave.runner.Context
+    :type required_field str
+    """
+    assert context.field_element.is_displayed(), "Required field not displayed: {0}".format(required_field)
+
+
+@step("(?P<label>.+) is above (?P<required_field>.+)")
+def step_impl(context, label, required_field):
+    """
+    :type context behave.runner.Context
+    :type label str
+    :type required_field str
+    """
+    assert False, "Not implemented"

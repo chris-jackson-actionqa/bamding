@@ -34,7 +34,7 @@ Feature: Band Details
   Scenario Outline: Are expected fields present
     Given I check for <required_field>
     Then <required_field> is on the page
-    And <required_field>'s <label> is on the page
+    And <label> is above <required_field>
 
     Examples: Required fields and labels
     | required_field | label |

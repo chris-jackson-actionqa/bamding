@@ -21,6 +21,9 @@ def before_all(context):
     context.bamding.login()
     context.bamding.remove_all_venues()
 
+    context.feature_bookings = "Bookings page for starting, pausing, and editing bookings for venues."
+    context.feature_band_details = "Band Details"
+
 
 def after_all(context):
     """
@@ -51,14 +54,18 @@ def before_scenario(context, scenario):
     :param scenario:
     :return:
     """
-    # set those venues to start booking
-    context.bamding.go_to_bookings()
-    checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
-    for box in checkboxes:
-        if box.is_selected():
-            box.click()
-        if box.is_selected():
-            raise RuntimeError("Could not deselect checkbox.")
+    if context.feature.name == context.feature_bookings:
+        # set those venues to start booking
+        context.bamding.go_to_bookings()
+        checkboxes = context.driver.find_elements_by_xpath("//table[@id='bookings_table']//input[@type='checkbox']")
+        for box in checkboxes:
+            if box.is_selected():
+                box.click()
+            if box.is_selected():
+                raise RuntimeError("Could not deselect checkbox.")
+
+    elif context.feature.name == context.feature_band_details:
+        context.bamding.go_to_band_details()
 
 
 def after_scenario(context, scenario):

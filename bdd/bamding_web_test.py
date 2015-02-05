@@ -125,6 +125,12 @@ class BamDingWebTest():
             self.driver.get(url)
         assert url == self.driver.current_url
 
+    def go_to_band_details(self):
+        url = "http://localhost/wordpress/band-details/"
+        if url != self.driver.current_url:
+            self.driver.get(url)
+        assert url == self.driver.current_url
+
     def add_venue(self, venue_dictionary):
         """
         Add new venue.
