@@ -19,3 +19,4 @@ require_once(ABSPATH. '/wp-content/tardis/Bookings.php');
 require_once(ABSPATH. '/wp-content/tardis/BookingDates.php');
 require_once(ABSPATH. '/wp-content/tardis/DisplayDates.php');
 require_once(ABSPATH. '/wp-content/tardis/DisplayCategory.php');
+require_once(ABSPATH. '/wp-content/tardis/DisplayBandDetails.php');

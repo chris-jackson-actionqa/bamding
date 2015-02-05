@@ -79,7 +79,7 @@ def after_scenario(context, scenario):
             for count in backspace_counts:
                 filter_input.send_keys(Keys.BACK_SPACE)
             filter_input.clear()
-    except NoSuchElementException as ex:
+    except NoSuchElementException:
         print("Probably no venues. Keep on moving")
 
 

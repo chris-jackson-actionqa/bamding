@@ -84,3 +84,39 @@ Updated: 2014-07-23 08:19:49
 .row_active {
   background-color: #FFFFFF;
 }
+
+.bd_float_left {
+    float: left;
+}
+
+.bd_float_right {
+    float: right;
+}
+
+.bd_float_clear {
+    clear: both;
+}
+
+#required_info, #optional_info {
+    width: 40%;
+    margin-left: 10px;
+    margin-right: 10px;
+    min-width: 220px;
+}
+
+#required_info input[type=text], #optional_info input, #optional_info textarea {
+    width: 100%;
+}
+
+#required_info label, #optional_info label {
+    display: inline-block;
+    padding-top: 15px;
+    font-weight: bold;
+    font-size: 110%;
+}
+
+#required_info legend, #optional_info legend {
+    font-weight: bold;
+    font-size: 200%;
+    text-decoration: underline;
+}

@@ -46,3 +46,11 @@ Feature: Band Details
     | main website          | Main Website:             |
     | music                 | Where To Hear Your Music? |
 
+    Examples: Optional fields and labels
+    | required_field | label |
+    | phone number   | Band's Booking Phone Number: |
+    | local draw     | What's your local draw?      |
+    | video          | Where are your live videos? (Optional, but highly recommended.) |
+    | calendar       | Booking calendar or show list                                   |
+    | more sites     | Additional social media or relevant sites for your band.        |
+
