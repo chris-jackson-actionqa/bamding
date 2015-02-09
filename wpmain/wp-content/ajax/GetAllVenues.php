@@ -24,4 +24,8 @@ else if($_REQUEST['type'] === 'bookings')
 }
 
 $sJSON = \json_encode($venues);
+if(empty($sJSON))
+{
+    $sJSON = json_last_error().": ".json_last_error_msg();
+}
 echo $sJSON;

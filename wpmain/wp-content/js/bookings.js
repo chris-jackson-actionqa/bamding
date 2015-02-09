@@ -107,7 +107,9 @@ var BAMDING = {
           var myvenues = BAMDING.MYVENUES;
           if( null === myvenues._venues)
           {
-            myvenues.getAllVenues(myvenues._user_login);
+            //myvenues.getAllVenues(myvenues._user_login);
+            alert("filterVenues: No venues");
+            return;
           }
           
           // delete all rows except header
@@ -127,13 +129,11 @@ var BAMDING = {
          */
         getAllVenues: function(user_login, type) 
         {
-          if(typeof(type)==='undefined')
-          {
-            type = 'venues';
-          }
+            if(typeof(type)==='undefined')
+            {
+              type = 'venues';
+            }
           
-          jQuery(document).ready(function($) 
-          {
             $.post( getBaseURL() + "/wp-content/ajax/GetAllVenues.php",
             {
               user_login: user_login,
@@ -141,10 +141,13 @@ var BAMDING = {
             },
             function(data, status)
             {
+                if( "" === data)
+                {
+                    alert("Error: Could not retrieve venues for filtering.");
+                }
               BAMDING.MYVENUES._venues = JSON.parse(data);
               BAMDING.MYVENUES._user_login = user_login;
             });
-          });
         },
         
         /**
@@ -212,6 +215,11 @@ var BAMDING = {
          */
         getFilteredVenues: function()
         {
+            if(BAMDING.MYVENUES._venues === null)
+            {
+                alert("getFilteredVenues: No venues");
+                return;
+            }
           // get filter type
           var filter_select = document.getElementById("filter_venues_select");
           var filter_index = filter_select.options.selectedIndex;
