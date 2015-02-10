@@ -36,7 +36,8 @@ class Database
     }
     
     $this->oConn = $oConnection;
-    return $oConnection;
+    $this->oConn->set_charset("utf8");
+    return $this->oConn;
   }
   
   public static function fetch_all($mResult)

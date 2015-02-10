@@ -16,12 +16,13 @@ class DisplayData {
 
     public static function displayMyVenues($sUserID) {
         $script_location = Site::getBaseURL() . '/wp-content/js/bookings.js';
+        $user_login = get_user_field('user_login');
         ?>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src='<?php echo $script_location; ?>'></script>
         <script>
-          BAMDING.MYVENUES.getAllVenues(
-            "<?php echo get_user_field('user_login'); ?>");
+          BAMDING.MYVENUES.getAllVenues("<?php echo $user_login; ?>");
+          BAMDING.MYVENUES._user_login = "<?php echo $user_login; ?>";
         </script>
         <?php
         $oVenues = new Venues('my_venues', $sUserID);
