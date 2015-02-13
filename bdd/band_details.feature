@@ -3,6 +3,7 @@ Feature: Band Details
   I want to easily input my band's details
   So that I can generate booking templates to book shows
 
+  @wip
   Scenario: New band details
     Given I don't have any band details entered in
     When I fill out the band details form
@@ -30,7 +31,6 @@ Feature: Band Details
     Then the submit button is not enabled
     And the required field (or fields) are highlighted
 
-  @wip
   Scenario Outline: Are expected fields present
     Given I check for <required_field>
     Then <required_field> is on the page
@@ -38,7 +38,7 @@ Feature: Band Details
 
     Examples: Required fields and labels
     | required_field | label |
-    | solo project checkbox | Solo project? Check here: |
+    | solo project checkbox | Solo Project? Check here: |
     | band name             | Band's Name:              |
     | genre                 | Main Genre of Music:      |
     | sounds like           | What popular bands do you sound like? |

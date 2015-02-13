@@ -120,3 +120,7 @@ Updated: 2014-07-23 08:19:49
     font-size: 200%;
     text-decoration: underline;
 }
+
+#band_details_form input[type = "text"] {
+    display: block;
+}

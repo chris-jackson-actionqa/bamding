@@ -7,7 +7,14 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False, "Not implemented"
+    all_inputs = context.driver.find_elements_by_tag_name("input")
+    for input in all_inputs:
+        if input.get_attribute("type") == "text":
+            input.clear()
+
+    all_textareas = context.driver.find_elements_by_tag_name("textarea")
+    for textarea in all_textareas:
+        textarea.clear()
 
 
 @when("I fill out the band details form")
@@ -15,6 +22,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
+
     assert False, "Not implemented"
 
 
@@ -128,10 +136,20 @@ def step_impl(context, required_field):
     :type context behave.runner.Context
     :type required_field str
     """
-    if required_field == "solo project checkbox":
-        context.field_element = context.driver.find_element_by_name("band_details_solo")
-    else:
-        assert False, "Unknown field: {0}".format(required_field)
+    field_id_dict = {"solo project checkbox": "band_details_solo",
+                     "band name": "band_details_name",
+                     "genre": "band_details_genre",
+                     "sounds like": "band_details_sounds_like",
+                     "booking email": "band_details_email",
+                     "main website": "band_details_website",
+                     "music": "band_details_music",
+                     "phone number": "band_details_phone",
+                     "local draw": "band_details_draw",
+                     "video": "band_details_video",
+                     "calendar": "band_details_calendar",
+                     "more sites": "band_details_sites"}
+    context.field_element = context.driver.find_element_by_name(field_id_dict[required_field])
+    context.field_name = field_id_dict[required_field]
 
 
 @then("(?P<required_field>.+) is on the page")
@@ -150,4 +168,6 @@ def step_impl(context, label, required_field):
     :type label str
     :type required_field str
     """
-    assert False, "Not implemented"
+    label_elem = context.driver.find_element_by_xpath("//*[@name='{0}']/preceding::label[1]".format(context.field_name))
+    elem_text = label_elem.text
+    assert elem_text == label

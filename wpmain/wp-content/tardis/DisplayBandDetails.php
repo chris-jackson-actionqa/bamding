@@ -18,6 +18,8 @@ class DisplayBandDetails {
      */
     public static function doPage()
     {
+        self::insertScript();
+        
         self::startForm();
         
         self::beginDiv("required_info", "bd_float_left");
@@ -42,7 +44,7 @@ class DisplayBandDetails {
     public static function startForm()
     {
         ?>
-<form method="post" action="">
+<form method="post" action="" id="band_details_form">
         <?php 
     }
     
@@ -62,7 +64,7 @@ class DisplayBandDetails {
     public static function submit()
     {
         ?>
-  <input type="submit" id="band_details_submit">
+<input type="submit" id="band_details_submit" class="btn_disabled" disabled>
         <?php
     }
     
@@ -100,29 +102,23 @@ class DisplayBandDetails {
       <input type="checkbox" name="band_details_solo">
       <br />
       <label>Band's Name:</label>
-      <br />
-      <input type="text" name="band_details_name">
-      <br />
+      <input type="text" name="band_details_name" maxlength="255" 
+             onkeyup="BAMDING.BANDDETAILS.toggleSubmit();">
       <label>Main Genre of Music:</label>
-      <br />
-      <input type="text" name="band_details_genre">
-      <br />
+      <input type="text" name="band_details_genre" maxlength="255"
+             onkeyup="BAMDING.BANDDETAILS.toggleSubmit();">
       <label>What popular bands do you sound like?</label>
-      <br />
-      <input type='text' name="band_details_sounds_like">
-      <br />
+      <input type='text' name="band_details_sounds_like" maxlength="255"
+             onkeyup="BAMDING.BANDDETAILS.toggleSubmit();">
       <label>Email used for booking:</label>
-      <br />
-      <input type="text" name="band_details_email">
-      <br />
+      <input type="text" name="band_details_email" maxlength="255"
+             onkeyup="BAMDING.BANDDETAILS.toggleSubmit();">
       <label>Main Website:</label>
-      <br />
-      <input type="text" name="band_details_website">
-      <br />
+      <input type="text" name="band_details_website" maxlength="255"
+             onkeyup="BAMDING.BANDDETAILS.toggleSubmit();">
       <label>Where To Hear Your Music?</label>
-      <br />
-      <input type="text" name="band_details_music">
-      <br />
+      <input type="text" name="band_details_music" maxlength="255"
+             onkeyup="BAMDING.BANDDETAILS.toggleSubmit();">
   </fieldset>
         <?php
     }
@@ -136,26 +132,23 @@ class DisplayBandDetails {
   <fieldset>
       <legend>Optional Info</legend>
       <label>Band's Booking Phone Number:</label>
-      <br />
-      <input type="text" name="band_details_phone">
-      <br />
+      <input type="text" name="band_details_phone" maxlength="255">
       <label>What's your local draw?</label>
-      <br />
-      <input type="text" name="band_details_draw">
-      <br />
+      <input type="text" name="band_details_draw" maxlength="255">
       <label>Where are your live videos? (Optional, but highly recommended.)</label>
-      <br />
-      <input type="text" name="band_details_video">
-      <br />
+      <input type="text" name="band_details_video" maxlength="255">
       <label>Booking calendar or show list</label>
-      <br />
-      <input type="text" name="band_details_calendar">
-      <br />
+      <input type="text" name="band_details_calendar" maxlength="255">
       <label>Additional social media or relevant sites for your band.</label>
-      <br />
       <textarea name="band_details_sites"></textarea>
-      <br />
   </fieldset>
+        <?php
+    }
+    
+    public static function insertScript()
+    {
+        ?>
+<script src="<?php echo Site::getBaseURL(); ?>/wp-content/js/bookings.js"></script>
         <?php
     }
 }

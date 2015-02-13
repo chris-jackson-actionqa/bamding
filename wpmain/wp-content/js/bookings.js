@@ -583,6 +583,45 @@ var BAMDING = {
                 return "Error";
             }
         }
+    },
+    
+    BANDDETAILS: {
+        
+        /**
+         * Enable/Disable submit button based on required fields
+         * @returns {undefined}
+         */
+        toggleSubmit: function(){
+            submit = document.getElementById("band_details_submit");
+            
+            var required_fields = [
+                "band_details_name",
+                "band_details_genre",
+                "band_details_sounds_like",
+                "band_details_email",
+                "band_details_website",
+                "band_details_music"
+            ];
+            
+            var field;
+            var disabled = false;
+            var class_name = "btn_enabled";
+            var i;
+            var count = required_fields.length;
+            for(i = 0; i < count; ++i)
+            {
+                elem = document.getElementsByName(required_fields[i])[0];
+                if(elem.value.trim() === "")
+                {
+                    disabled = true;
+                    class_name = "btn_disabled";
+                    break;
+                }
+            }
+            
+            submit.disabled = disabled;
+            submit.className = class_name;
+        }
     }
 };
 
