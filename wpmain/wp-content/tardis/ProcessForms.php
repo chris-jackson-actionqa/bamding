@@ -396,4 +396,59 @@ class ProcessForms
       $venues->setCategoryForVenue($venue_id, $category);
     }
   }
+  
+  /**
+   * Update the band details
+   */
+  public static function processBandDetails()
+  {
+      $user_login = get_user_field('user_login');
+      $bandDetails = new BandDetails($user_login);
+      
+      $fields = [
+          "band_details_name" => ['func' => setBandName, 'required' => True],
+          "band_details_solo" => ['func' => setSolo, 'required' => False ],
+          "band_details_genre" => ['func' => setGenre, 'required' => True ],
+          "band_details_sounds_like" => ['func' => setSoundsLike, 'required' => True ],
+          "band_details_email" => ['func' => setEmail, 'required' => True ],
+          "band_details_website" => ['func' => setWebsite, 'required' => True ],
+          "band_details_music" => ['func' => setMusic, 'required' => True ],
+          "band_details_phone" => ['func' => setPhone, 'required' => False ],
+          "band_details_draw" => ['func' => setDraw, 'required' => False ],
+          "band_details_video" => ['func' => setVideo, 'required' => False ],
+          "band_details_calendar" => ['func' => setCalendar, 'required' => False ],
+          "band_details_sites" => ['func' => setSites, 'required' => False ],
+          ];
+      
+      foreach($fields as $key => $value)
+      {
+          if(!isset($_REQUEST[$key]) || empty($_REQUEST[$key]))
+          {
+              // solo doesn't return a value if unchecked
+              if($key === "band_details_solo")
+              {
+                  $_REQUEST['band_details_solo'] = False;
+              }
+              elseif($value['required'])
+              {
+                return "";
+              }
+          }
+          
+          call_user_func(array($bandDetails, $value['func']),$_REQUEST[$key]);
+      }
+
+      try
+      {
+        $bandDetails->update();
+      }
+      catch( RuntimeException $ex)
+      {
+          error_log($ex->getMessage());
+          error_log($ex->getTraceAsString());
+          return "error";
+      }
+      
+      return "success";
+  }
 }

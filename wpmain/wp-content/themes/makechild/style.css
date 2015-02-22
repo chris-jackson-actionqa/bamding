@@ -124,3 +124,21 @@ Updated: 2014-07-23 08:19:49
 #band_details_form input[type = "text"] {
     display: block;
 }
+
+#band_details_status {
+    font-size: 1.5em;
+    border-style: solid;
+    border-width: thin;
+    padding: 20px;
+    font-weight: bold;
+    margin: 25px;
+    text-align: center;
+}
+
+.band_details_success {
+    background-color: lightgreen;
+}
+
+.band_details_error {
+    background-color: lightcoral;
+}

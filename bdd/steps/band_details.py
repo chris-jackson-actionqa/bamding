@@ -1,4 +1,5 @@
 from behave import *
+from selenium.webdriver.common.keys import Keys
 
 use_step_matcher("re")
 
@@ -16,13 +17,28 @@ def step_impl(context):
     for textarea in all_textareas:
         textarea.clear()
 
+    elem = context.driver.find_element_by_name('band_details_name')
+    elem.send_keys("a")
+    elem.send_keys(Keys.BACK_SPACE)
+
 
 @when("I fill out the band details form")
 def step_impl(context):
     """
     :type context behave.runner.Context
     """
-
+    input_elems = {
+        "band_details_name": "Super Silly String Band",
+        "band_details_genre": "Stoner Rock",
+        "band_details_sounds_like": "Red Fang",
+        "band_details_email": "silly@string.com",
+        "band_details_website": "www.20minutesongs.com",
+        "band_details_music": "www.20minutesongs.com/listen",
+        "band_details_phone": "206-123-4465",
+        "band_details_draw": "10",
+        "band_details_video": "www.sillyband.com/music",
+        "band_details_calendar": "www.somecalendar.com/nope"
+    }
     assert False, "Not implemented"
 
 

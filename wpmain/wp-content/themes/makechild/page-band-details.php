@@ -10,6 +10,7 @@ if (!current_user_can("access_s2member_level1"))
 
 get_header();  
 
-DisplayBandDetails::doPage();
+$status = ProcessForms::processBandDetails();
+DisplayBandDetails::doPage($status);
 
 get_footer();
