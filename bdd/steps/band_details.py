@@ -27,7 +27,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    input_elems = {
+    context.input_elems = {
         "band_details_name": "Super Silly String Band",
         "band_details_genre": "Stoner Rock",
         "band_details_sounds_like": "Red Fang",
@@ -37,9 +37,18 @@ def step_impl(context):
         "band_details_phone": "206-123-4465",
         "band_details_draw": "10",
         "band_details_video": "www.sillyband.com/music",
-        "band_details_calendar": "www.somecalendar.com/nope"
+        "band_details_calendar": "www.somecalendar.com/nope",
+        "band_details_sites": "{0}{1}{2}{1}{3}{1}".format(
+            "https://facebook.com/sillyband",
+            Keys.ENTER,
+            "twitter.com/sillyband",
+            "instagram.com/sillyband"
+        )
     }
-    assert False, "Not implemented"
+
+    for key, value in context.input_elems.items():
+        input = context.driver.find_element_by_name(key)
+        input.send_keys(value)
 
 
 @step('hit "Submit"')
@@ -47,7 +56,9 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False, "Not implemented"
+    submit = context.driver.find_element_by_id('band_details_submit')
+    assert submit.is_enabled(), "Submit button not enabled."
+    submit.click()
 
 
 @then("I will be returned to the band details page")
@@ -55,7 +66,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False, "Not implemented"
+    assert "http://localhost/wordpress/band-details/" == context.driver.current_url, "Not on band details page"
 
 
 @step("a success message will be shown")
@@ -63,7 +74,12 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False, "Not implemented"
+    message = context.driver.find_element_by_id('band_details_status')
+    lines = message.text.splitlines()
+    assert "Successfully updated your band details." == lines[0].strip(),\
+           "Missing success message. Received: {0}".format(message.text)
+    assert "You rock!!!" == lines[1].strip(),\
+           "Missing success message. Received: {0}".format(message.text)
 
 
 @step("I navigate back to the home page")
@@ -71,7 +87,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False, "Not implemented"
+    context.driver.get("http://localhost/wordpress")
 
 
 @step("I will see my band's details when I return to the band details page")
@@ -79,7 +95,24 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False, "Not implemented"
+    context.driver.get("http://localhost/wordpress/band-details/")
+    for key, value in context.input_elems.items():
+        input_elem = context.driver.find_element_by_name(key)
+        elem_value = input_elem.get_attribute('value')
+        if key == 'band_details_sites':
+            received = elem_value.splitlines()
+            expected = value.split('\ue007')
+            for i, line in enumerate(expected):
+                if line == '':
+                    continue
+                assert received[i].split() == expected[i].split(), "Expected '{0}'. Received '{1}'".format(
+                    expected, received
+                )
+        else:
+            assert elem_value == value,\
+                "{0} has unexpected value. Expected '{1}'. Received '{2}'".format(
+                    key, value, input_elem.text
+                )
 
 
 @given("I already have my band details entered in")
