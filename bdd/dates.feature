@@ -1,4 +1,4 @@
-# Created by Seth at 1/12/2015
+@wip
 Feature: Dates and Time Frames Page
   As a musician booking shows,
   I want to set the dates or time frames I want to book

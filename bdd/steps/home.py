@@ -20,7 +20,7 @@ def step_impl(context):
 
 @then("we are on the home page")
 def step_impl(context):
-    assert "sethalicious's Blog!" in context.driver.title
+    assert "BamDing" in context.driver.title
 
 
 @step("we click on the menu dropdown")

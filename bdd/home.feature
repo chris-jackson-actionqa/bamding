@@ -8,6 +8,7 @@ Feature: Home page navigation
     Given we go to the home page
     Then we are on the home page
 
+  @wip
   Scenario: Go to dates page from menu
     Given we go to the home page
     And we click on the menu dropdown

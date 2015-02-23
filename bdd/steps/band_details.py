@@ -128,7 +128,7 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False, "Not implemented"
+    context.driver.get('http://localhost/wordpress/band-details/')
 
 
 @when("I change a field")
@@ -136,7 +136,10 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False, "Not implemented"
+    context.input_elems['band_details_name'] = "My Crazy Pants On Fire"
+    elem = context.driver.find_element_by_name('band_details_name')
+    elem.clear()
+    elem.send_keys(context.input_elems['band_details_name'])
 
 
 @step("I will see my saved changes when I return to the band details page")
@@ -152,7 +155,10 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False, "Not implemented"
+    elem = context.driver.find_element_by_name('band_details_sounds_like')
+    elem.clear()
+    elem.send_keys('a')
+    elem.send_keys(Keys.BACKSPACE)
 
 
 @step("try to hit submit")
@@ -168,7 +174,8 @@ def step_impl(context):
     """
     :type context behave.runner.Context
     """
-    assert False, "Not implemented"
+    submit = context.driver.find_element_by_id('band_details_submit')
+    assert not submit.is_enabled(), "Submit button is enabled when should be disabled"
 
 
 @step("the required field \(or fields\) are highlighted")
