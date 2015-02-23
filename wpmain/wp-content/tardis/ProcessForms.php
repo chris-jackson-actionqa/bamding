@@ -449,6 +449,19 @@ class ProcessForms
           return "error";
       }
       
+      ProcessForms::mailOnBandDetails($bandDetails);
       return "success";
+  }
+  
+  /**
+   * Mail on update of band details
+   * @param BandDetails $bandDetails
+   */
+  public static function mailOnBandDetails(BandDetails $bandDetails)
+  {
+    $user = get_user_field('user_login');
+    $sTo = "seth@bamding.com";
+    $sSubject = "Band Details for $user";
+    mail($sTo, $sSubject, print_r($bandDetails, TRUE));
   }
 }
