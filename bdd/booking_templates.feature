@@ -3,6 +3,7 @@ Feature: Booking Templates
   I want to create booking templates
   So that I can send customized booking requests
 
+  @wip
   Scenario: Add a new template
     Given I have no booking templates
     And I go to the booking templates page
@@ -37,4 +38,12 @@ Feature: Booking Templates
     When I choose all three
     And I choose bulk action to Remove
     And I click Apply
-    Then
+    Then all the templates are removed
+
+  Scenario: Delete one template
+    Given I have 3 templates
+    When I choose the middle one
+    And I choose bulk action to Remove
+    And I click Apply
+    Then the middle template is removed
+
