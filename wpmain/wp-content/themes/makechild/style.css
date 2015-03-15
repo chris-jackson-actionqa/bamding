@@ -142,3 +142,30 @@ Updated: 2014-07-23 08:19:49
 .band_details_error {
     background-color: lightcoral;
 }
+
+/* Edit Template Page */
+.input_max_width
+{
+    width: 100%;
+}
+
+.message_height
+{
+    height: 500px;
+}
+
+.template_spacer
+{
+    height: 10px;
+}
+
+[name="template_cancel"]
+{
+    float: right;
+}
+
+.template_title
+{
+    font-size: 2.0em;
+    margin-bottom: 30px;
+}

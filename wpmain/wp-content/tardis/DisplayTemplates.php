@@ -55,7 +55,7 @@ class DisplayTemplates
     public static function addNewTemplate()
     {
         ?>
-<a href="<?php echo Site::getBaseURL(); ?>/add-edit-template/" 
+<a href="<?php echo Site::getBaseURL(); ?>/edit-template/" 
    id="booking_template_add_button">
    Add New Template
 </a>
