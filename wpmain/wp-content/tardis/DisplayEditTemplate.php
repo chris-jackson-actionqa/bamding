@@ -7,12 +7,14 @@ class DisplayEditTemplate
      */
     public static function doPage()
     {
+        $bandDetails = new BandDetails(get_user_field('user_login'));
+        
         self::startForm();
         self::templateName();
-        self::fromEmail();
-        self::fromName();
-        self::subject();
-        self::message();
+        self::fromEmail($bandDetails);
+        self::fromName($bandDetails);
+        self::subject($bandDetails);
+        self::message($bandDetails);
         self::spacer();
         self::save();
         self::cancel();
@@ -62,13 +64,14 @@ class DisplayEditTemplate
      * Not editable
      * Email pulled from band details.
      */
-    public static function fromEmail()
+    public static function fromEmail(BandDetails $bandDetails)
     {
+        $email = $bandDetails->getEmail();
         ?>
 <label>Booking Email:</label>
 <br />
 <input type="email" name="booking_template_email"  disabled
-       class="input_max_width">
+       class="input_max_width" value="<?php echo $email; ?>">
 <br />
         <?php
     }
@@ -77,13 +80,14 @@ class DisplayEditTemplate
      * The friendly name bookers will see when the email is sent
      * 
      */
-    public static function fromName()
+    public static function fromName(BandDetails $bandDetails)
     {
+        $name = $bandDetails->getBandName();
         ?>
 <label>From Name:</label>
 <br />
 <input type="text" maxlength=255 name="booking_template_from_name"
-       class="input_max_width">
+       class="input_max_width" value="<?php echo $name; ?>">
 <br />
         <?php
     }
@@ -91,13 +95,21 @@ class DisplayEditTemplate
     /**
      * Subject line
      */
-    public static function subject()
+    public static function subject(BandDetails $bandDetails)
     {
+        // StoneAge Thriller is seeking shows for [[timeframe]]. (Original Rock)
+        $name = $bandDetails->getBandName();
+        $isSolo = $bandDetails->getSolo();
+        $is = $isSolo ? "is" : "are";
+        $genre = $bandDetails->getGenre();
+        
+        $subject_format = "%s %s seeking shows for [[timeframe]]. (%s)";
+        $subject = sprintf($subject_format, $name, $is, $genre);
         ?>
 <label>Subject:</label>
 <br />
 <input type="text" maxlength=255 name="booking_template_subject"
-       class="input_max_width">
+       class="input_max_width" value="<?php echo $subject;?>">
 <br />
         <?php
     }
@@ -105,13 +117,20 @@ class DisplayEditTemplate
     /**
      * Message
      */
-    public static function message()
+    public static function message(BandDetails $bandDetails)
     {
+        $isSolo = $bandDetails->getSolo();
+        
+        
         ?>
 <label>Message:</label>
 <br />
 <textarea name="booking_template_message" 
           class="input_max_width message_height">
+Hello[[, booker_first_name]],
+
+Stuff
+    
     
 </textarea>
 <br />
