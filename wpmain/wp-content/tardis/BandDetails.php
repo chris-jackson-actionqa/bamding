@@ -116,6 +116,10 @@ SQL;
         }
     }
     
+    /**
+     * Retrieve band details from database
+     * @return type
+     */
     private function retrieve()
     {
         $sql = <<<SQL

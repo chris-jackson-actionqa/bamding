@@ -4,8 +4,16 @@ Feature: Booking Templates
   So that I can send customized booking requests
 
   @wip
+  Scenario: No band details
+    Given I have no band details entered
+    And I have no templates
+    And I go to the booking templates page
+    Then I get a message to enter booking details
+    And I cannot add a new template
+
   Scenario: Add a new template
     Given I have no booking templates
+    But I have entered my band details
     And I go to the booking templates page
     When I click to add a new template
     And I am on the new template page

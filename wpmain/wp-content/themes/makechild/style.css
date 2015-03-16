@@ -143,6 +143,17 @@ Updated: 2014-07-23 08:19:49
     background-color: lightcoral;
 }
 
+.error_message {
+  font-size: 1.5em;
+    border-style: solid;
+    border-width: thin;
+    padding: 20px;
+    font-weight: bold;
+    margin: 25px;
+    text-align: center;
+    background-color: lightcoral;
+}
+
 /* Edit Template Page */
 .input_max_width
 {

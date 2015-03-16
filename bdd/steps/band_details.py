@@ -1,5 +1,6 @@
 from behave import *
 from selenium.webdriver.common.keys import Keys
+import subprocess
 
 use_step_matcher("re")
 
@@ -227,3 +228,23 @@ def step_impl(context, label, required_field):
     label_elem = context.driver.find_element_by_xpath("//*[@name='{0}']/preceding::label[1]".format(context.field_name))
     elem_text = label_elem.text
     assert elem_text == label
+
+
+@given("I have no band details entered")
+def step_impl(context):
+    """
+    :type context behave.runner.Context
+    """
+    delete_band_details()
+
+
+def delete_band_details():
+    """
+    Call the delete band details script. Deletes test_user band details.
+    :return:
+    """
+    import os
+    script = 'c:\\xampp\\htdocs\\bamding\\wpmain\\wp-content\\tardis\\testlib\\delete-band-details.php'
+    assert os.path.exists(script)
+    subprocess.check_output(['c:\\xampp\\php\\php.exe', script], shell=True)
+

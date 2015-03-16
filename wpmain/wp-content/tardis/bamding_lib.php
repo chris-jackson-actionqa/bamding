@@ -1,4 +1,9 @@
 <?php
+if(empty($_SERVER['DOCUMENT_ROOT']))
+{
+  $_SERVER['DOCUMENT_ROOT'] = 'c://xampp//htdocs';
+}
+
 if(!defined('ABSPATH') && preg_match('/xampp/i', $_SERVER['DOCUMENT_ROOT']))
 {
   define('ABSPATH', $_SERVER['DOCUMENT_ROOT'] . '/bamding/wpmain');
