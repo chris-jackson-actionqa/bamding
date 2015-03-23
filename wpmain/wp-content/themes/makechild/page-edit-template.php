@@ -10,6 +10,7 @@ if (!current_user_can("access_s2member_level1"))
 
 get_header();  
 
-DisplayEditTemplate::doPage();
+$displayEditTemplate = new DisplayEditTemplate();
+$displayEditTemplate->doPage();
 
 get_footer();

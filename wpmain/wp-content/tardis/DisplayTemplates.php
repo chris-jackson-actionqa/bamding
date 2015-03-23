@@ -16,16 +16,43 @@ class DisplayTemplates
     /**
      * Display the UI of the page
      */
-    public static function doPage()
+    public static function doPage($result)
     {
         if(self::areBandDetailsEntered())
         {
+            self::doMessage($result);
           self::doForm();
         }
         else
         {
           self::doNoBandDetails();
         }
+    }
+    
+    public static function doMessage($result)
+    {
+        $message = "Success!<br />\r\n".
+                "Your template has been saved.";
+        $class = "band_details_success";
+        if(empty($result))
+        {
+            return;
+        }
+        elseif('error' === $result)
+        {
+            $message = "Error!<br />\r\n".
+                    "An error occurred with your template.<br />\r\n".
+                    "Please, try again.<br />\r\n".
+                    "If you keep having problems, contact ".
+                    '<a href="mailto:seth@bamding.com">seth@bamding.com</a>.';
+            $class = "band_details_error";
+        }
+        
+        ?>
+<div id="template_message" class="status_message <?php echo $class; ?>">
+    <?php echo $message; ?>
+</div>
+        <?php
     }
     
     /**
@@ -35,7 +62,7 @@ class DisplayTemplates
     {
         self::startForm();
         self::addNewTemplate();
-        self::submit();
+        self::listTemplates();
         self::endForm();
     }
     
@@ -87,7 +114,7 @@ class DisplayTemplates
     public static function addNewTemplate()
     {
         ?>
-<a href="<?php echo Site::getBaseURL(); ?>/edit-template/" 
+<a href="<?php echo Site::getBaseURL(); ?>/edit-template/?taction=add_new" 
    id="booking_template_add_button">
    Add New Template
 </a>
@@ -109,5 +136,10 @@ class DisplayTemplates
       }
       
       return $detailsEntered;
+    }
+    
+    public static function listTemplates()
+    {
+        
     }
 }

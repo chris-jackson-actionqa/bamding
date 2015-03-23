@@ -10,6 +10,7 @@ if (!current_user_can("access_s2member_level1"))
 
 get_header();  
 
-DisplayTemplates::doPage();
+$result = ProcessForms::processTemplate();
+DisplayTemplates::doPage($result);
 
 get_footer();

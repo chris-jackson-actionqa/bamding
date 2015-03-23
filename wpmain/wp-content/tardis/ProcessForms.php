@@ -464,4 +464,64 @@ class ProcessForms
     $sSubject = "Band Details for $user";
     mail($sTo, $sSubject, print_r($bandDetails, TRUE));
   }
+  
+  /**
+   * Save the template data
+   * @return type
+   */
+  public static function processTemplate()
+  {
+      $result = 'success';
+      try
+      {
+        $save = filter_input(INPUT_POST, 'template_save');
+        if(empty($save))
+        {
+            return '';
+        }
+
+        $templateID = filter_input(
+                INPUT_POST, 
+                'template_id', 
+                FILTER_SANITIZE_NUMBER_INT);
+
+        $user = get_user_field('user_login');
+
+        $template = new BookingTemplate($user, $templateID);
+
+        $title = filter_input(INPUT_POST, 'template_title');
+        $template->setTitle($title);
+
+        $email = filter_input(INPUT_POST, 'booking_template_email');
+        $template->setEmail($email);
+
+        $from = filter_input(INPUT_POST, 'booking_template_from_name');
+        $template->setFromName($from);
+
+        $subject = filter_input(INPUT_POST, 'booking_template_subject');
+        $template->setSubject($subject);
+
+        $message = filter_input(INPUT_POST, 'booking_template_message');
+        $template->setMessage($message);
+
+        $template->saveTemplate();
+
+        mail(
+                'seth@bamding.com', 
+                "Template updated for ".$user.': '.$title, 
+                '');
+        $result = 'success';
+      }
+      catch(RuntimeException $ex)
+      {
+          $result = 'error';
+          mail(
+                  'seth@bamding.com',
+                  'Template Error for '.$user,
+                  'User: '.$user.'\r\n'.
+                  'ERROR:\r\n'.$ex);
+      }
+      
+      return $result;
+  }
 }

@@ -2,29 +2,57 @@
 
 class DisplayEditTemplate 
 {
+    const ADD_NEW = "add_new";
+    const EDIT = 'edit';
+    
+    private $bandDetails = null;
+    private $action = '';
+    
+    public function __construct()
+    {
+        $this->bandDetails = new BandDetails(get_user_field('user_login'));
+        $this->action = strtolower(trim(filter_input(INPUT_GET, 'taction')));
+        $this->assertValidAction();
+    }
+    
+    /**
+     * Throw an exception if action isn't expected
+     * @throws InvalidArgumentException
+     */
+    private function assertValidAction()
+    {
+        switch($this->action)
+        {
+            case self::ADD_NEW:
+            case self::EDIT:
+                break;
+            default:
+                throw new InvalidArgumentException();
+        }
+    }
+    
     /**
      * Display the edit template page
      */
-    public static function doPage()
+    public function doPage()
     {
-        $bandDetails = new BandDetails(get_user_field('user_login'));
-        
-        self::startForm();
-        self::templateName();
-        self::fromEmail($bandDetails);
-        self::fromName($bandDetails);
-        self::subject($bandDetails);
-        self::message($bandDetails);
-        self::spacer();
-        self::save();
-        self::cancel();
-        self::endForm();
+        $this->startForm();
+        $this->templateName();
+        $this->templateID();
+        $this->fromEmail();
+        $this->fromName();
+        $this->subject();
+        $this->message();
+        $this->spacer();
+        $this->save();
+        $this->cancel();
+        $this->endForm();
     }
     
     /**
      * Begin the form
      */
-    public static function startForm()
+    public function startForm()
     {
         $action = Site::getBaseURL() . '/booking-templates/';
         ?>
@@ -35,7 +63,7 @@ class DisplayEditTemplate
     /**
      * End the form
      */
-    public static function endForm()
+    public function endForm()
     {
         ?>
 </form>
@@ -45,14 +73,14 @@ class DisplayEditTemplate
     /**
      * Save the form
      */
-    public static function save()
+    public function save()
     {
        ?>
 <input type="submit" name="template_save" value="Save">
        <?php
     }
     
-    public static function cancel()
+    public function cancel()
     {
         ?>
 <input type="submit" name="template_cancel" value="Cancel">
@@ -64,13 +92,13 @@ class DisplayEditTemplate
      * Not editable
      * Email pulled from band details.
      */
-    public static function fromEmail(BandDetails $bandDetails)
+    public function fromEmail()
     {
-        $email = $bandDetails->getEmail();
+        $email = $this->bandDetails->getEmail();
         ?>
 <label>Booking Email:</label>
 <br />
-<input type="email" name="booking_template_email"  disabled
+<input type="email" name="booking_template_email"  readonly
        class="input_max_width" value="<?php echo $email; ?>">
 <br />
         <?php
@@ -80,9 +108,18 @@ class DisplayEditTemplate
      * The friendly name bookers will see when the email is sent
      * 
      */
-    public static function fromName(BandDetails $bandDetails)
+    public function fromName()
     {
-        $name = $bandDetails->getBandName();
+        switch($this->action)
+        {
+            case self::ADD_NEW:
+                $name = $this->bandDetails->getBandName();
+                break;
+            default:
+                $name = '';
+                break;
+        }
+        
         ?>
 <label>From Name:</label>
 <br />
@@ -95,16 +132,17 @@ class DisplayEditTemplate
     /**
      * Subject line
      */
-    public static function subject(BandDetails $bandDetails)
+    public function subject()
     {
-        // StoneAge Thriller is seeking shows for [[timeframe]]. (Original Rock)
-        $name = $bandDetails->getBandName();
-        $isSolo = $bandDetails->getSolo();
-        $is = $isSolo ? "is" : "are";
-        $genre = $bandDetails->getGenre();
-        
-        $subject_format = "%s %s seeking shows for [[timeframe]]. (%s)";
-        $subject = sprintf($subject_format, $name, $is, $genre);
+        switch($this->action)
+        {
+            case self::ADD_NEW:
+                $subject = $this->genericSubject();
+                break;
+            default:
+                $subject = '';
+                break;
+        }
         ?>
 <label>Subject:</label>
 <br />
@@ -117,34 +155,36 @@ class DisplayEditTemplate
     /**
      * Message
      */
-    public static function message(BandDetails $bandDetails)
+    public function message()
     {
-        $isSolo = $bandDetails->getSolo();
-        
-        
+        switch($this->action)
+        {
+            case self::ADD_NEW:
+                $message = $this->genericTemplate();
+                break;
+            default:
+                $message = '';
+        }
         ?>
 <label>Message:</label>
 <br />
 <textarea name="booking_template_message" 
           class="input_max_width message_height">
-Hello[[, booker_first_name]],
-
-Stuff
-    
+<?php echo $message; ?>
     
 </textarea>
 <br />
         <?php
     }
     
-    public static function spacer()
+    public function spacer()
     {
         ?>
 <div class="template_spacer"></div>
         <?php
     }
     
-    public static function templateName()
+    public function templateName()
     {
         ?>
 <input type="text" maxlength="255" name="template_title"
@@ -153,4 +193,146 @@ Stuff
 <br />
         <?php
     }
+    
+    public function templateID()
+    {
+        ?>
+<input type="hidden" name="template_id" value=-1>
+        <?php
+    }
+    
+    /**
+     * Retrieve a generic booking template
+     * @global type $current_user
+     * @return string generic template message
+     */
+    public function genericTemplate()
+    {
+        $isSolo = $this->bandDetails->getSolo();
+        $name = $this->bandDetails->getBandName();
+        $genre = $this->bandDetails->getGenre();
+        $draw_num = $this->bandDetails->getDraw();
+        $sounds_like = $this->bandDetails->getSoundsLike();
+        $music = $this->bandDetails->getMusic();
+        $liveVideo = $this->bandDetails->getVideo();
+        $calendar = $this->bandDetails->getCalendar();
+        $phone = $this->bandDetails->getPhone();
+        $website = $this->bandDetails->getWebsite();
+        $other_sites = $this->bandDetails->getSites();
+        
+        // Get user's first and last name
+        global $current_user;
+        get_currentuserinfo();
+        $first_name = $current_user->user_firstname;
+        $last_name = $current_user->user_lastname;
+        
+        $Im = $isSolo ? "I'm" : "We're";
+        $im = $isSolo ? "I'm" : "we're";
+        $I_am = $isSolo ? "I am" : "We are";
+        $I = $isSolo ? "I" : "We";
+        $i = $isSolo ? "I" : "we";
+        $my = $isSolo ? "my" : "our";
+        $My = $isSolo ? "My" : "Our";
+        $ill = $isSolo ? "I'll" : "we'll";
+        
+        $message = <<<MSG
+Hello[[, booker_first_name]],
+
+$Im $name, a $genre act, looking to book a show at [[venue]]. $I_am seeking the following dates:
+[[dates]]
+
+
+MSG;
+        
+        if(!empty($draw_num))
+        {
+        $message .=  <<<MSG
+$My draw has been around $draw_num people per show.
+
+
+MSG;
+        }
+        
+        $message .= <<<MSG
+$I sound similar to the following bands:
+$sounds_like
+
+To hear $my music, click here:
+$music
+
+
+MSG;
+    
+        if(!empty($liveVideo))
+        {
+            $message .= <<<VID
+To see $my live videos, click here:
+$liveVideo
+
+
+VID;
+        }
+    
+        if(!empty($calendar))
+        {
+            $message .= <<<LAST
+$I_am available to play other dates and would love to help out if you need a last minute band. Just check $my booking calendar to see if $im available:
+$calendar
+
+
+LAST;
+        }
+    
+    
+        $message .= <<<MSG
+If $i don’t hear back from you, $ill send another email in a couple of weeks.
+
+Talk to you soon!
+- $first_name $last_name
+
+MSG;
+    
+        if(!empty($phone))
+        {
+            $message .= <<<MSG
+$phone
+
+MSG;
+        }
+
+        $message .= <<<MSG
+$website
+
+
+MSG;
+    
+        if(!empty($other_sites))
+        {
+            $message .= <<<MSG
+$other_sites
+MSG;
+        }
+        
+        return $message;
+    }
+    
+    /**
+     * Get the generic subject for new templates
+     * @return type
+     */
+    public function genericSubject()
+    {
+        // StoneAge Thriller is seeking shows for [[timeframe]]. (Original Rock)
+        $name = $this->bandDetails->getBandName();
+        $isSolo = $this->bandDetails->getSolo();
+        $is = $isSolo ? "is" : "are";
+        $genre = $this->bandDetails->getGenre();
+        
+        $subject_format = "%s %s seeking shows for [[timeframe]]. (%s)";
+        $subject = sprintf($subject_format, $name, $is, $genre);
+        
+        return $subject;
+    }
+    
+    
 }
