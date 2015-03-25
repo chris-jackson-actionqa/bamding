@@ -30,7 +30,7 @@ class BookingTemplate
       $this->oConn = $oDB->connect();
       
       $this->id = (int)$templateID;
-      if( 0 > $this->id)
+      if( 0 < $this->id)
       {
           $this->loadTemplate();
       }
@@ -48,7 +48,24 @@ class BookingTemplate
      */
     private function loadTemplate()
     {
+        $sql = <<<SQL
+SELECT * FROM booking_templates
+WHERE template_id={$this->getID()}
+SQL;
+
+        $result = $this->oConn->query($sql);
+        if(empty($result))
+        {
+            throw new RuntimeException($this->oConn->error);
+        }
         
+        $rows = Database::fetch_all($result);
+        $row = $rows[0];
+        
+        $this->title = $row['title'];
+        $this->name = $row['from_name'];
+        $this->subject = $row['subject'];
+        $this->message = $row['message'];
     }
     
     /**
@@ -122,8 +139,15 @@ SQL;
         {
             throw new RuntimeException($this->oConn->error);
         }
-        
-        $result->free();
+    }
+    
+    /**
+     * Get template id
+     * @return int id
+     */
+    public function getID()
+    {
+        return (int)$this->id;
     }
     
     /**

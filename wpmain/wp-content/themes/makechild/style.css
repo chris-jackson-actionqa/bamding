@@ -190,3 +190,14 @@ Updated: 2014-07-23 08:19:49
     font-size: 2.0em;
     margin-bottom: 30px;
 }
+
+.add_new {
+    -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  background-color:#CCE3D7;
+  -webkit-box-shadow: #B3B3B3 10px 10px 10px;
+  -moz-box-shadow: #B3B3B3 10px 10px 10px; 
+  box-shadow: #B3B3B3 10px 10px 10px;
+  padding: 8px 8px 8px 8px;
+}

@@ -7,12 +7,26 @@ class DisplayEditTemplate
     
     private $bandDetails = null;
     private $action = '';
+    private $template = null;
     
     public function __construct()
     {
         $this->bandDetails = new BandDetails(get_user_field('user_login'));
         $this->action = strtolower(trim(filter_input(INPUT_GET, 'taction')));
         $this->assertValidAction();
+        
+        if(self::EDIT === $this->action)
+        {
+            $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+            if(empty($id))
+            {
+                throw new InvalidArgumentException("Invalid id");
+            }
+            
+            $this->template = new BookingTemplate(
+                    get_user_field('user_login'), 
+                    $id);
+        }
     }
     
     /**
@@ -36,6 +50,7 @@ class DisplayEditTemplate
      */
     public function doPage()
     {
+        $this->help();
         $this->startForm();
         $this->templateName();
         $this->templateID();
@@ -47,6 +62,35 @@ class DisplayEditTemplate
         $this->save();
         $this->cancel();
         $this->endForm();
+    }
+    
+    /**
+     * Display help on using templates
+     */
+    public function help()
+    {
+        ?>
+<div id="help_message">
+    <h3>Keys filled in by BamDing:</h3>
+    <ul>
+        <li><strong>[[, booker_first_name]]</strong>: Booker's first name. 
+        If no name was entered, just leaves this blank.
+        </li>
+        <li>
+            <strong>[[timeframe]]</strong>:  Displays general months for booking requests.<br />
+            Example 1: May<br />
+            Example 2: May through July
+        </li>
+        <li>
+            <strong>[[dates]]</strong>: Your specific dates for booking requests. <br />
+            Example: May: 17th, 20th, 31st
+        </li>
+        <li>
+            <strong>[[venue]]</strong>: Fills in the venue name.
+        </li>
+    </ul>
+</div>
+        <?php
     }
     
     /**
@@ -115,6 +159,9 @@ class DisplayEditTemplate
             case self::ADD_NEW:
                 $name = $this->bandDetails->getBandName();
                 break;
+            case self::EDIT:
+                $name = $this->template->getFromName();
+                break;
             default:
                 $name = '';
                 break;
@@ -139,6 +186,9 @@ class DisplayEditTemplate
             case self::ADD_NEW:
                 $subject = $this->genericSubject();
                 break;
+            case self::EDIT:
+                $subject = $this->template->getSubject();
+                break;
             default:
                 $subject = '';
                 break;
@@ -161,6 +211,9 @@ class DisplayEditTemplate
         {
             case self::ADD_NEW:
                 $message = $this->genericTemplate();
+                break;
+            case self::EDIT:
+                $message = $this->template->getMessage();
                 break;
             default:
                 $message = '';
@@ -186,18 +239,29 @@ class DisplayEditTemplate
     
     public function templateName()
     {
+        $value = '';
+        if(self::EDIT == $this->action)
+        {
+            $value = $this->template->getTitle();
+        }
         ?>
 <input type="text" maxlength="255" name="template_title"
        class="input_max_width template_title"
-       placeholder="Untitled Template">
+       placeholder="Untitled Template"
+       value="<?php echo $value;?>">
 <br />
         <?php
     }
     
     public function templateID()
     {
+        $id = -1;
+        if(self::EDIT == $this->action)
+        {
+            $id = $this->template->getID();
+        }
         ?>
-<input type="hidden" name="template_id" value=-1>
+<input type="hidden" name="template_id" value=<?php echo $id; ?>>
         <?php
     }
     

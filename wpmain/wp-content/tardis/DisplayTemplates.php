@@ -115,7 +115,8 @@ class DisplayTemplates
     {
         ?>
 <a href="<?php echo Site::getBaseURL(); ?>/edit-template/?taction=add_new" 
-   id="booking_template_add_button">
+   id="booking_template_add_button"
+   class='add_new'>
    Add New Template
 </a>
 <br />
@@ -138,8 +139,37 @@ class DisplayTemplates
       return $detailsEntered;
     }
     
+    /**
+     * list the templates table
+     */
     public static function listTemplates()
     {
-        
+        $bookingTemplates = new BookingTemplates(get_user_field('user_login'));
+        $templates = $bookingTemplates->getTemplates();
+        if(empty($templates))
+        {
+            echo "<br />No templates.<br />";
+            return;
+        }
+        ?>
+<table>
+    <tr>
+        <th>Title</th>
+    </tr>
+    <?php
+    foreach($templates as $row)
+    {
+        echo '<tr><td><a href="'.
+                Site::getBaseURL().
+                '/edit-template/?taction=edit&id='.
+                $row['template_id']
+                .'">'.
+                $row['title']
+                .'</a></td></tr>'.
+                "\r\n";
+    }
+    ?>
+</table>
+        <?php
     }
 }
