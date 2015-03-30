@@ -78,33 +78,33 @@ INSERT INTO band_details
 VALUES
   (
   '{$this->sUserLogin}',
-  '{$this->getBandName()}',
-  '{$this->getSolo()}',
-  '{$this->getGenre()}',
-  '{$this->getSoundsLike()}',
-  '{$this->getEmail()}',
-  '{$this->getWebsite()}',
-  '{$this->getMusic()}',
-  '{$this->getPhone()}',
-  '{$this->getDraw()}',
-  '{$this->getVideo()}',
-  '{$this->getCalendar()}',
-  '{$this->getSites()}'
+  '{$this->bandName}',
+  '{$this->isSolo}',
+  '{$this->genre}',
+  '{$this->soundsLike}',
+  '{$this->email}',
+  '{$this->website}',
+  '{$this->music}',
+  '{$this->phone}',
+  '{$this->draw}',
+  '{$this->video}',
+  '{$this->calendar}',
+  '{$this->sites}'
   )
 ON DUPLICATE KEY UPDATE
   user_login='{$this->sUserLogin}',
-  band_name='{$this->getBandName()}',
-  solo='{$this->getSolo()}',
-  genre='{$this->getGenre()}',
-  sounds_like='{$this->getSoundsLike()}',
-  email='{$this->getEmail()}',
-  website='{$this->getWebsite()}',
-  music_page='{$this->getMusic()}',
-  phone='{$this->getPhone()}',
-  draw='{$this->getDraw()}',
-  live_video_page='{$this->getVideo()}',
-  calendar_page='{$this->getCalendar()}',
-  sites='{$this->getSites()}'
+  band_name='{$this->bandName}',
+  solo='{$this->isSolo}',
+  genre='{$this->genre}',
+  sounds_like='{$this->soundsLike}',
+  email='{$this->email}',
+  website='{$this->website}',
+  music_page='{$this->music}',
+  phone='{$this->phone}',
+  draw='{$this->draw}',
+  live_video_page='{$this->video}',
+  calendar_page='{$this->calendar}',
+  sites='{$this->sites}'
 SQL;
         
         $mResult = $this->oConn->query($sql);
@@ -167,7 +167,7 @@ SQL;
      */
     public function getBandName()
     {
-        return $this->bandName;
+        return stripslashes($this->bandName);
     }
     
     /**
@@ -185,7 +185,7 @@ SQL;
      */
     public function getSolo()
     {
-        return $this->isSolo;
+        return (bool)$this->isSolo;
     }
     
     /**
@@ -203,7 +203,7 @@ SQL;
      */
     public function getGenre()
     {
-        return $this->genre;
+        return stripslashes($this->genre);
     }
     
     /**
@@ -221,7 +221,7 @@ SQL;
      */
     public function getSoundsLike()
     {
-        return $this->soundsLike;
+        return stripslashes($this->soundsLike);
     }
     
     /**
@@ -239,7 +239,7 @@ SQL;
      */
     public function getEmail()
     {
-        return $this->email;
+        return stripslashes($this->email);
     }
     
     /**
@@ -257,7 +257,7 @@ SQL;
      */
     public function getWebsite()
     {
-        return $this->website;
+        return stripslashes($this->website);
     }
     
     /**
@@ -275,7 +275,7 @@ SQL;
      */
     public function getMusic()
     {
-        return $this->music;
+        return stripslashes($this->music);
     }
     
     /**
@@ -293,7 +293,7 @@ SQL;
      */
     public function getPhone()
     {
-        return $this->phone;
+        return stripslashes($this->phone);
     }
     
     /**
@@ -311,7 +311,7 @@ SQL;
      */
     public function getDraw()
     {
-        return $this->draw;
+        return stripslashes($this->draw);
     }
     
     /**
@@ -329,7 +329,7 @@ SQL;
      */
     public function getVideo()
     {
-        return $this->video;
+        return stripslashes($this->video);
     }
     
     /**
@@ -347,7 +347,7 @@ SQL;
      */
     public function getCalendar()
     {
-        return $this->calendar;
+        return stripslashes($this->calendar);
     }
     
     /**
@@ -365,6 +365,6 @@ SQL;
      */
     public function getSites()
     {
-        return $this->sites;
+        return stripslashes($this->sites);
     }
 }

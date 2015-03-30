@@ -6,7 +6,7 @@ $oDB = new Database();
 $oConn = $oDB->connect();
 
 $sql = <<<SQL
-DELETE FROM booking-templates
+DELETE FROM booking_templates
 WHERE user_login='test_user'
 SQL;
 

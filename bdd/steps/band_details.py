@@ -1,6 +1,7 @@
 from behave import *
 from selenium.webdriver.common.keys import Keys
 import subprocess
+import os
 
 use_step_matcher("re")
 
@@ -243,8 +244,17 @@ def delete_band_details():
     Call the delete band details script. Deletes test_user band details.
     :return:
     """
-    import os
     script = 'c:\\xampp\\htdocs\\bamding\\wpmain\\wp-content\\tardis\\testlib\\delete-band-details.php'
     assert os.path.exists(script)
     subprocess.check_output(['c:\\xampp\\php\\php.exe', script], shell=True)
 
+
+@step("I have entered my band details")
+def step_impl(context):
+    """
+    Enter generic band details
+    :type context behave.runner.Context
+    """
+    script = 'c:\\xampp\\htdocs\\bamding\\wpmain\\wp-content\\tardis\\testlib\\generic-band-details.php'
+    assert os.path.exists(script)
+    subprocess.check_output(['c:\\xampp\\php\\php.exe', script], shell=True)

@@ -622,6 +622,31 @@ var BAMDING = {
             submit.disabled = disabled;
             submit.className = class_name;
         }
+    },
+    
+    TEMPLATE: {
+        /**
+         * enable/disable the save button if required inputs are empty
+         */
+        toggleSave: function (){
+            save = document.getElementById("template_save");
+            
+            empty_field_exists = 
+                    "" === document.getElementById('template_title').value.trim() ||
+                    "" === document.getElementById('template_title').value.trim() ||
+                    "" === document.getElementById('booking_template_from_name').value.trim() ||
+                    "" === document.getElementById('booking_template_subject').value.trim() ||
+                    "" === document.getElementById('booking_template_message').value.trim();
+            
+            if(empty_field_exists)
+            {
+                save.className = 'btn_disabled';
+            }
+            else
+            {
+                save.className = 'btn_enabled';
+            }
+        }
     }
 };
 

@@ -50,6 +50,7 @@ class DisplayEditTemplate
      */
     public function doPage()
     {
+        $this->script();
         $this->help();
         $this->startForm();
         $this->templateName();
@@ -62,6 +63,13 @@ class DisplayEditTemplate
         $this->save();
         $this->cancel();
         $this->endForm();
+    }
+    
+    public function script()
+    {
+        ?>
+<script src="<?php echo Site::getBaseURL(); ?>/wp-content/js/bookings.js"></script>
+        <?php
     }
     
     /**
@@ -119,8 +127,23 @@ class DisplayEditTemplate
      */
     public function save()
     {
+        $button_class = 'btn_enabled';
+        switch($this->action)
+        {
+            case self::ADD_NEW:
+                $button_class = 'btn_disabled';
+                break;
+            case self::EDIT:
+            default:
+                $button_class = 'btn_enabled';
+                break;
+        }
        ?>
-<input type="submit" name="template_save" value="Save">
+<input type="submit" 
+       id="template_save"
+       name="template_save" 
+       value="Save" 
+       class="<?php echo $button_class;?>">
        <?php
     }
     
@@ -171,7 +194,9 @@ class DisplayEditTemplate
 <label>From Name:</label>
 <br />
 <input type="text" maxlength=255 name="booking_template_from_name"
-       class="input_max_width" value="<?php echo $name; ?>">
+       id="booking_template_from_name"
+       class="input_max_width" value="<?php echo $name; ?>"
+       onkeyup="BAMDING.TEMPLATE.toggleSave();">
 <br />
         <?php
     }
@@ -197,7 +222,9 @@ class DisplayEditTemplate
 <label>Subject:</label>
 <br />
 <input type="text" maxlength=255 name="booking_template_subject"
-       class="input_max_width" value="<?php echo $subject;?>">
+       id="booking_template_subject"
+       class="input_max_width" value="<?php echo $subject;?>"
+       onkeyup="BAMDING.TEMPLATE.toggleSave();">
 <br />
         <?php
     }
@@ -221,8 +248,10 @@ class DisplayEditTemplate
         ?>
 <label>Message:</label>
 <br />
-<textarea name="booking_template_message" 
-          class="input_max_width message_height">
+<textarea name="booking_template_message"
+          id="booking_template_message"
+          class="input_max_width message_height"
+          onkeyup="BAMDING.TEMPLATE.toggleSave();">
 <?php echo $message; ?>
     
 </textarea>
@@ -246,9 +275,11 @@ class DisplayEditTemplate
         }
         ?>
 <input type="text" maxlength="255" name="template_title"
+       id="template_title"
        class="input_max_width template_title"
        placeholder="Untitled Template"
-       value="<?php echo $value;?>">
+       value="<?php echo $value;?>"
+       onkeyup="BAMDING.TEMPLATE.toggleSave();">
 <br />
         <?php
     }

@@ -3,7 +3,6 @@ Feature: Booking Templates
   I want to create booking templates
   So that I can send customized booking requests
 
-  @wip
   Scenario: No band details
     Given I have no band details entered
     And I have no templates
@@ -26,7 +25,9 @@ Feature: Booking Templates
     And the template is listed
 
   Scenario: Edit a template
-    Given I create a template
+    Given I have no booking templates
+    But I have entered my band details
+    And I create a template
     When I choose that template from the list
     And I change the template name
     And I change the From field
@@ -35,7 +36,7 @@ Feature: Booking Templates
     And I click Submit
     Then I am returned to the Templates page
     And the template is listed
-    And I choose that template from the list
+    When I choose that template from the list
     And I see the template name is expected
     And I see the From field is expected
     And I see the Subject field is expected
