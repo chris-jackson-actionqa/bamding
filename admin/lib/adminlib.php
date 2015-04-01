@@ -18,4 +18,5 @@ require_once(ADMINPATH . '/lib/AdminDisplayBookings.php');
 require_once(ADMINPATH . '/lib/AdminDisplayDates.php');
 require_once(ADMINPATH . '/lib/AdminBookings.php');
 require_once(ADMINPATH . '/lib/AdminReminders.php');
+require_once(ADMINPATH . '/lib/AdminTemplate.php');
 require_once(ADMINPATH . '/lib/AdminUsers.php');

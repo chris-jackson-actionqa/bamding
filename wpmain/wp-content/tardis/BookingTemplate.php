@@ -63,6 +63,7 @@ SQL;
         $row = $rows[0];
         
         $this->title = $row['title'];
+        $this->email = $row['booking_email'];
         $this->name = $row['from_name'];
         $this->subject = $row['subject'];
         $this->message = $row['message'];

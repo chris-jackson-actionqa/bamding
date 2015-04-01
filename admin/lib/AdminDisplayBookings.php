@@ -202,9 +202,20 @@ class AdminDisplayBookings extends AdminDisplay
     AdminDisplayBookings::standardEmailEnding();
   }
   
+  /**
+   * Display the template links
+   */
   public static function displayTemplates()
   {
-    $bookingTemplates = new BookingTemplates();
+      $sUser = (key_exists('user_login', $_REQUEST)) ? $_REQUEST['user_login'] : '';
+        if(empty($sUser))
+        {
+          return;
+        }
+      ?>
+<h2>Templates</h2>
+      <?php
+    $bookingTemplates = new BookingTemplates($sUser);
     $templates = $bookingTemplates->getTemplates();
     
     foreach($templates as $template)
@@ -214,7 +225,7 @@ class AdminDisplayBookings extends AdminDisplay
       $get = "user_login=$user&id=$id";
       $title = stripslashes($template['title']);
       ?>
-<a href="template.php?<?php echo $get; ?>" target="_blank">
+<a href="admin-template.php?<?php echo $get; ?>" target="_blank">
   <?php echo $title; ?>
 </a><br />
       <?php

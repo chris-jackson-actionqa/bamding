@@ -14,6 +14,7 @@ AdminDisplay::getMenu();
 AdminDisplayBookings::processBookingUpdate();
 AdminDisplayBookings::upcomingBookings();
 AdminDisplay::showH1User();
+AdminDisplayBookings::displayTemplates();
 AdminDisplayBookings::showBookingsScript();
 AdminDisplayBookings::showSubForms();
 AdminDisplayBookings::showUpdateBookings();
