@@ -201,4 +201,23 @@ class AdminDisplayBookings extends AdminDisplay
     AdminDisplay::displayDatesTimeFrames($sUser);
     AdminDisplayBookings::standardEmailEnding();
   }
+  
+  public static function displayTemplates()
+  {
+    $bookingTemplates = new BookingTemplates();
+    $templates = $bookingTemplates->getTemplates();
+    
+    foreach($templates as $template)
+    {
+      $user = urlencode(stripslashes($template['user_login']));
+      $id = (int)$template['template_id'];
+      $get = "user_login=$user&id=$id";
+      $title = stripslashes($template['title']);
+      ?>
+<a href="template.php?<?php echo $get; ?>" target="_blank">
+  <?php echo $title; ?>
+</a><br />
+      <?php
+    }
+  }
 }
