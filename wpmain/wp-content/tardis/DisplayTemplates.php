@@ -131,7 +131,8 @@ class DisplayTemplates
     {
       $bandDetails = new BandDetails(get_user_field('user_login'));
       $detailsEntered = true;
-      if(empty($bandDetails->getBandName()))
+      $bandName = $bandDetails->getBandName();
+      if(empty($bandName))
       {
         $detailsEntered = false;
       }
