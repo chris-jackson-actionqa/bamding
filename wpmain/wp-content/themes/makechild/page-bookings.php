@@ -11,9 +11,8 @@ if (!current_user_can("access_s2member_level1"))
 get_header();  
 
 ProcessForms::processMultipleBookings();
-DisplayForms::displayBookings(get_user_field('user_login'));
-
-echo '<div id="bookings_debug"></div>';
+$bookings = new DisplayBookings(get_user_field('user_login'));
+$bookings->displayBookings();
 
 get_footer();
 
