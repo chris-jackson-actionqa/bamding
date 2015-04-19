@@ -175,7 +175,6 @@ class DisplayBookings {
              disabled>
     </form>
     <?php
-    $this->nextContactPop();
     $this->intervalPop();
   }
 
@@ -197,25 +196,6 @@ class DisplayBookings {
            onkeyup="BAMDING.BOOKINGS.filterVenues();">
            <?php
          }
-
-         public function nextContactPop() {
-           ?>
-    <div id="bd_bookings_date_frequency_pop">
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-      <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
-      <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
-      <script>
-             $(function () {
-               $("#datepicker_next_contact").datepicker();
-             });
-      </script>
-      <input type="text" id="datepicker_next_contact">
-
-      <button>OK</button>
-    </div>
-    <?php
-  }
 
   /**
    * Takes the input abbreviation for the frequency type and returns a 
