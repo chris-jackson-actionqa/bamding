@@ -89,7 +89,6 @@ class DisplayBookings {
           <th>Last Contact</th>
           <th>Next Contact</th>
           <th>Every</th>
-          <th>Interval</th>
           <th>Category</th>
         </tr>
 
@@ -127,12 +126,34 @@ class DisplayBookings {
               $this->nextContactField($row);
               ?>
             </td>
-            <td><?php echo $row['frequency_num']; ?></td>
+            <!-- Every  -->
             <td>
-              <?php
-              echo self::getFriendlyFrequencyType(
-                      $row['freq_type'], $row['frequency_num']);
+              <?php 
+              $frequency_number = (int)$row['frequency_num'];
+              $selected = array(
+                  'D' => '',
+                  'W' => '',
+                  'M' => ''
+              );
+              switch($row['freq_type'])
+              {
+                case 'D':
+                  $selected['D'] = 'selected';
+                  break;
+                case 'W':
+                  $selected['W'] = 'selected';
+                  break;
+                case 'M':
+                  $selected['M'] = 'selected';
+                  break;
+              }
               ?>
+              <input type="number" value="<?php echo $frequency_number;?>">
+              <select>
+                <option value="D" <?php echo $selected['D'];?>>Days</option>
+                <option value="W" <?php echo $selected['W'];?>>Weeks</option>
+                <option value="M" <?php echo $selected['M'];?>>Months</option>
+              </select>
             </td>
             <td><?php echo $row['category']; ?></td>
           </tr>
@@ -155,6 +176,7 @@ class DisplayBookings {
     </form>
     <?php
     $this->nextContactPop();
+    $this->intervalPop();
   }
 
   /**
@@ -296,4 +318,18 @@ class DisplayBookings {
     <?php
   }
 
+  public function intervalPop()
+  {
+    ?>
+    <div id="openModal" class="modalDialog">
+      <div>	<a href="#close" title="Close" class="close">X</a>
+
+                  <h2>Modal Box</h2>
+
+          <p>This is a sample modal box that can be created using the powers of CSS3.</p>
+          <p>You could do a lot of things here like have a pop-up ad that shows when your website loads, or create a login/register form for users.</p>
+      </div>
+    </div>
+    <?php
+  }
 }
