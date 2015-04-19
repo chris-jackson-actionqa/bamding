@@ -231,7 +231,12 @@ class DisplayBookings {
     return $sFriendlyType;
   }
 
+  /**
+   * display the next contact field with an interactive datepicker
+   * @param type $bookingInfo
+   */
   private function nextContactField($bookingInfo) {
+    $user = 
     $venue_id = $bookingInfo['venue_id'];
     $nextContactDate = $bookingInfo['next_contact'];
     $last_contacted = $bookingInfo['last_contacted'];
@@ -241,7 +246,7 @@ class DisplayBookings {
 
     $displayDate = $nextContactDate == "0000-00-00" ?
             date('m/d/Y', time() + (24 * 60 * 60)) : 
-            date("m/d/Y", $nextContactDate);
+            date("m/d/Y", strtotime($nextContactDate));
     
     // Need to disable dates less than 7 days after last contacted.
     // Prevent users from unnecessary spamming!
@@ -259,17 +264,35 @@ class DisplayBookings {
     <input type="text" 
            id="<?php echo $unique_id; ?>" 
            value="<?php echo $displayDate; ?>"
-           class="date_width">
+           class="date_width"
+           onchange="BAMDING.BOOKINGS.updateNextContact(
+                     this, 
+                     '<?php echo get_user_field('user_login'); ?>',
+                     <?php echo $venue_id; ?>
+                     );">
     </script>
     <?php
   }
 
+  /**
+   * inject the scripts for jQuery and jQuery UI
+   */
   public function includeJQueryUI() {
     ?>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <?php
+  }
+  
+  /**
+   * Include the main javascript
+   */
+  public function includeScript() {
+    $script = Site::getBaseURL() . '/wp-content/js/bookings.js'
+    ?>
+    <script src="<?php echo $script; ?>"></script>
     <?php
   }
 

@@ -132,8 +132,129 @@ SQL;
     
     if(FALSE === $mResult)
     {
-      throw new Exception("Could not pause venue: $sSQL");
+      throw new RuntimeException("Could not pause venue: $sSQL");
     }
+  }
+  
+  /**
+   * Get the booking info for the venue
+   * @param int $venueID
+   * @return array of key/value pairs for the booking
+   * @throws RuntimeException
+   */
+  public function getBooking($venueID)
+  {
+    $venueID = (int)$venueID;
+    
+    $sql = <<<SQL
+SELECT * FROM bookings WHERE venue_id=$venueID
+SQL;
+    
+    $result = $this->oConn->query($sql);
+    if(FALSE === $result)
+    {
+      throw new RuntimeException($this->oConn->error);
+    }
+    
+    $rows = Database::fetch_all($result);
+    return $rows[0];
+  }
+  
+  /**
+   * Set the next contact date
+   * @param int $venueID The venue id
+   * @param date $nextContact The next contact date. Format: mm/dd/yyyy
+   * @throws RuntimeException if SQL fails
+   */
+  public function setNextContact($venueID, $nextContact)
+  {
+    $venueID = (int)$venueID;
+    
+    $bookingInfo = $this->getBooking($venueID);
+    
+    $dt = new DateTime($nextContact);
+    $next = $dt->format('Y-m-d');
+    
+    $sSQL = <<<SQL
+UPDATE bookings
+SET next_contact='$next', timestamp=NOW()
+WHERE user_login='{$this->sUserLogin}' AND venue_id=$venueID
+SQL;
+
+    $result = $this->oConn->query($sSQL);
+    if(FALSE === $result)
+    {
+      $message = $this->oConn->error;
+      throw new RuntimeException($message);
+    }
+  }
+  
+  /**
+   * Is the next contact date valid?
+   * 
+   * @param type $venueID
+   * @param type $nextContact
+   * @return type
+   */
+  public function isValidNextContact($venueID, $nextContact)
+  {
+    $bookingInfo = $this->getBooking((int)$venueID);
+    $next = strtotime($nextContact);
+    
+    // Not contacted yet. Tomorrow or later is acceptable next contact
+    if('0000-00-00' === $bookingInfo['last_contacted'])
+    {
+      $tomorrow = strtotime("tomorrow");
+      return $tomorrow <= $next;
+    }
+    
+    // Otherwise, needs to be at least one week from last contact
+    $last = strtotime($bookingInfo['last_contacted']);
+    $week = 7 * 24 * 60 * 60;
+    
+    return ($last + $week) <= $next;
+  }
+  
+  /**
+   * Get the next contact that is safe for the user to set
+   * @param type $venueID
+   * @return string yyyy-mm-dd
+   * @throws InvalidArgumentException
+   */
+  public function getSafeNextContact($venueID)
+  {
+    $bookingInfo = $this->getBooking((int)$venueID);
+    
+    if('0000-00-00' === $bookingInfo['last_contacted'])
+    {
+      $safeNext = date('Y-m-d', strtotime("tomorrow"));
+    }
+    else
+    {
+      $frequency_num = (int)$bookingInfo['frequency_num'];
+      $frequency_type = $bookingInfo['freq_type'];
+      $last = new DateTime($bookingInfo['last_contacted']);
+      
+      switch($frequency_type)
+      {
+        case 'D':
+          $interval = 'P'.$frequency_num.'D';
+          break;
+        case 'W':
+          $interval = 'P'.$frequency_num.'W';
+          break;
+        case 'M':
+          $interval = 'P'.$frequency_num.'M';
+          break;
+        default:
+          throw new InvalidArgumentException("Invalid frequency type");
+      }
+      
+      $next = $last->add(new DateInterval($interval));
+      $safeNext = $next->format('Y-m-d');
+    }
+    
+    return $safeNext;
   }
   
   public function addNewBooking($nVenueID)

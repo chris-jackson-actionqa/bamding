@@ -582,6 +582,44 @@ var BAMDING = {
             {
                 return "Error";
             }
+        },
+        
+        /**
+         * Edit the next contact date
+         * @param {type} elem
+         * @param {type} sUserLogin
+         * @param {type} venueID
+         * @returns {undefined}
+         */
+        updateNextContact: function(elem, sUserLogin, venueID)
+        {
+          var url = getBaseURL() + '/wp-content/ajax/booking-update.php';
+          $.ajax({
+              url: url,
+              type: 'post',
+              data: {
+                'user_login': sUserLogin,
+                'action': 'next_contact',
+                'venue_id': venueID,
+                'next_contact': elem.value
+              },
+              success: function(data, status) {
+                if(true !== data['success'])
+                {
+                  $('#' + elem.id).text = data['next'];
+                  $('#' + elem.id).effect("highlight",
+                          {color: "#FF0000"}, 3000);
+                }
+                else
+                {
+                  $('#' + elem.id).effect("highlight",
+                          {color: "#00FF00"}, 3000);
+                }
+              },
+              error: function(xhr, desc, err) {
+                alert(err);
+              }
+            }); // end ajax call
         }
     },
     
