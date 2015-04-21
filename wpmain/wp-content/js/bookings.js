@@ -620,6 +620,17 @@ var BAMDING = {
                 alert(err);
               }
             }); // end ajax call
+        },
+        
+        displayPop: function(selectID)
+        {
+          $('form').submit(function (evt) {
+              var selection = document.getElementById(selectID);
+              if( selection.value === 'frequency')
+              {
+                $('form').action =  ;
+              }
+              });
         }
     },
     

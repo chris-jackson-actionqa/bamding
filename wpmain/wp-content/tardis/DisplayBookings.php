@@ -57,20 +57,8 @@ class DisplayBookings {
               "bookings");
     </script>
     <h1>Bookings</h1>
-    <form action="" method="post">
-      <select name="bd_bookings_bulk_action_top" 
-              id="bd_bookings_bulk_action_top"
-              onchange="BAMDING.BOOKINGS.changeBulkActionSelection(this);">
-        <option value="bulk">Bulk Action</option>
-        <option value="start">Start Booking</option>
-        <option value="pause">Pause Booking</option>
-      </select>
-      <input type='submit' 
-             value='Apply' 
-             id="btn_bookings_apply_top"
-             class="btn_disabled"
-             disabled>
-
+    <form action="" method="post" id="bookings_form">
+      <?php $this->bulkAction('top'); ?>
       <?php $this->displayBookingsFilter(); ?>
 
       <table id="bookings_table">
@@ -148,7 +136,11 @@ class DisplayBookings {
                   break;
               }
               ?>
-              <input type="number" value="<?php echo $frequency_number;?>">
+              <input type="number"
+                     min="1"
+                     max="365"
+                     value="<?php echo $frequency_number;?>"
+                     style="width: 70px;">
               <select>
                 <option value="D" <?php echo $selected['D'];?>>Days</option>
                 <option value="W" <?php echo $selected['W'];?>>Weeks</option>
@@ -161,21 +153,9 @@ class DisplayBookings {
         }
         ?>
       </table>
-      <select name="bd_bookings_bulk_action_bottom"
-              id="bd_bookings_bulk_action_bottom"
-              onchange="BAMDING.BOOKINGS.changeBulkActionSelection(this);">
-        <option value="bulk">Bulk Action</option>
-        <option value="start">Start Booking</option>
-        <option value="pause">Pause Booking</option>
-      </select>
-      <input type='submit' 
-             value='Apply' 
-             id="btn_bookings_apply_bottom"
-             class="btn_disabled"
-             disabled>
+      <?php $this->bulkAction('bottom'); ?>
     </form>
     <?php
-    $this->intervalPop();
   }
 
   /**
@@ -289,27 +269,29 @@ class DisplayBookings {
   }
   
   /**
-   * Include the main javascript
+   * Bulk action select and apply inputs
+   * @param string $location top or bottom
    */
-  public function includeScript() {
-    $script = Site::getBaseURL() . '/wp-content/js/bookings.js'
-    ?>
-    <script src="<?php echo $script; ?>"></script>
-    <?php
-  }
-
-  public function intervalPop()
+  public function bulkAction($location)
   {
+    $name = "bd_bookings_bulk_action_$location";
+    $selectID = "bd_bookings_bulk_action_$location";
+    $buttonID = "btn_bookings_apply_$location";
     ?>
-    <div id="openModal" class="modalDialog">
-      <div>	<a href="#close" title="Close" class="close">X</a>
-
-                  <h2>Modal Box</h2>
-
-          <p>This is a sample modal box that can be created using the powers of CSS3.</p>
-          <p>You could do a lot of things here like have a pop-up ad that shows when your website loads, or create a login/register form for users.</p>
-      </div>
-    </div>
-    <?php
+    <select name="<?php echo $name;?>" 
+              id="<?php echo $selectID;?>"
+              onchange="BAMDING.BOOKINGS.changeBulkActionSelection(this);">
+        <option value="bulk">Bulk Action</option>
+        <option value="start">Start Booking</option>
+        <option value="pause">Pause Booking</option>
+        <option value="frequency">Set How Often To Contact</option>
+      </select>
+      <input type='submit' 
+             value='Apply' 
+             id="<?php echo $buttonID;?>"
+             class="btn_disabled"
+             disabled
+             onclick="BAMDING.BOOKINGS.displayPop('<?php echo $selectID;?>');">
+      <?php
   }
 }
