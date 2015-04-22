@@ -58,8 +58,10 @@ class DisplayBookings {
     </script>
     <h1>Bookings</h1>
     <form action="" method="post" id="bookings_form">
-      <?php $this->bulkAction('top'); ?>
-      <?php $this->displayBookingsFilter(); ?>
+      <?php 
+      $this->bulkAction('top'); 
+      $this->displayBookingsFilter(); 
+      ?>
 
       <table id="bookings_table">
         <tr>

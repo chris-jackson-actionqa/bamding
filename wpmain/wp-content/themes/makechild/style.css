@@ -211,21 +211,7 @@ Updated: 2014-07-23 08:19:49
   width: 120px;
 }
 
-// Copied from jsfiddle example
-// http://jsfiddle.net/kumarmuthaliar/GG9Sa/1/
-//
-.modalDialog {
-    position: absolute;
-    font-family: Arial, Helvetica, sans-serif;
-    top: 0px;
-    //right: 0;
-    //bottom: 0;
-    left: 0px;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 99999;
-    opacity:0;
-    -webkit-transition: opacity 400ms ease-in;
-    -moz-transition: opacity 400ms ease-in;
-    transition: opacity 400ms ease-in;
-    pointer-events: none;
+.center_div {
+  text-align: center;
+  
 }

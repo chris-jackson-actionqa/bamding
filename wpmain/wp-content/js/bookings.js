@@ -624,13 +624,12 @@ var BAMDING = {
         
         displayPop: function(selectID)
         {
-          $('form').submit(function (evt) {
-              var selection = document.getElementById(selectID);
-              if( selection.value === 'frequency')
-              {
-                $('form').action =  ;
-              }
-              });
+            var selection = document.getElementById(selectID);
+            if( selection.value === 'frequency')
+            {
+              document.getElementById('bookings_form').action = 
+                      getBaseURL() +  '/edit-frequency/';
+            }
         }
     },
     

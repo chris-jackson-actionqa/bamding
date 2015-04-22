@@ -36,16 +36,18 @@ class DisplayFrequency extends Display
   {
     $bookingsURL = Site::getBaseURL() . '/bookings/';
     $this->beginForm('edit_frequency_form', 'post', $bookingsURL);
+    $this->beginDiv('edit_frequency_div', 'center_div');
     $this->frequency();
     $this->submit();
     $this->cancel();
+    $this->endDiv();
     $this->endForm();
   }
   
   public function frequency()
   {
     ?>
-<input type="number" name="frequency_number" value="2">
+<input type="number" name="frequency_number" value="2" style="width: 70px;">
 <select name="frequency_type">
   <option value="D">Days</option>
   <option value="W" selected>Weeks</option>

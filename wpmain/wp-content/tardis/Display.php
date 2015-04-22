@@ -30,4 +30,17 @@ class Display
     <?php
   }
   
+  public function beginDiv($id="", $class="")
+  {
+    ?>
+<div id="<?php echo $id;?>" name="<?php echo $class; ?>">
+<?php
+  }
+  
+  public function endDiv()
+  {
+    ?>
+</div>
+  <?php
+  }
 }
