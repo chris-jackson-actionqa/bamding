@@ -695,6 +695,34 @@ var BAMDING = {
                 save.className = 'btn_enabled';
             }
         }
+    },
+    
+    EDIT_FREQUENCY: {
+      makeFrequencyNumberValid: function()
+      {
+        // make sure frequency number is correct for days
+        var freq_num_elem = document.getElementById('frequency_number');
+        var freq_num = freq_num_elem.value;
+        
+        var freq_type_elem = document.getElementById('frequency_type');
+        var selectedIndex = freq_type_elem.selectedIndex;
+        
+        // if "Days" selected, can't be below 7. 
+        // Once a week is the most a contact can occur
+        if( freq_type_elem.options[selectedIndex].value === 'D' && freq_num < 7)
+        {
+          
+          freq_num_elem.value = 7;
+        }
+        else if( freq_num <= 0)
+        {
+          freq_num_elem.value = 1;
+        }
+        else if( freq_num > 365)
+        {
+          freq_num_elem.value = 365;
+        }
+      }
     }
 };
 

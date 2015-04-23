@@ -33,7 +33,7 @@ class Display
   public function beginDiv($id="", $class="")
   {
     ?>
-<div id="<?php echo $id;?>" name="<?php echo $class; ?>">
+<div id="<?php echo $id;?>" class="<?php echo $class; ?>">
 <?php
   }
   
@@ -42,5 +42,13 @@ class Display
     ?>
 </div>
   <?php
+  }
+  
+  public function insertBookingsScript()
+  {
+    ?>
+<script src="<?php echo Site::getBaseURL(); ?>/wp-content/js/bookings.js">
+</script>
+<?php
   }
 }

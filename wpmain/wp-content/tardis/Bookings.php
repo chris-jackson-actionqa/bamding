@@ -285,4 +285,38 @@ SQL;
       throw new Exception("Could not delete venue from booking table.");
     }
   }
+  
+  public function setFrequency($venueID, $frequencyNum, $frequencyType)
+  {
+    $venueID = (int)$venueID;
+    $frequencyNum = (int)$frequencyNum;
+    $frequencyType = strtoupper($frequencyType);
+    
+    if($frequencyType == 'D' && $frequencyNum < 7)
+    {
+      throw new InvalidArgumentException('Need at least 7 days between contacts');
+    }
+    elseif($frequencyNum <= 0)
+    {
+      throw new InvalidArgumentException('Must be at least 1');
+    }
+    elseif($frequencyNum > 365)
+    {
+      throw new InvalidArgumentException('365 is the max');
+    }
+    
+    $sql = <<<SQL
+UPDATE bookings
+SET frequency_num=$frequencyNum,
+    freq_type='$frequencyType'
+WHERE user_login='{$this->sUserLogin}' AND
+      venue_id=$venueID
+SQL;
+    
+    $result = $this->oConn->query($sql);
+    if($result === FALSE)
+    {
+      throw new RuntimeException($this->oConn->error);
+    }
+  }
 }

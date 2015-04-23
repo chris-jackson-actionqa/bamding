@@ -350,6 +350,12 @@ class ProcessForms
         case 'pause':
           $bookings->setPause((int)$value, TRUE);
           break;
+        case 'frequency':
+          $bookings->setFrequency(
+                  (int)$value, 
+                  $_REQUEST['frequency_number'], 
+                  $_REQUEST['frequency_type']);
+          break;
         default:
           return;
       }
