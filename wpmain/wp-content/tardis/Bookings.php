@@ -318,5 +318,56 @@ SQL;
     {
       throw new RuntimeException($this->oConn->error);
     }
+    
+    $row = $this->getBooking($venueID);
+    $nextContact = $this->calculateNextContactFromFrequency(
+            $row['last_contacted'], $frequencyNum, $frequencyType);
+    $this->setNextContact($venueID, $nextContact);
+  }
+  
+  public function calculateNextContactFromFrequency($lastContact, $frequencyNum, $frequencyType)
+  {
+    $nextContact = '';
+    $tomorrow = date('Y-m-d', strtotime("+1 day"));
+    $lastContactTimeStamp = strtotime($lastContact);
+    
+    // if last contact never happened, set next contact to tomorrow
+    if('0000-00-00' === $lastContact)
+    {
+      $nextContact = $tomorrow;
+    }
+    // if frequency number is invalid, set next contact to 2 weeks
+    elseif( 0 >= (int)$frequencyNum)
+    {
+      $nextContact = date('Y-m-d', strtotime("+2 week", $lastContactTimeStamp));
+    }
+    // if frequency type is invalid, set next contact to  2 weeks
+    elseif( 'D' != $frequencyType && 'W' != $frequencyType && 'M' != $frequencyType)
+    {
+      $nextContact = date('Y-m-d', strtotime("+2 week", $lastContactTimeStamp));
+    }
+    // if less than a week, set to one week
+    elseif(7 > (int)$frequencyNum && 'D' === $frequencyType)
+    {
+      $nextContact = date('Y-m-d', strtotime("+1 week", $lastContactTimeStamp));
+    }
+    // otherwise, calculate next contact
+    else
+    {
+      $interval = 'day';
+      if('W' === $frequencyType)
+      {
+        $interval = 'week';
+      }
+      elseif('M' === $frequencyType)
+      {
+        $interval = 'month';
+      }
+      
+      $nextContact = date('Y-m-d', 
+              strtotime("+$frequencyNum $interval", $lastContactTimeStamp));
+    }
+    // return next contact
+    return $nextContact;
   }
 }

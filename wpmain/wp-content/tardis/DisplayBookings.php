@@ -10,7 +10,7 @@
  *
  * @author Seth
  */
-class DisplayBookings {
+class DisplayBookings extends Display {
 
   private $oBookings = null;
   private $sUserLogin = "";
@@ -49,8 +49,8 @@ class DisplayBookings {
     }
 
     $this->includeJQueryUI();
+    $this->insertBookingsScript();
     ?>
-    <script src="<?php echo Site::getBaseURL(); ?>/wp-content/js/bookings.js"></script>
     <script>
       BAMDING.MYVENUES.getAllVenues(
               "<?php echo get_user_field('user_login'); ?>",
@@ -117,7 +117,7 @@ class DisplayBookings {
               ?>
             </td>
             <!-- Every  -->
-            <td>
+            <td id="cell_<?php echo $row['venue_id'];?>">
               <?php 
               $frequency_number = (int)$row['frequency_num'];
               $selected = array(
@@ -137,13 +137,35 @@ class DisplayBookings {
                   $selected['M'] = 'selected';
                   break;
               }
+              
+              $id_freq_num = 'freq_num_'.$row['venue_id'];
+              $id_freq_type = 'freq_type_'.$row['venue_id'];
               ?>
               <input type="number"
                      min="1"
                      max="365"
                      value="<?php echo $frequency_number;?>"
-                     style="width: 70px;">
-              <select>
+                     style="width: 70px;"
+                     id="<?php echo $id_freq_num; ?>"
+                     onchange="BAMDING.EDIT_FREQUENCY.
+                               baseMakeFrequncyNumberValid(
+                               '<?php echo $id_freq_num; ?>', 
+                               '<?php echo $id_freq_type; ?>');
+                               BAMDING.BOOKINGS.updateFrequency(
+                                       '<?php echo $this->sUserLogin;?>',
+                                       '<?php echo $row['venue_id']; ?>',
+                                       '<?php echo $id_freq_num; ?>',
+                                       '<?php echo $id_freq_type; ?>');">
+              <select id="<?php echo $id_freq_type; ?>"
+                      onchange="BAMDING.EDIT_FREQUENCY.
+                               baseMakeFrequncyNumberValid(
+                                      '<?php echo $id_freq_num; ?>', 
+                                      '<?php echo $id_freq_type; ?>');;
+                               BAMDING.BOOKINGS.updateFrequency(
+                                       '<?php echo $this->sUserLogin;?>',
+                                       '<?php echo $row['venue_id']; ?>',
+                                       '<?php echo $id_freq_num; ?>',
+                                       '<?php echo $id_freq_type; ?>');">
                 <option value="D" <?php echo $selected['D'];?>>Days</option>
                 <option value="W" <?php echo $selected['W'];?>>Weeks</option>
                 <option value="M" <?php echo $selected['M'];?>>Months</option>
@@ -220,7 +242,6 @@ class DisplayBookings {
    * @param type $bookingInfo
    */
   private function nextContactField($bookingInfo) {
-    $user = 
     $venue_id = $bookingInfo['venue_id'];
     $nextContactDate = $bookingInfo['next_contact'];
     $last_contacted = $bookingInfo['last_contacted'];

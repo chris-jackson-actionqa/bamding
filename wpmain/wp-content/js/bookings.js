@@ -622,6 +622,57 @@ var BAMDING = {
             }); // end ajax call
         },
         
+        updateFrequency: function(sUserLogin, venueID, freq_num_id, freq_type_id)
+        {
+          var url = getBaseURL() + '/wp-content/ajax/booking-update.php';
+          var freq_num_elem = document.getElementById(freq_num_id);
+          var freq_num = freq_num_elem.value;
+          
+          var freq_type_elem = document.getElementById(freq_type_id);
+          var freq_type = freq_type_elem.options[freq_type_elem.selectedIndex].value;
+          
+          var cell_id = "cell_" + venueID;
+          
+          $.ajax({
+              url: url,
+              type: 'post',
+              data: {
+                'user_login': sUserLogin,
+                'action': 'frequency',
+                'venue_id': venueID,
+                'freq_num': freq_num,
+                'frequency_type': freq_type
+              },
+              success: function(data, status) {
+                var timestamp = Date.parse(data['next']) + 86400000;
+                var date = new Date();
+                date.setTime(timestamp);
+                var next = "" + (date.getMonth() + 1) + "/" +
+                        date.getDate() + "/" +
+                        date.getFullYear();
+                $('#datepicker_' + venueID).val(next);
+                
+                if(true !== data['success'])
+                {
+                  $('#' + cell_id).effect("highlight",
+                          {color: "#FF0000"}, 3000);
+                  $('#datepicker_' + venueID).effect("highlight",
+                          {color: "#FF0000"}, 3000);
+                }
+                else
+                {
+                  $('#' + cell_id).effect("highlight",
+                          {color: "#00FF00"}, 3000);
+                  $('#datepicker_' + venueID).effect("highlight",
+                          {color: "#00FF00"}, 3000);
+                }
+              },
+              error: function(xhr, desc, err) {
+                alert(err);
+              }
+            }); // end ajax call
+        },
+        
         displayPop: function(selectID)
         {
             var selection = document.getElementById(selectID);
@@ -700,18 +751,23 @@ var BAMDING = {
     EDIT_FREQUENCY: {
       makeFrequencyNumberValid: function()
       {
+        BAMDING.EDIT_FREQUENCY.baseMakeFrequncyNumberValid(
+                'frequency_number', 'frequency_type');
+      },
+      
+      baseMakeFrequncyNumberValid: function( id_freq_num, id_freq_type)
+      {
         // make sure frequency number is correct for days
-        var freq_num_elem = document.getElementById('frequency_number');
+        var freq_num_elem = document.getElementById(id_freq_num);
         var freq_num = freq_num_elem.value;
         
-        var freq_type_elem = document.getElementById('frequency_type');
+        var freq_type_elem = document.getElementById(id_freq_type);
         var selectedIndex = freq_type_elem.selectedIndex;
         
         // if "Days" selected, can't be below 7. 
         // Once a week is the most a contact can occur
         if( freq_type_elem.options[selectedIndex].value === 'D' && freq_num < 7)
         {
-          
           freq_num_elem.value = 7;
         }
         else if( freq_num <= 0)

@@ -14,12 +14,13 @@ $bookings = new Bookings($user);
 // Get the action to perform
 $action = filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING);
 
+$venueID = filter_input(INPUT_POST, 'venue_id', FILTER_SANITIZE_NUMBER_INT);
+
 // If updating the next contact, 
 // get the next contact date
 if('next_contact' === $action)
 {
   $nextContactDate = filter_input(INPUT_POST, 'next_contact', FILTER_SANITIZE_STRING);
-  $venueID = filter_input(INPUT_POST, 'venue_id', FILTER_SANITIZE_NUMBER_INT);
   $success = TRUE;
   $message = $nextContactDate;
   $next = '';
@@ -38,14 +39,42 @@ if('next_contact' === $action)
     $message = $ex->getMessage();
     $next = (new DateTime($bookings->getSafeNextContact($venueID)))->format('m/d/Y');
   }
+  
+  // Validate the request input
+  $response = array(
+      'success' => $success,
+      'message' => $message,
+      'next' => $next
+  );
+}
+elseif('frequency' === $action)
+{
+  try {
+    $frequencyNum = filter_input(INPUT_POST, 'freq_num', FILTER_SANITIZE_NUMBER_INT);
+    $frequencyType = filter_input(INPUT_POST, 'frequency_type', FILTER_SANITIZE_STRING);
+    $bookings->setFrequency($venueID, $frequencyNum, $frequencyType);
+    $nextContact = $bookings->getSafeNextContact($venueID);
+    $success = true;
+    $message = '';
+  } catch (RuntimeException $ex) {
+    $success = false;
+    $message = $ex->getMessage();
+    $nextContact = $bookings->getSafeNextContact($venueID);;
+  } catch (InvalidArgumentException $ex) {
+    $success = false;
+    $message = $ex->getMessage();
+    $nextContact = $bookings->getSafeNextContact($venueID);
+  } 
+  
+  // Validate the request input
+  $response = array(
+      'success' => $success,
+      'message' => $message,
+      'next' => $nextContact
+  );
 }
 
-// Validate the request input
-$response = array(
-    'success' => $success,
-    'message' => $message,
-    'next' => $next
-);
+
 echo json_encode($response);
 
 exit();
