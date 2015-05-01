@@ -63,7 +63,7 @@ class DisplayBookings extends Display {
       $this->displayBookingsFilter(); 
       ?>
 
-      <table id="bookings_table">
+      <table id="bookings_table" class="data_table">
         <tr>
           <th>
             <input name="bd_select_all_bookings" 
@@ -80,6 +80,7 @@ class DisplayBookings extends Display {
           <th>Next Contact</th>
           <th>Every</th>
           <th>Category</th>
+          <th>Template</th>
         </tr>
 
         <?php
@@ -172,6 +173,7 @@ class DisplayBookings extends Display {
               </select>
             </td>
             <td><?php echo $row['category']; ?></td>
+            <td><?php echo $row['title']; ?></td>
           </tr>
           <?php
         }
@@ -308,6 +310,7 @@ class DisplayBookings extends Display {
         <option value="start">Start Booking</option>
         <option value="pause">Pause Booking</option>
         <option value="frequency">Set How Often To Contact</option>
+        <option value="template">Set Template</option>
       </select>
       <input type='submit' 
              value='Apply' 

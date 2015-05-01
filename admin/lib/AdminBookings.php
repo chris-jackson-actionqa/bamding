@@ -163,25 +163,29 @@ SELECT
   my_venues.id,
   my_venues.country,
   my_venues.state,
-  my_venues.city
+  my_venues.city,
+  booking_templates.title,
+  booking_templates.template_id
 FROM `bookings`
 INNER JOIN my_venues
 ON my_venues.id=bookings.venue_id
+LEFT JOIN booking_templates
+ON bookings.template_id=booking_templates.template_id
 WHERE
   bookings.next_contact<=CURDATE() AND
   bookings.user_login='$sUser' AND
   bookings.pause=0 AND 
   my_venues.email IS NOT NULL AND
   my_venues.email<>''
-ORDER BY my_venues.category, my_venues.country, my_venues.state, 
-  my_venues.city, my_venues.name;
+ORDER BY booking_templates.title, my_venues.category, my_venues.country, 
+  my_venues.state, my_venues.city, my_venues.name;
 SQL;
     
     $mResult = $this->oConn->query($sSQL);
     
     if(FALSE === $mResult)
     {
-      throw new InvalidArgumentException("Could not get bookings from the database.");
+      throw new InvalidArgumentException("Could not get bookings from the database: " . $this->oConn->error);
     }
     
     return Database::fetch_all($mResult);

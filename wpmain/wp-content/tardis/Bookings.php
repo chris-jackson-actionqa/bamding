@@ -33,10 +33,13 @@ class Bookings
     $sWhere = (!empty($sWhere)) ? "AND $sWhere" : "";
     $sTable = Bookings::BOOKINGS_TABLE;
     $sSQL = <<<SQL
-SELECT $sTable.*, my_venues.name, my_venues.city, my_venues.state, my_venues.country, my_venues.category 
+SELECT $sTable.*, my_venues.name, my_venues.city, my_venues.state, my_venues.country, my_venues.category,
+       booking_templates.title
 FROM $sTable
 INNER JOIN my_venues
 ON bookings.venue_id=my_venues.id
+LEFT JOIN booking_templates
+ON booking_templates.template_id=bookings.template_id
 WHERE $sTable.user_login='{$this->sUserLogin}' $sWhere
 ORDER BY bookings.pause, my_venues.country, my_venues.state, my_venues.city, my_venues.name
 SQL;
@@ -369,5 +372,25 @@ SQL;
     }
     // return next contact
     return $nextContact;
+  }
+  
+  public function setTemplate($venueID, $templateID)
+  {
+    $venueID = (int)$venueID;
+    $templateID = (int)$templateID;
+    
+    // verify venue id belongs to user
+    // verify template id belongs to user
+    $sql = <<<SQL
+UPDATE bookings
+SET template_id=$templateID
+WHERE user_login='{$this->sUserLogin}' AND venue_id=$venueID
+SQL;
+
+    $result = $this->oConn->query($sql);
+    if( FALSE === $result)
+    {
+      throw new RuntimeException($oConn->error);
+    }
   }
 }

@@ -189,9 +189,9 @@ class ProcessForms
         {
           $oVenues->addVenue($oVenue);
           $nVenueID = $oVenues->getVenueID($oVenue);
-          if(-1 == $nVenueID)
+          if(-1 === $nVenueID)
           {
-            throw new Exception("Can't find the venue's id that was just added.");
+            throw new RuntimeException("Can't find the venue's id that was just added.");
           }
           $oBookings = new Bookings($sUserLogin );
           $oBookings->addNewBooking($nVenueID);
@@ -355,6 +355,12 @@ class ProcessForms
                   (int)$value, 
                   $_REQUEST['frequency_number'], 
                   $_REQUEST['frequency_type']);
+          break;
+        case 'template':
+          $bookings->setTemplate(
+                  (int)$value,
+                  $_REQUEST['template_id']
+                 );
           break;
         default:
           return;

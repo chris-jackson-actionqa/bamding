@@ -681,6 +681,11 @@ var BAMDING = {
               document.getElementById('bookings_form').action = 
                       getBaseURL() +  '/edit-frequency/';
             }
+            else if(selection.value === 'template')
+            {
+              document.getElementById('bookings_form').action = 
+                      getBaseURL() +  '/set-template/';
+            }
         }
     },
     

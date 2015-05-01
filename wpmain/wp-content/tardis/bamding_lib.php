@@ -31,5 +31,6 @@ require_once(ABSPATH. '/wp-content/tardis/DisplayCategory.php');
 require_once(ABSPATH. '/wp-content/tardis/DisplayBandDetails.php');
 require_once(ABSPATH. '/wp-content/tardis/DisplayBookings.php');
 require_once(ABSPATH. '/wp-content/tardis/DisplayFrequency.php');
+require_once(ABSPATH. '/wp-content/tardis/DisplaySetTemplate.php');
 require_once(ABSPATH. '/wp-content/tardis/DisplayTemplates.php');
 require_once(ABSPATH. '/wp-content/tardis/DisplayEditTemplate.php');

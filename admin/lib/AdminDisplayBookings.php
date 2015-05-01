@@ -59,21 +59,25 @@ class AdminDisplayBookings extends AdminDisplay
     $oAdminDates = new AdminDates($sUser);
     
     $category = 'NOT_SET_YET_BRO';
+    $cur_template = 'NOT_SET_YET_BRO';
     
     foreach($hBookings as $hRow)
     {
-      $row_category = strtoupper(trim($hRow['category']));
-      if( $category !== $row_category)
+      $row_template = $hRow['title'];
+      if( $cur_template !== $row_template)
       {
-        $category = $row_category;
-        echo "<h3>Category: $row_category</h3>";
+        $cur_template = $row_template;
+        echo "<h3>Template: $row_template</h3>";
       }
+      
+      $row_category = strtoupper(trim($hRow['category']));
+      echo "# Category: $row_category<br />";
       $sEmail = $hRow['email'];
       $sBookerFName = (empty($hRow['booker_fname'])) ? '' : $hRow['booker_fname'];
       $sVenueName = $hRow['name'];
       
-      $sDates = $oAdminDates->getDatesFromVenueID($hRow['id']);
-      $sTimeFrame = $oAdminDates->getDatesFromVenueID($hRow['id'], AdminDates::TIMEFRAME_FORMAT);
+      $sDates = trim($oAdminDates->getDatesFromVenueID($hRow['id']));
+      $sTimeFrame = trim($oAdminDates->getDatesFromVenueID($hRow['id'], AdminDates::TIMEFRAME_FORMAT));
       if('NO_DATES' !== $sDates)
       {
         // remove trailing new line characters
