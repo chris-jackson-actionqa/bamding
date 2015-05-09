@@ -224,17 +224,22 @@ HTM;
     ?>
     <div id="user_reminder">
       <h2><?php echo $sUser;?>'s Reminder</h2>
-      <h3>Reminder email</h3>
-      <h4>To:</h4>
-      <a id="reminder_email_user_email" href="mailto:<?php echo $user_email; ?>"><?php echo $user_email; ?></a>
-      <h4>Subject:</h4>
-      <div contenteditable="true" id="reminder_email_subject">Reminder: Venues will be contacted on <?php echo $hReminderVenues[0]['Next Contact']; ?></div>
-      <br />
-      <h4>Body:</h4>
-      <div id="reminder_email_body" contenteditable="true">
-      The following venues will be contacted:</br>
+        <h3>Reminder email</h3>
+          <h4>To:</h4>
+            <a id="reminder_email_user_email" 
+               href="mailto:<?php echo $user_email; ?>">
+               <?php echo $user_email; ?></a>
+          <h4>Subject:</h4>
+          <div contenteditable="true" id="reminder_email_subject">
+            Reminder: Venues will be contacted on 
+            <?php echo $hReminderVenues[0]['Next Contact']; ?>
+          </div>
+          <br />
+          <h4>Body:</h4>
+          <div id="reminder_email_body" contenteditable="true">
+            The following venues will be contacted:</br>
     
-      <?php
+    <?php
     // display venues, dates/timeframes, and email standard ending
     AdminDisplay::displayInlineTable($hReminderVenues);
     AdminDisplay::displayDatesTimeFrames($sUser);

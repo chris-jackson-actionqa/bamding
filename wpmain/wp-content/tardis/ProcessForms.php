@@ -503,6 +503,10 @@ class ProcessForms
 
         $title = filter_input(INPUT_POST, 'template_title');
         $template->setTitle($title);
+        
+        $default = filter_input(INPUT_POST, 'default_template');
+        $default = empty($default) ? false : true;
+        $template->setIsDefault($default);
 
         $email = filter_input(INPUT_POST, 'booking_template_email');
         $template->setEmail($email);

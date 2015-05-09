@@ -47,7 +47,7 @@ class DisplayBookings extends Display {
       <?php
       return;
     }
-
+    
     $this->includeJQueryUI();
     $this->insertBookingsScript();
     ?>
@@ -173,7 +173,7 @@ class DisplayBookings extends Display {
               </select>
             </td>
             <td><?php echo $row['category']; ?></td>
-            <td><?php echo $row['title']; ?></td>
+            <?php $this->templateCell($row['title']); ?>
           </tr>
           <?php
         }
@@ -319,5 +319,27 @@ class DisplayBookings extends Display {
              disabled
              onclick="BAMDING.BOOKINGS.displayPop('<?php echo $selectID;?>');">
       <?php
+  }
+  
+  public function templateCell($row_template)
+  {
+    $title = $row_template;
+    
+    $templates = new BookingTemplates($this->sUserLogin);
+    $all_templates = $templates->getTemplates();
+    if(empty($title) && 0 != count($all_templates))
+    {
+      $defaultTemplate = $templates->getDefaultTemplate();
+      $title = $defaultTemplate['title'];
+    }
+    elseif(empty($title) && 0 == count($all_templates))
+    {
+      $title = '<span class="error_cell">No Templates!!!!</span>';
+    }
+    ?>
+      <td>
+        <?php echo $title; ?>
+      </td>
+    <?php
   }
 }

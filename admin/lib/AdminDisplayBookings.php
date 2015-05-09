@@ -81,7 +81,8 @@ class AdminDisplayBookings extends AdminDisplay
       if('NO_DATES' !== $sDates)
       {
         // remove trailing new line characters
-        $sDates = trim(str_replace("<br />\n", '', $sDates));
+        $sDates = trim(str_replace("<br />", '', $sDates));
+        $sDates = trim($sDates);
       }
       else
       {
@@ -179,8 +180,7 @@ class AdminDisplayBookings extends AdminDisplay
     $oBookings->updateBookings($sUser);
   }
   
-  public static function
-  showBookedEmail()
+  public static function showBookedEmail()
   {
     $sUser = (key_exists('user_login', $_GET)) ? $_GET['user_login'] : '';
     if(empty($sUser))
@@ -191,19 +191,28 @@ class AdminDisplayBookings extends AdminDisplay
     $user_email = AdminUsers::getEmail($sUser);
     $oBookings = new AdminBookings();
     $hVenuesContacted = $oBookings->getUserVenuesContacted($sUser);
+    ?>
+    <h2>Venues Booked Email</h2>
+      <h3>To:</h3>
+        <a id="email_address" href="mailto:<?php echo $user_email; ?>"><?php echo $user_email; ?></a>
+      <h3>Subject</h3>
+      <div id="email_subject">Venues contacted</div><br />
+      <h3>Body</h3>
+      <div id="email_body" contenteditable="true">
+        The following venues were contacted:<br />
     
-    echo '<h2>Venues Booked Email</h2>';
-    echo '<h3>To:</h3>';
-    echo '<a href="mailto:' . $user_email . '">' . $user_email . '</a>';
-    echo '<h3>Subject</h3>';
-    echo 'Venues contacted<br />';
-    echo '<h3>Body</h3>';
-    echo 'The following venues were contacted:<br />';
+    <?php
     //list venues table
     AdminDisplayBookings::displayInlineTable($hVenuesContacted);
     // Dates and timeframes
     AdminDisplay::displayDatesTimeFrames($sUser);
     AdminDisplayBookings::standardEmailEnding();
+    ?>
+      </div>
+      <button id="email_send" onclick="BAMDING.ADMIN.BOOKINGS.sendContactedEmail();">
+        Send Email
+      </button>
+    <?php
   }
   
   /**

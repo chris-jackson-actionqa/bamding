@@ -17,8 +17,31 @@ var BAMDING = {
         from = "seth@bamding.com";
         subject = $elemSubject.innerHTML;
         body = "<html><body>" + elemBody.innerHTML + "</body></html>";
-        
-        
+      }
+    },
+   BOOKINGS: {
+     sendContactedEmail: function()
+     {
+
+        elemUserEmail = document.getElementById("email_address");
+        elemSubject = document.getElementById("email_subject");
+        elemBody = document.getElementById("email_body");
+
+        to = elemUserEmail.innerHTML;
+        from = "seth@bamding.com";
+        subject = elemSubject.innerHTML;
+        body = "<html><body>" + elemBody.innerHTML + "</body></html>";
+
+        $.post('ajax/SendEmail.php',
+                {
+                  to: to,
+                  from: from,
+                  subject: subject,
+                  body: body
+                },
+        function (data, status) {
+          alert("Data: " + data + "\nStatus: " + status);
+        });
       }
     }
   }

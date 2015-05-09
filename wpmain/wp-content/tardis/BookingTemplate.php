@@ -4,6 +4,7 @@ class BookingTemplate
 {
     private $oConn = null;
     private $id = -1;
+    private $isDefault = false;
     private $sUserLogin = '';
     private $email = '';
     private $title = '';
@@ -63,6 +64,7 @@ SQL;
         $row = $rows[0];
         
         $this->title = $row['title'];
+        $this->isDefault = $row['default_template'];
         $this->email = $row['booking_email'];
         $this->name = $row['from_name'];
         $this->subject = $row['subject'];
@@ -82,15 +84,47 @@ SQL;
         {
             $this->updateTemplate();
         }
+        
+        $this->updateDefaultTemplate();
+    }
+    
+    /**
+     * If this is the new default template, set all the others to false
+     * 
+     * @throws RuntimeException
+     */
+    public function updateDefaultTemplate()
+    {
+      if(0 > $this->id)
+      {
+        throw new RuntimeException($this->oConn->error);
+      }
+      
+      if($this->isDefault)
+      {
+        $sql = <<<SQL
+UPDATE booking_templates
+SET default_template=false
+WHERE user_login='{$this->sUserLogin}' AND 
+      template_id<>{$this->id}
+SQL;
+        $result = $this->oConn->query($sql);
+        if(FALSE === $result)
+        {
+          throw new RuntimeException($this->oConn->error);
+        }
+      }
     }
     
     private function addNewTemplate()
     {
+        $default = empty($this->isDefault) ? 0 : 1;
         $sql = <<<SQL
 INSERT INTO booking_templates
     (
     user_login,
     title,
+    default_template,
     booking_email,
     from_name,
     subject,
@@ -102,6 +136,7 @@ VALUES
     (
     '{$this->sUserLogin}',
     '{$this->title}',
+    $default,
     '{$this->email}',
     '{$this->name}',
     '{$this->subject}',
@@ -116,15 +151,24 @@ SQL;
         {
             throw new RuntimeException($this->oConn->error);
         }
+        
+        $this->id = $this->oConn->insert_id;
     }
     
+    /**
+     * Update an existing template
+     * 
+     * @throws RuntimeException
+     */
     private function updateTemplate()
     {
+        $default = empty($this->isDefault) ? 0 : 1;
         $sql = <<<SQL
 UPDATE booking_templates
 SET 
     user_login='{$this->sUserLogin}',
     title='{$this->title}',
+    default_template=$default,
     booking_email='{$this->email}',
     from_name='{$this->name}',
     subject='{$this->subject}',
@@ -167,6 +211,16 @@ SQL;
     public function setEmail($email)
     {
         $this->email = $this->trimAndEscape($email);
+    }
+    
+    public function getIsDefault()
+    {
+      return $this->isDefault;
+    }
+    
+    public function setIsDefault($isDefault)
+    {
+      $this->isDefault = (bool)$isDefault;
     }
     
     /**

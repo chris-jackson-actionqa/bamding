@@ -50,4 +50,22 @@ SQL;
         
         return Database::fetch_all($result);
     }
+    
+    public function getDefaultTemplate()
+    {
+      $sql = <<<SQL
+SELECT * FROM booking_templates
+WHERE user_login='{$this->sUserLogin}' AND
+      default_template=1
+SQL;
+      $result = $this->oConn->query($sql);
+      if(FALSE === $result)
+      {
+        throw new RuntimeException($this->oConn->error);
+      }
+      
+      $rows = Database::fetch_all($result);
+      
+      return $rows[0];
+    }
 }

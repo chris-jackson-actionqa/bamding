@@ -160,12 +160,15 @@ class DisplayTemplates
     <?php
     foreach($templates as $row)
     {
+        $title = (bool)$row['default_template'] ? 
+                '<strong>*' . $row['title'] . "</strong>" :
+                $row['title'];
         echo '<tr><td><a href="'.
                 Site::getBaseURL().
                 '/edit-template/?taction=edit&id='.
                 $row['template_id']
                 .'">'.
-                $row['title']
+                $title
                 .'</a></td></tr>'.
                 "\r\n";
     }

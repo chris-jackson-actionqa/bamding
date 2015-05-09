@@ -27,6 +27,10 @@ class DisplayEditTemplate
                     get_user_field('user_login'), 
                     $id);
         }
+        elseif(self::ADD_NEW === $this->action)
+        {
+          $this->template = new BookingTemplate(get_user_field('user_login'));
+        }
     }
     
     /**
@@ -55,6 +59,7 @@ class DisplayEditTemplate
         $this->startForm();
         $this->templateName();
         $this->templateID();
+        $this->defaultCheck();
         $this->fromEmail();
         $this->fromName();
         $this->subject();
@@ -152,6 +157,63 @@ class DisplayEditTemplate
         ?>
 <input type="submit" name="template_cancel" value="Cancel">
         <?php
+    }
+    
+    /**
+     * Set the check value and display the check box to make this the default
+     * template for bookings.
+     * 
+     * If this is the default template, the user can't uncheck the box.
+     * The user will need to check a different template instead.
+     */
+    public function defaultCheck()
+    {
+      $templates = new BookingTemplates(get_user_field('user_login'));
+      $template_rows = $templates->getTemplates();
+      $number_templates = count($template_rows);
+      
+      $default = false;
+      
+      // If no templates are in the database,
+      // select the checkbox
+      if(0 === $number_templates)
+      {
+        $default = true;
+      }
+      
+      // If only one template exists and this is the one being edited,
+      // select the checkbox 
+      elseif(1 === $number_templates && -1 != $this->template->getID())
+      {
+        $default = true;
+      }
+      
+      // Use this templates "default" value for the checkbox
+      // Only enable the checkbox if it is not set as default. 
+      // The user can only change this by setting a different template as default
+      else 
+      {
+        $default = $this->template->getIsDefault();    
+      }
+      
+      // set disabled or not
+      $disabled = $default ? "disabled" : "";
+      $checked = $default ? "checked" : "";
+      $hidden = $default ?
+              '<input type="hidden" name="default_template" value="true" />' :
+              "";
+      
+      ?>
+<label><strong>Make This Your Default Template: </strong></label>
+<input type="checkbox" 
+       name="default_template"
+       value="true"
+         <?php echo $disabled; ?>
+         <?php echo $checked; ?> />
+<?php echo $hidden; ?>
+<br />
+<br />
+<?php
     }
     
     /**
