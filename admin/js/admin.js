@@ -22,7 +22,6 @@ var BAMDING = {
    BOOKINGS: {
      sendContactedEmail: function()
      {
-
         elemUserEmail = document.getElementById("email_address");
         elemSubject = document.getElementById("email_subject");
         elemBody = document.getElementById("email_body");
