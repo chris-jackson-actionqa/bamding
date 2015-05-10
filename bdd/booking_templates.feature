@@ -1,3 +1,4 @@
+@wip
 Feature: Booking Templates
   As a musician booking shows
   I want to create booking templates
